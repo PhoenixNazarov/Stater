@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>AWidget</name>
+  <data>
+    <Statemachine>
+      <autoreject>False</autoreject>
+    </Statemachine>
+  </data>
+  <widget id="0" type="State">
+    <attributes>
+      <name>state0</name>
+      <type>1</type>
+      <incoming id="13" />
+      <incoming id="14" />
+      <incoming id="15" />
+      <outgoing id="12" />
+      <outgoing id="14" />
+      <outgoing id="15" />
+    </attributes>
+  </widget>
+  <widget id="13" type="Transition">
+    <attributes>
+      <event name="attributes" comment="tag &quot;attributes&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="14" type="Transition">
+    <attributes>
+      <event name="id" comment="value &quot;id&quot;" />
+      <action name="SetWidgetId" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="15" type="Transition">
+    <attributes>
+      <event name="type" comment="attribute &quot;type&quot;" />
+      <action name="ConstructWidget" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="12" type="Transition">
+    <attributes>
+      <event name="attributes" comment="tag &quot;attributes&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="11" type="State">
+    <attributes>
+      <name>Attributes</name>
+      <type>0</type>
+      <incoming id="12" />
+      <outgoing id="13" />
+      <nested type="AAttributes" name="AttributesParser" />
+    </attributes>
+  </widget>
+</diagram>

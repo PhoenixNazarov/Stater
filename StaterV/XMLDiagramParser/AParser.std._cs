@@ -1,0 +1,169 @@
+public abstract class AParser
+{
+	public enum States
+	{
+		state0,
+		Diagram,
+		Name,
+		Data,
+		StatemachineData,
+		Widget,
+	}
+	public enum Transitions
+	{
+		transition3,
+		transition4,
+		transition5,
+		transition6,
+		transition8,
+		transition9,
+		transition11,
+		transition12,
+		transition14,
+	}
+	private States state;
+	private AWidget Widget_AWidget;
+	public AParser()
+	{
+		state = States.state0;
+	}
+	public void ProcessEvent(Events _event)
+	{
+		switch (state)
+		{
+		case States.state0:
+			switch (_event)
+			{
+			case Events.AParser_Statemachine:
+				state = States.Diagram;
+				break;
+			}
+			break;
+		case States.Diagram:
+			switch (_event)
+			{
+			case Events.AParser_name:
+				state = States.Name;
+				break;
+			case Events.AParser_Statemachine:
+				state = States.Data;
+				break;
+			case Events.epsilon:
+				state = States.Widget;
+				break;
+			}
+			break;
+		case States.Name:
+			switch (_event)
+			{
+			case Events.AParser_name:
+				state = States.Diagram;
+				break;
+			case Events.AParser_Statemachine:
+				state = States.Name;
+				break;
+			}
+			break;
+		case States.Data:
+			switch (_event)
+			{
+			case Events.AParser_data:
+				state = States.Diagram;
+				break;
+			case Events.AParser_Statemachine:
+				state = States.StatemachineData;
+				break;
+			}
+			break;
+		case States.StatemachineData:
+			switch (_event)
+			{
+			case Events.AParser_Statemachine:
+				state = States.Data;
+				break;
+			}
+			break;
+		case States.Widget:
+			switch (_event)
+			{
+			default:
+				Widget_AWidget.ProcessEvent(_event);
+			        break;
+			}
+		        break;
+		}
+	}
+	public void ProcessEventStr(string _event)
+	{
+		switch (state)
+		{
+		case States.state0:
+			switch (_event)
+			{
+			case "AParser.Statemachine":
+				state = States.Diagram;
+				break;
+			}
+			break;
+		case States.Diagram:
+			switch (_event)
+			{
+			case "AParser.name":
+				state = States.Name;
+				break;
+			case "AParser.Statemachine":
+				state = States.Data;
+				break;
+			case "*":
+				state = States.Widget;
+				break;
+			}
+			break;
+		case States.Name:
+			switch (_event)
+			{
+			case "AParser.name":
+				state = States.Diagram;
+				break;
+			case "AParser.Statemachine":
+				state = States.Name;
+				break;
+			}
+			break;
+		case States.Data:
+			switch (_event)
+			{
+			case "AParser.data":
+				state = States.Diagram;
+				break;
+			case "AParser.Statemachine":
+				state = States.StatemachineData;
+				break;
+			}
+			break;
+		case States.StatemachineData:
+			switch (_event)
+			{
+			case "AParser.Statemachine":
+				state = States.Data;
+				break;
+			}
+			break;
+		case States.Widget:
+			switch (_event)
+			{
+			default:
+				Widget_AWidget.ProcessEventStr(_event);
+			        break;
+				}
+			break;
+		}
+	}
+
+    public abstract void CreateDiagram();
+    public abstract void SetDiagramName();
+    public abstract void SetStatemachineType();
+    public abstract void SetEventName();
+    public abstract void SetEventComment();
+    public abstract void CreateEvent();
+}

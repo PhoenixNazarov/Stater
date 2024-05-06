@@ -1,0 +1,22 @@
+0. <> {LTLParser parser.ForkMachine}
+There are errors. Counterexample:
+
+parsersource sent _machine_type_
+parsersource sent _machine_type_
+parser.state = LTLParser.state0
+parser. event_happened: _machine_type_
+parser.WriteDefine()
+parser.SaveMachineType()
+parsersource sent _machine_type_
+parser.state = LTLParser.MachineType
+parsersource sent _machine_type_
+<<<<<START OF CYCLE>>>>>
+
+
+1. !(<> {LTLParser parser.ForkMachine})
+Verification successful!
+
+2. <> (!{LTLParser parser.ForkMachine})
+Verification successful!
+
+

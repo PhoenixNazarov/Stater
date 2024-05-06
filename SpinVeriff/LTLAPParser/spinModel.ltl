@@ -1,0 +1,759 @@
+#define APParser_state0 0
+#define APParser_MachineType 1
+#define APParser_MachineName 2
+#define APParser_NameWithDot 3
+#define APParser_EventFound 4
+#define APParser_FunctionFound 5
+#define APParser_StateFound 6
+#define APParser_Fork 7
+#define APParser_ForkMachine 8
+#define APParser_NameWithArrow 9
+#define APParser_NestedMachine 10
+#define APParser_FirstPartArrow 11
+#define APParser_Vert 12
+#define APParser_reject 13
+
+#define ExprParser_state0 0
+#define ExprParser_Variable 1
+#define ExprParser_VarAndOp 2
+#define ExprParser_SArray 3
+#define ExprParser_SQBracket 4
+#define ExprParser_Index 5
+#define ExprParser_EArray 6
+#define ExprParser_IMT 7
+#define ExprParser_IMN 8
+#define ExprParser_IMND 9
+#define ExprParser_reject 10
+
+#define VarParser_state0 0
+#define VarParser_Variable 1
+#define VarParser_Array 2
+#define VarParser_MachineType 3
+#define VarParser_MachineName 4
+#define VarParser_Dot 5
+#define VarParser_OpenSqBracket 6
+#define VarParser_state13 7
+#define VarParser_state14 8
+#define VarParser_ConstantInBrackets 9
+#define VarParser_EndArray 10
+#define VarParser_Constant 11
+
+#define machine_type 1
+#define machine_name 2
+#define dot 3
+#define see_minus 4
+#define vertical_line 5
+#define function_name 6
+#define state_name 7
+#define event_name 8
+#define see_operator 9
+#define word 10
+#define static_keyword 11
+#define static_variable 12
+#define variable 13
+#define constant 14
+#define array 15
+#define open_sq_bracket 16
+#define close_sq_bracket 17
+#define two_vertical_line 18
+#define fork_machine 19
+#define see_arrow 20
+#define nested_machine 21
+#define see_gt 22
+
+#define APParser_WriteDefine 1
+#define APParser_SaveMachineType 2
+#define APParser_WriteToken 3
+#define APParser_WriteFunctionProposition 4
+#define APParser_WriteStateProposition 5
+#define APParser_WriteEventProposition 6
+#define APParser_WriteEndForkProp 7
+#define APParser_WriteEndPropNested 8
+#define ExprParser_WriteToken 9
+#define ExprParser_WriteSpace 10
+#define ExprParser_WriteNestedMachine 11
+#define VarParser_WriteSpace 12
+#define VarParser_WriteToken 13
+#define VarParser_WriteVOCEnd 14
+#define VarParser_CloseBracket 15
+#define exprParser_call 1
+#define varParser_call 2
+typedef APParserData
+{
+	byte state;
+	byte curEvent;
+	byte ID;
+	byte functionCall;
+	byte nestedMachine;
+}
+
+typedef ExprParserData
+{
+	byte state;
+	byte curEvent;
+	byte ID;
+	byte functionCall;
+	byte nestedMachine;
+}
+
+typedef VarParserData
+{
+	byte state;
+	byte curEvent;
+	byte ID;
+	byte functionCall;
+	byte nestedMachine;
+}
+
+inline random(var, nBits)
+{
+	int index = 0;
+	var = 0;
+	do
+		:: index < nBits -> 
+			index = index + 1;
+			var = var * 2;
+			if
+				:: var = var + 1;
+				:: var = var + 0;
+			fi;
+		:: else -> break;
+	od;
+}
+
+inline APParser(machine, evt)
+{
+	if
+		::(machine.state == APParser_state0) ->
+			printf("machine%d.state = APParser.state0 \n", machine.ID);
+			if
+				::((evt == machine_type)) ->
+					machine.state = APParser_MachineType;
+					printf("machine%d. event_happened: _machine_type_ \n", machine.ID);
+					machine.curEvent = machine_type;
+					//Code
+					//Code
+					printf("machine%d.WriteDefine()\n", machine.ID);
+					machine.functionCall = 1;
+					printf("machine%d.SaveMachineType()\n", machine.ID);
+					machine.functionCall = 2;
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_MachineType) ->
+			printf("machine%d.state = APParser.MachineType \n", machine.ID);
+			if
+				::((evt == machine_name)) ->
+					machine.state = APParser_MachineName;
+					printf("machine%d. event_happened: _machine_name_ \n", machine.ID);
+					machine.curEvent = machine_name;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 3;
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_MachineName) ->
+			printf("machine%d.state = APParser.MachineName \n", machine.ID);
+			if
+				::((evt == dot)) ->
+					machine.state = APParser_NameWithDot;
+					printf("machine%d. event_happened: _dot_ \n", machine.ID);
+					machine.curEvent = dot;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 3;
+				::((evt == see_minus)) ->
+					machine.state = APParser_FirstPartArrow;
+					printf("machine%d. event_happened: _see_minus_ \n", machine.ID);
+					machine.curEvent = see_minus;
+					//Code
+					//Code
+				::((evt == vertical_line)) ->
+					machine.state = APParser_Vert;
+					printf("machine%d. event_happened: _vertical_line_ \n", machine.ID);
+					machine.curEvent = vertical_line;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_NameWithDot) ->
+			printf("machine%d.state = APParser.NameWithDot \n", machine.ID);
+			if
+				::((evt == function_name)) ->
+					machine.state = APParser_FunctionFound;
+					printf("machine%d. event_happened: _function_name_ \n", machine.ID);
+					machine.curEvent = function_name;
+					//Code
+					//Code
+					printf("machine%d.WriteFunctionProposition()\n", machine.ID);
+					machine.functionCall = 4;
+				::((evt == state_name)) ->
+					machine.state = APParser_StateFound;
+					printf("machine%d. event_happened: _state_name_ \n", machine.ID);
+					machine.curEvent = state_name;
+					//Code
+					//Code
+					printf("machine%d.WriteStateProposition()\n", machine.ID);
+					machine.functionCall = 5;
+				::((evt == event_name)) ->
+					machine.state = APParser_EventFound;
+					printf("machine%d. event_happened: _event_name_ \n", machine.ID);
+					machine.curEvent = event_name;
+					//Code
+					//Code
+					printf("machine%d.WriteEventProposition()\n", machine.ID);
+					machine.functionCall = 6;
+				:: else -> 
+					printf("machine%d. Nested machine: exprParser\n", machine.ID);
+					machine.nestedMachine = exprParser_call;
+					ExprParser(exprParser, evt);
+			fi;
+		::(machine.state == APParser_EventFound) ->
+			printf("machine%d.state = APParser.EventFound \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_FunctionFound) ->
+			printf("machine%d.state = APParser.FunctionFound \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_StateFound) ->
+			printf("machine%d.state = APParser.StateFound \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_Fork) ->
+			printf("machine%d.state = APParser.Fork \n", machine.ID);
+			if
+				::((evt == machine_name)) ->
+					machine.state = APParser_ForkMachine;
+					printf("machine%d. event_happened: _machine_name_ \n", machine.ID);
+					machine.curEvent = machine_name;
+					//Code
+					//Code
+					printf("machine%d.WriteEndForkProp()\n", machine.ID);
+					machine.functionCall = 7;
+				::((evt == machine_type)) ->
+					machine.state = APParser_Fork;
+					printf("machine%d. event_happened: _machine_type_ \n", machine.ID);
+					machine.curEvent = machine_type;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_ForkMachine) ->
+			printf("machine%d.state = APParser.ForkMachine \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_NameWithArrow) ->
+			printf("machine%d.state = APParser.NameWithArrow \n", machine.ID);
+			if
+				::((evt == machine_name)) ->
+					machine.state = APParser_NestedMachine;
+					printf("machine%d. event_happened: _machine_name_ \n", machine.ID);
+					machine.curEvent = machine_name;
+					//Code
+					//Code
+					printf("machine%d.WriteEndPropNested()\n", machine.ID);
+					machine.functionCall = 8;
+				::((evt == machine_type)) ->
+					machine.state = APParser_NameWithArrow;
+					printf("machine%d. event_happened: _machine_type_ \n", machine.ID);
+					machine.curEvent = machine_type;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_NestedMachine) ->
+			printf("machine%d.state = APParser.NestedMachine \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_FirstPartArrow) ->
+			printf("machine%d.state = APParser.FirstPartArrow \n", machine.ID);
+			if
+				::((evt == see_operator)) ->
+					machine.state = APParser_NameWithArrow;
+					printf("machine%d. event_happened: _see_operator_ \n", machine.ID);
+					machine.curEvent = see_operator;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+		::(machine.state == APParser_Vert) ->
+			printf("machine%d.state = APParser.Vert \n", machine.ID);
+			if
+				::((evt == vertical_line)) ->
+					machine.state = APParser_Fork;
+					printf("machine%d. event_happened: _vertical_line_ \n", machine.ID);
+					machine.curEvent = vertical_line;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = APParser_reject;
+			fi;
+	fi;
+}
+
+inline ExprParser(machine, evt)
+{
+	if
+		::(machine.state == ExprParser_state0) ->
+			printf("machine%d.state = ExprParser.state0 \n", machine.ID);
+			if
+				::((evt == variable)) ->
+					machine.state = ExprParser_Variable;
+					printf("machine%d. event_happened: _variable_ \n", machine.ID);
+					machine.curEvent = variable;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 9;
+				::((evt == array)) ->
+					machine.state = ExprParser_SArray;
+					printf("machine%d. event_happened: _array_ \n", machine.ID);
+					machine.curEvent = array;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 9;
+				:: else -> 
+					machine.state = ExprParser_reject;
+			fi;
+		::(machine.state == ExprParser_Variable) ->
+			printf("machine%d.state = ExprParser.Variable \n", machine.ID);
+			if
+				::((evt == see_operator)) ->
+					machine.state = ExprParser_VarAndOp;
+					printf("machine%d. event_happened: _see_operator_ \n", machine.ID);
+					machine.curEvent = see_operator;
+					//Code
+					//Code
+					printf("machine%d.WriteSpace()\n", machine.ID);
+					machine.functionCall = 10;
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 9;
+				:: else -> 
+					machine.state = ExprParser_reject;
+			fi;
+		::(machine.state == ExprParser_VarAndOp) ->
+			printf("machine%d.state = ExprParser.VarAndOp \n", machine.ID);
+			if
+				:: else -> 
+					printf("machine%d. Nested machine: varParser\n", machine.ID);
+					machine.nestedMachine = varParser_call;
+					VarParser(varParser, evt);
+			fi;
+		::(machine.state == ExprParser_SArray) ->
+			printf("machine%d.state = ExprParser.SArray \n", machine.ID);
+			if
+				::((evt == open_sq_bracket)) ->
+					machine.state = ExprParser_SQBracket;
+					printf("machine%d. event_happened: _open_sq_bracket_ \n", machine.ID);
+					machine.curEvent = open_sq_bracket;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 9;
+				:: else -> 
+					machine.state = ExprParser_reject;
+			fi;
+		::(machine.state == ExprParser_SQBracket) ->
+			printf("machine%d.state = ExprParser.SQBracket \n", machine.ID);
+			if
+				::((evt == machine_type)) ->
+					machine.state = ExprParser_IMT;
+					printf("machine%d. event_happened: _machine_type_ \n", machine.ID);
+					machine.curEvent = machine_type;
+					//Code
+					//Code
+					printf("machine%d.WriteNestedMachine()\n", machine.ID);
+					machine.functionCall = 11;
+				::((evt == constant)) ->
+					machine.state = ExprParser_Index;
+					printf("machine%d. event_happened: _constant_ \n", machine.ID);
+					machine.curEvent = constant;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 9;
+				:: else -> 
+					machine.state = ExprParser_reject;
+			fi;
+		::(machine.state == ExprParser_Index) ->
+			printf("machine%d.state = ExprParser.Index \n", machine.ID);
+			if
+				::((evt == close_sq_bracket)) ->
+					machine.state = ExprParser_EArray;
+					printf("machine%d. event_happened: _close_sq_bracket_ \n", machine.ID);
+					machine.curEvent = close_sq_bracket;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 9;
+				:: else -> 
+					machine.state = ExprParser_reject;
+			fi;
+		::(machine.state == ExprParser_EArray) ->
+			printf("machine%d.state = ExprParser.EArray \n", machine.ID);
+			if
+				::((evt == see_operator)) ->
+					machine.state = ExprParser_VarAndOp;
+					printf("machine%d. event_happened: _see_operator_ \n", machine.ID);
+					machine.curEvent = see_operator;
+					//Code
+					//Code
+					printf("machine%d.WriteSpace()\n", machine.ID);
+					machine.functionCall = 10;
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 9;
+				:: else -> 
+					machine.state = ExprParser_reject;
+			fi;
+		::(machine.state == ExprParser_IMT) ->
+			printf("machine%d.state = ExprParser.IMT \n", machine.ID);
+			if
+				::((evt == machine_name)) ->
+					machine.state = ExprParser_IMN;
+					printf("machine%d. event_happened: _machine_name_ \n", machine.ID);
+					machine.curEvent = machine_name;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = ExprParser_reject;
+			fi;
+		::(machine.state == ExprParser_IMN) ->
+			printf("machine%d.state = ExprParser.IMN \n", machine.ID);
+			if
+				::((evt == dot)) ->
+					machine.state = ExprParser_IMND;
+					printf("machine%d. event_happened: _dot_ \n", machine.ID);
+					machine.curEvent = dot;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = ExprParser_reject;
+			fi;
+		::(machine.state == ExprParser_IMND) ->
+			printf("machine%d.state = ExprParser.IMND \n", machine.ID);
+			if
+				::((evt == variable)) ->
+					machine.state = ExprParser_Index;
+					printf("machine%d. event_happened: _variable_ \n", machine.ID);
+					machine.curEvent = variable;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = ExprParser_reject;
+			fi;
+	fi;
+}
+
+inline VarParser(machine, evt)
+{
+	if
+		::(machine.state == VarParser_state0) ->
+			printf("machine%d.state = VarParser.state0 \n", machine.ID);
+			if
+				::((evt == machine_type)) ->
+					machine.state = VarParser_MachineType;
+					printf("machine%d. event_happened: _machine_type_ \n", machine.ID);
+					machine.curEvent = machine_type;
+					//Code
+					//Code
+					printf("machine%d.WriteSpace()\n", machine.ID);
+					machine.functionCall = 12;
+				::((evt == constant)) ->
+					machine.state = VarParser_Constant;
+					printf("machine%d. event_happened: _constant_ \n", machine.ID);
+					machine.curEvent = constant;
+					//Code
+					//Code
+					printf("machine%d.WriteSpace()\n", machine.ID);
+					machine.functionCall = 12;
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 13;
+					printf("machine%d.WriteVOCEnd()\n", machine.ID);
+					machine.functionCall = 14;
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_Variable) ->
+			printf("machine%d.state = VarParser.Variable \n", machine.ID);
+			if
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_Array) ->
+			printf("machine%d.state = VarParser.Array \n", machine.ID);
+			if
+				::((evt == open_sq_bracket)) ->
+					machine.state = VarParser_OpenSqBracket;
+					printf("machine%d. event_happened: _open_sq_bracket_ \n", machine.ID);
+					machine.curEvent = open_sq_bracket;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 13;
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_MachineType) ->
+			printf("machine%d.state = VarParser.MachineType \n", machine.ID);
+			if
+				::((evt == machine_name)) ->
+					machine.state = VarParser_MachineName;
+					printf("machine%d. event_happened: _machine_name_ \n", machine.ID);
+					machine.curEvent = machine_name;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 13;
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_MachineName) ->
+			printf("machine%d.state = VarParser.MachineName \n", machine.ID);
+			if
+				::((evt == dot)) ->
+					machine.state = VarParser_Dot;
+					printf("machine%d. event_happened: _dot_ \n", machine.ID);
+					machine.curEvent = dot;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 13;
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_Dot) ->
+			printf("machine%d.state = VarParser.Dot \n", machine.ID);
+			if
+				::((evt == variable)) ->
+					machine.state = VarParser_Variable;
+					printf("machine%d. event_happened: _variable_ \n", machine.ID);
+					machine.curEvent = variable;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 13;
+					printf("machine%d.CloseBracket()\n", machine.ID);
+					machine.functionCall = 15;
+				::((evt == array)) ->
+					machine.state = VarParser_Array;
+					printf("machine%d. event_happened: _array_ \n", machine.ID);
+					machine.curEvent = array;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 13;
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_OpenSqBracket) ->
+			printf("machine%d.state = VarParser.OpenSqBracket \n", machine.ID);
+			if
+				::((evt == constant)) ->
+					machine.state = VarParser_ConstantInBrackets;
+					printf("machine%d. event_happened: _constant_ \n", machine.ID);
+					machine.curEvent = constant;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 13;
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_state13) ->
+			printf("machine%d.state = VarParser.state13 \n", machine.ID);
+			if
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_state14) ->
+			printf("machine%d.state = VarParser.state14 \n", machine.ID);
+			if
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_ConstantInBrackets) ->
+			printf("machine%d.state = VarParser.ConstantInBrackets \n", machine.ID);
+			if
+				::((evt == close_sq_bracket)) ->
+					machine.state = VarParser_EndArray;
+					printf("machine%d. event_happened: _close_sq_bracket_ \n", machine.ID);
+					machine.curEvent = close_sq_bracket;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 13;
+					printf("machine%d.CloseBracket()\n", machine.ID);
+					machine.functionCall = 15;
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_EndArray) ->
+			printf("machine%d.state = VarParser.EndArray \n", machine.ID);
+			if
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == VarParser_Constant) ->
+			printf("machine%d.state = VarParser.Constant \n", machine.ID);
+			if
+				:: else -> 
+				skip;
+			fi;
+	fi;
+}
+
+inline parserVolatileChange()
+{
+	int r;
+	int ind = 0;
+}
+
+inline parserParamChange()
+{
+	int r;
+	int ind = 0;
+}
+
+APParserData parser;
+ExprParserData exprParser;
+VarParserData varParser;
+
+chan parser_ch = [0] of {int}
+bool parserFinished;
+
+proctype parserProc ()
+{
+	byte newEvt;
+	parser_ch ? newEvt;
+	parserParamChange();
+	do
+		:: parserFinished == false ->
+			parser_ch ? newEvt;
+			APParser(parser, newEvt);
+		:: else -> skip;
+	od;
+}
+proctype parserEventSource ()
+{
+	byte newEvt;
+	do
+		:: newEvt = machine_type -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _machine_type_\n");
+		:: newEvt = machine_name -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _machine_name_\n");
+		:: newEvt = dot -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _dot_\n");
+		:: newEvt = see_minus -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _see_minus_\n");
+		:: newEvt = vertical_line -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _vertical_line_\n");
+		:: newEvt = function_name -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _function_name_\n");
+		:: newEvt = state_name -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _state_name_\n");
+		:: newEvt = event_name -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _event_name_\n");
+		:: newEvt = see_operator -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _see_operator_\n");
+		:: newEvt = word -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _word_\n");
+		:: newEvt = static_keyword -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _static_keyword_\n");
+		:: newEvt = static_variable -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _static_variable_\n");
+		:: newEvt = variable -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _variable_\n");
+		:: newEvt = constant -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _constant_\n");
+		:: newEvt = array -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _array_\n");
+		:: newEvt = open_sq_bracket -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _open_sq_bracket_\n");
+		:: newEvt = close_sq_bracket -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _close_sq_bracket_\n");
+		:: newEvt = two_vertical_line -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _two_vertical_line_\n");
+		:: newEvt = fork_machine -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _fork_machine_\n");
+		:: newEvt = see_arrow -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _see_arrow_\n");
+		:: newEvt = nested_machine -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _nested_machine_\n");
+		:: newEvt = see_gt -> 
+			parserVolatileChange();
+			parser_ch ! newEvt;
+			printf("parsersource sent _see_gt_\n");
+	od;
+}
+
+
+init
+{
+	parser.ID = 0;
+	parser.state = APParser_state0;
+	run parserProc();
+	run parserEventSource();
+}
+
+

@@ -1,0 +1,440 @@
+#define LTLParser_state0 0
+#define LTLParser_MachineType 1
+#define LTLParser_Static 2
+#define LTLParser_MachineName 3
+#define LTLParser_StaticVariableFound 4
+#define LTLParser_NameWithDot 5
+#define LTLParser_Variable 6
+#define LTLParser_VarAndOp 7
+#define LTLParser_VOC 8
+#define LTLParser_SArray 9
+#define LTLParser_SQBracket 10
+#define LTLParser_Index 11
+#define LTLParser_EArray 12
+#define LTLParser_IMT 13
+#define LTLParser_IMN 14
+#define LTLParser_IMND 15
+#define LTLParser_EventFound 16
+#define LTLParser_FunctionFound 17
+#define LTLParser_StateFound 18
+#define LTLParser_Fork 19
+#define LTLParser_ForkMachine 20
+#define LTLParser_NameWithArrow 21
+#define LTLParser_NestedMachine 22
+#define LTLParser_FirstPartArrow 23
+#define LTLParser_reject 24
+
+#define machine_type 1
+#define static_keyword 2
+#define machine_name 3
+#define static_variable 4
+#define dot 5
+#define two_vertical_line 6
+#define see_minus 7
+#define see_operator 8
+#define variable 9
+#define array 10
+#define event_name 11
+#define function_name 12
+#define state_name 13
+#define constant 14
+#define open_sq_bracket 15
+#define close_sq_bracket 16
+#define fork_machine 17
+#define see_gt 18
+#define nested_machine 19
+#define word 20
+#define see_arrow 21
+
+#define LTLParser_WriteDefine 1
+#define LTLParser_SaveMachineType 2
+#define LTLParser_WriteToken 3
+#define LTLParser_WriteEventProposition 4
+#define LTLParser_WriteFunctionProposition 5
+#define LTLParser_WriteStateProposition 6
+typedef LTLParserData
+{
+	byte state;
+	byte curEvent;
+	byte ID;
+	byte functionCall;
+	byte nestedMachine;
+}
+
+#define p0	(parser.state == LTLParser_ForkMachine)
+inline LTLParser(machine, evt)
+{
+	if
+		::(machine.state == LTLParser_state0) ->
+			printf("machine%d.state = LTLParser.state0 \n", machine.ID);
+			if
+				::(evt == machine_type) ->
+					machine.state = LTLParser_MachineType;
+					printf("machine%d. event_happened: _machine_type_ \n", machine.ID);
+					machine.curEvent = machine_type;
+					//Code
+					//Code
+					printf("machine%d.WriteDefine()\n", machine.ID);
+					machine.functionCall = 1;
+					printf("machine%d.SaveMachineType()\n", machine.ID);
+					machine.functionCall = 2;
+				::(evt == static_keyword) ->
+					machine.state = LTLParser_Static;
+					printf("machine%d. event_happened: _static_keyword_ \n", machine.ID);
+					machine.curEvent = static_keyword;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_MachineType) ->
+			printf("machine%d.state = LTLParser.MachineType \n", machine.ID);
+			if
+				::(evt == machine_name) ->
+					machine.state = LTLParser_MachineName;
+					printf("machine%d. event_happened: _machine_name_ \n", machine.ID);
+					machine.curEvent = machine_name;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 3;
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_Static) ->
+			printf("machine%d.state = LTLParser.Static \n", machine.ID);
+			if
+				::(evt == static_variable) ->
+					machine.state = LTLParser_StaticVariableFound;
+					printf("machine%d. event_happened: _static_variable_ \n", machine.ID);
+					machine.curEvent = static_variable;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_MachineName) ->
+			printf("machine%d.state = LTLParser.MachineName \n", machine.ID);
+			if
+				::(evt == dot) ->
+					machine.state = LTLParser_NameWithDot;
+					printf("machine%d. event_happened: _dot_ \n", machine.ID);
+					machine.curEvent = dot;
+					//Code
+					//Code
+					printf("machine%d.WriteToken()\n", machine.ID);
+					machine.functionCall = 3;
+				::(evt == two_vertical_line) ->
+					machine.state = LTLParser_Fork;
+					printf("machine%d. event_happened: _two_vertical_line_ \n", machine.ID);
+					machine.curEvent = two_vertical_line;
+					//Code
+					//Code
+				::(evt == see_minus) ->
+					machine.state = LTLParser_FirstPartArrow;
+					printf("machine%d. event_happened: _see_minus_ \n", machine.ID);
+					machine.curEvent = see_minus;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_StaticVariableFound) ->
+			printf("machine%d.state = LTLParser.StaticVariableFound \n", machine.ID);
+			if
+				::(evt == see_operator) ->
+					machine.state = LTLParser_VarAndOp;
+					printf("machine%d. event_happened: _see_operator_ \n", machine.ID);
+					machine.curEvent = see_operator;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_NameWithDot) ->
+			printf("machine%d.state = LTLParser.NameWithDot \n", machine.ID);
+			if
+				::(evt == variable) ->
+					machine.state = LTLParser_Variable;
+					printf("machine%d. event_happened: _variable_ \n", machine.ID);
+					machine.curEvent = variable;
+					//Code
+					//Code
+				::(evt == array) ->
+					machine.state = LTLParser_SArray;
+					printf("machine%d. event_happened: _array_ \n", machine.ID);
+					machine.curEvent = array;
+					//Code
+					//Code
+				::(evt == event_name) ->
+					machine.state = LTLParser_EventFound;
+					printf("machine%d. event_happened: _event_name_ \n", machine.ID);
+					machine.curEvent = event_name;
+					//Code
+					//Code
+					printf("machine%d.WriteEventProposition()\n", machine.ID);
+					machine.functionCall = 4;
+				::(evt == function_name) ->
+					machine.state = LTLParser_FunctionFound;
+					printf("machine%d. event_happened: _function_name_ \n", machine.ID);
+					machine.curEvent = function_name;
+					//Code
+					//Code
+					printf("machine%d.WriteFunctionProposition()\n", machine.ID);
+					machine.functionCall = 5;
+				::(evt == state_name) ->
+					machine.state = LTLParser_StateFound;
+					printf("machine%d. event_happened: _state_name_ \n", machine.ID);
+					machine.curEvent = state_name;
+					//Code
+					//Code
+					printf("machine%d.WriteStateProposition()\n", machine.ID);
+					machine.functionCall = 6;
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_Variable) ->
+			printf("machine%d.state = LTLParser.Variable \n", machine.ID);
+			if
+				::(evt == see_operator) ->
+					machine.state = LTLParser_VarAndOp;
+					printf("machine%d. event_happened: _see_operator_ \n", machine.ID);
+					machine.curEvent = see_operator;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_VarAndOp) ->
+			printf("machine%d.state = LTLParser.VarAndOp \n", machine.ID);
+			if
+				::(evt == constant) ->
+					machine.state = LTLParser_VOC;
+					printf("machine%d. event_happened: _constant_ \n", machine.ID);
+					machine.curEvent = constant;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_VOC) ->
+			printf("machine%d.state = LTLParser.VOC \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_SArray) ->
+			printf("machine%d.state = LTLParser.SArray \n", machine.ID);
+			if
+				::(evt == open_sq_bracket) ->
+					machine.state = LTLParser_SQBracket;
+					printf("machine%d. event_happened: _open_sq_bracket_ \n", machine.ID);
+					machine.curEvent = open_sq_bracket;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_SQBracket) ->
+			printf("machine%d.state = LTLParser.SQBracket \n", machine.ID);
+			if
+				::(evt == machine_type) ->
+					machine.state = LTLParser_IMT;
+					printf("machine%d. event_happened: _machine_type_ \n", machine.ID);
+					machine.curEvent = machine_type;
+					//Code
+					//Code
+				::(evt == constant) ->
+					machine.state = LTLParser_Index;
+					printf("machine%d. event_happened: _constant_ \n", machine.ID);
+					machine.curEvent = constant;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_Index) ->
+			printf("machine%d.state = LTLParser.Index \n", machine.ID);
+			if
+				::(evt == close_sq_bracket) ->
+					machine.state = LTLParser_EArray;
+					printf("machine%d. event_happened: _close_sq_bracket_ \n", machine.ID);
+					machine.curEvent = close_sq_bracket;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_EArray) ->
+			printf("machine%d.state = LTLParser.EArray \n", machine.ID);
+			if
+				::(evt == see_operator) ->
+					machine.state = LTLParser_VarAndOp;
+					printf("machine%d. event_happened: _see_operator_ \n", machine.ID);
+					machine.curEvent = see_operator;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_IMT) ->
+			printf("machine%d.state = LTLParser.IMT \n", machine.ID);
+			if
+				::(evt == machine_name) ->
+					machine.state = LTLParser_IMN;
+					printf("machine%d. event_happened: _machine_name_ \n", machine.ID);
+					machine.curEvent = machine_name;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_IMN) ->
+			printf("machine%d.state = LTLParser.IMN \n", machine.ID);
+			if
+				::(evt == dot) ->
+					machine.state = LTLParser_IMND;
+					printf("machine%d. event_happened: _dot_ \n", machine.ID);
+					machine.curEvent = dot;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_IMND) ->
+			printf("machine%d.state = LTLParser.IMND \n", machine.ID);
+			if
+				::(evt == variable) ->
+					machine.state = LTLParser_Index;
+					printf("machine%d. event_happened: _variable_ \n", machine.ID);
+					machine.curEvent = variable;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_EventFound) ->
+			printf("machine%d.state = LTLParser.EventFound \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_FunctionFound) ->
+			printf("machine%d.state = LTLParser.FunctionFound \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_StateFound) ->
+			printf("machine%d.state = LTLParser.StateFound \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_Fork) ->
+			printf("machine%d.state = LTLParser.Fork \n", machine.ID);
+			if
+				::(evt == fork_machine) ->
+					machine.state = LTLParser_ForkMachine;
+					printf("machine%d. event_happened: _fork_machine_ \n", machine.ID);
+					machine.curEvent = fork_machine;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_ForkMachine) ->
+			printf("machine%d.state = LTLParser.ForkMachine \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_NameWithArrow) ->
+			printf("machine%d.state = LTLParser.NameWithArrow \n", machine.ID);
+			if
+				::(evt == nested_machine) ->
+					machine.state = LTLParser_NestedMachine;
+					printf("machine%d. event_happened: _nested_machine_ \n", machine.ID);
+					machine.curEvent = nested_machine;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_NestedMachine) ->
+			printf("machine%d.state = LTLParser.NestedMachine \n", machine.ID);
+			if
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+		::(machine.state == LTLParser_FirstPartArrow) ->
+			printf("machine%d.state = LTLParser.FirstPartArrow \n", machine.ID);
+			if
+				::(evt == see_gt) ->
+					machine.state = LTLParser_NameWithArrow;
+					printf("machine%d. event_happened: _see_gt_ \n", machine.ID);
+					machine.curEvent = see_gt;
+					//Code
+					//Code
+				:: else -> 
+					machine.state = LTLParser_reject;
+			fi;
+	fi;
+}
+
+LTLParserData parser;
+
+chan parser_ch = [0] of {int}
+bool parserFinished;
+
+proctype parserProc (LTLParserData _data)
+{
+	byte newEvt;
+	parser_ch ? newEvt;
+	do
+		:: parserFinished == false ->
+			parser_ch ? newEvt;
+			LTLParser(_data, newEvt);
+		:: else -> skip;
+	od;
+}
+proctype parserEventSource ()
+{
+	byte newEvt;
+	do
+		:: newEvt = machine_type -> parser_ch ! newEvt;printf("parsersource sent _machine_type_\n");
+		:: newEvt = static_keyword -> parser_ch ! newEvt;printf("parsersource sent _static_keyword_\n");
+		:: newEvt = machine_name -> parser_ch ! newEvt;printf("parsersource sent _machine_name_\n");
+		:: newEvt = static_variable -> parser_ch ! newEvt;printf("parsersource sent _static_variable_\n");
+		:: newEvt = dot -> parser_ch ! newEvt;printf("parsersource sent _dot_\n");
+		:: newEvt = two_vertical_line -> parser_ch ! newEvt;printf("parsersource sent _two_vertical_line_\n");
+		:: newEvt = see_minus -> parser_ch ! newEvt;printf("parsersource sent _see_minus_\n");
+		:: newEvt = see_operator -> parser_ch ! newEvt;printf("parsersource sent _see_operator_\n");
+		:: newEvt = variable -> parser_ch ! newEvt;printf("parsersource sent _variable_\n");
+		:: newEvt = array -> parser_ch ! newEvt;printf("parsersource sent _array_\n");
+		:: newEvt = event_name -> parser_ch ! newEvt;printf("parsersource sent _event_name_\n");
+		:: newEvt = function_name -> parser_ch ! newEvt;printf("parsersource sent _function_name_\n");
+		:: newEvt = state_name -> parser_ch ! newEvt;printf("parsersource sent _state_name_\n");
+		:: newEvt = constant -> parser_ch ! newEvt;printf("parsersource sent _constant_\n");
+		:: newEvt = open_sq_bracket -> parser_ch ! newEvt;printf("parsersource sent _open_sq_bracket_\n");
+		:: newEvt = close_sq_bracket -> parser_ch ! newEvt;printf("parsersource sent _close_sq_bracket_\n");
+		:: newEvt = fork_machine -> parser_ch ! newEvt;printf("parsersource sent _fork_machine_\n");
+		:: newEvt = see_gt -> parser_ch ! newEvt;printf("parsersource sent _see_gt_\n");
+		:: newEvt = nested_machine -> parser_ch ! newEvt;printf("parsersource sent _nested_machine_\n");
+		:: newEvt = word -> parser_ch ! newEvt;printf("parsersource sent _word_\n");
+		:: newEvt = see_arrow -> parser_ch ! newEvt;printf("parsersource sent _see_arrow_\n");
+	od;
+}
+
+init
+{
+	parser.ID = 0;
+	parser.state = LTLParser_state0;
+	run parserProc(parser);
+	run parserEventSource();
+}
+
+
+ltl f0 {<> p0}
+ltl f1 {!(<> p0)}
+ltl f2 {<> (!p0)}

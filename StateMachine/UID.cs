@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace StateMachine
+{
+    public class UID
+    {
+        public Int64 Value { get; set; }
+    }
+}

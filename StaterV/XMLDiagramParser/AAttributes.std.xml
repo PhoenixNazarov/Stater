@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>AAttributes</name>
+  <data>
+    <Statemachine>
+      <event name="outgoing" comment="tag &quot;outgoing&quot;" />
+      <event name="incoming" comment="tag &quot;incoming&quot;" />
+      <event name="action" comment="&quot;action&quot; tag" />
+      <event name="synchro" comment="attribute &quot;synchro&quot; " />
+      <event name="nested" comment="tag &quot;nested&quot;" />
+    </Statemachine>
+  </data>
+  <widget id="0" type="State">
+    <attributes>
+      <name>state0</name>
+      <type>1</type>
+      <incoming id="3" />
+      <incoming id="7" />
+      <incoming id="12" />
+      <incoming id="14" />
+      <incoming id="19" />
+      <incoming id="24" />
+      <incoming id="30" />
+      <outgoing id="2" />
+      <outgoing id="6" />
+      <outgoing id="11" />
+      <outgoing id="13" />
+      <outgoing id="18" />
+      <outgoing id="23" />
+      <outgoing id="29" />
+    </attributes>
+  </widget>
+  <widget id="1" type="State">
+    <attributes>
+      <name>Name</name>
+      <type>0</type>
+      <incoming id="2" />
+      <incoming id="4" />
+      <outgoing id="3" />
+      <outgoing id="4" />
+    </attributes>
+  </widget>
+  <widget id="2" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+    </attributes>
+  </widget>
+  <widget id="3" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+    </attributes>
+  </widget>
+  <widget id="4" type="Transition">
+    <attributes>
+      <event name="value" comment="value of an XML-tag" />
+      <action name="SetName" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="5" type="State">
+    <attributes>
+      <name>Type</name>
+      <type>0</type>
+      <incoming id="6" />
+      <incoming id="8" />
+      <outgoing id="7" />
+      <outgoing id="8" />
+    </attributes>
+  </widget>
+  <widget id="6" type="Transition">
+    <attributes>
+      <event name="type" comment="attribute &quot;type&quot;" />
+    </attributes>
+  </widget>
+  <widget id="7" type="Transition">
+    <attributes>
+      <event name="type" comment="attribute &quot;type&quot;" />
+    </attributes>
+  </widget>
+  <widget id="8" type="Transition">
+    <attributes>
+      <event name="value" comment="value of an XML-tag" />
+      <action name="SetType" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="9" type="State">
+    <attributes>
+      <name>Outgoing</name>
+      <type>0</type>
+      <incoming id="13" />
+      <incoming id="15" />
+      <outgoing id="14" />
+      <outgoing id="15" />
+    </attributes>
+  </widget>
+  <widget id="10" type="State">
+    <attributes>
+      <name>Incoming</name>
+      <type>0</type>
+      <incoming id="11" />
+      <incoming id="16" />
+      <outgoing id="12" />
+      <outgoing id="16" />
+    </attributes>
+  </widget>
+  <widget id="11" type="Transition">
+    <attributes>
+      <event name="incoming" comment="tag &quot;incoming&quot;" />
+    </attributes>
+  </widget>
+  <widget id="12" type="Transition">
+    <attributes>
+      <event name="incoming" comment="tag &quot;incoming&quot;" />
+    </attributes>
+  </widget>
+  <widget id="13" type="Transition">
+    <attributes>
+      <event name="outgoing" comment="tag &quot;outgoing&quot;" />
+    </attributes>
+  </widget>
+  <widget id="14" type="Transition">
+    <attributes>
+      <event name="outgoing" comment="tag &quot;outgoing&quot;" />
+    </attributes>
+  </widget>
+  <widget id="15" type="Transition">
+    <attributes>
+      <event name="id" comment="value &quot;id&quot;" />
+      <action name="CreateOutTransition" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="16" type="Transition">
+    <attributes>
+      <event name="id" comment="value &quot;id&quot;" />
+      <action name="CreateInTransition" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="17" type="State">
+    <attributes>
+      <name>Event</name>
+      <type>0</type>
+      <incoming id="18" />
+      <incoming id="20" />
+      <incoming id="21" />
+      <outgoing id="19" />
+      <outgoing id="20" />
+      <outgoing id="21" />
+    </attributes>
+  </widget>
+  <widget id="18" type="Transition">
+    <attributes>
+      <event name="event" comment="&quot;event&quot; tag" />
+    </attributes>
+  </widget>
+  <widget id="19" type="Transition">
+    <attributes>
+      <event name="event" comment="&quot;event&quot; tag" />
+    </attributes>
+  </widget>
+  <widget id="20" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+      <action name="SetEventName" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="21" type="Transition">
+    <attributes>
+      <event name="comment" comment="tag or attribute &quot;comment&quot;" />
+      <action name="SetEventComment" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="22" type="State">
+    <attributes>
+      <name>Actions</name>
+      <type>0</type>
+      <incoming id="23" />
+      <incoming id="25" />
+      <incoming id="26" />
+      <incoming id="27" />
+      <outgoing id="24" />
+      <outgoing id="25" />
+      <outgoing id="26" />
+      <outgoing id="27" />
+    </attributes>
+  </widget>
+  <widget id="23" type="Transition">
+    <attributes>
+      <event name="action" comment="&quot;action&quot; tag" />
+      <action name="CreateAction" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="24" type="Transition">
+    <attributes>
+      <event name="action" comment="&quot;action&quot; tag" />
+    </attributes>
+  </widget>
+  <widget id="25" type="Transition">
+    <attributes>
+      <event name="synchro" comment="attribute &quot;synchro&quot; " />
+      <action name="SetActionSynchro" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="26" type="Transition">
+    <attributes>
+      <event name="comment" comment="tag or attribute &quot;comment&quot;" />
+      <action name="SetActionComment" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="27" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+      <action name="SetActionName" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="28" type="State">
+    <attributes>
+      <name>Nested</name>
+      <type>0</type>
+      <incoming id="29" />
+      <incoming id="31" />
+      <outgoing id="30" />
+      <outgoing id="31" />
+    </attributes>
+  </widget>
+  <widget id="29" type="Transition">
+    <attributes>
+      <event name="nested" comment="tag &quot;nested&quot;" />
+    </attributes>
+  </widget>
+  <widget id="30" type="Transition">
+    <attributes>
+      <event name="nested" comment="tag &quot;nested&quot;" />
+    </attributes>
+  </widget>
+  <widget id="31" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+      <action name="CreateNestedMachine" comment="" synchro="1" />
+    </attributes>
+  </widget>
+</diagram>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>PositionsLoader</Name>
+  <Diagrams>
+    <DiagramInfo>
+      <Name>APosLoader</Name>
+      <Type>StateMachine</Type>
+    </DiagramInfo>
+  </Diagrams>
+</ProjectInfo>

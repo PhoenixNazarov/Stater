@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="SFC4" Comment="Basic Function Block Type" >
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="Rockwell Automation" Version="0.2" Author="JHC" Date="2003-12-04" Remarks="Renamed for better indexing." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.1" Author="JHC" Date="2002-11-05" Remarks="Corrected missing ST element in Algorithm REQ." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.0" Author="JHC" Date="2000-05-30" />
+  <CompilerInfo header="package fb.rt.pnp;" >
+  </CompilerInfo>
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request" >
+        <With Var="s0" />
+        <With Var="s0" />
+        <With Var="s0" />
+        <With Var="s1" />
+        <With Var="s2" />
+        <With Var="s3" />
+        <With Var="X1" />
+        <With Var="X2" />
+        <With Var="X3" />
+        <With Var="X11" />
+        <With Var="X21" />
+        <With Var="pp0" />
+        <With Var="vcu" />
+        <With Var="vcd" />
+        <With Var="vacuum" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request" >
+        <With Var="s0" />
+        <With Var="s0" />
+        <With Var="s1" />
+        <With Var="s2" />
+        <With Var="s3" />
+        <With Var="X1" />
+        <With Var="X2" />
+        <With Var="X3" />
+        <With Var="X11" />
+        <With Var="X21" />
+        <With Var="pp0" />
+        <With Var="vcu" />
+        <With Var="vcd" />
+        <With Var="vacuum" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" >
+        <With Var="VCGD" />
+        <With Var="L1CGI" />
+        <With Var="L2CGI" />
+        <With Var="X30" />
+        <With Var="X30" />
+        <With Var="X31" />
+        <With Var="X32" />
+        <With Var="X33" />
+        <With Var="X34" />
+        <With Var="X35" />
+        <With Var="X36" />
+        <With Var="X37" />
+        <With Var="X38" />
+        <With Var="vc_down30" />
+        <With Var="vc_down31" />
+        <With Var="vc_down35" />
+        <With Var="vc_down37" />
+        <With Var="venturi_on" />
+        <With Var="venturi_off" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation" >
+        <With Var="VCGD" />
+        <With Var="L1CGI" />
+        <With Var="L2CGI" />
+        <With Var="X30" />
+        <With Var="X30" />
+        <With Var="X31" />
+        <With Var="X32" />
+        <With Var="X33" />
+        <With Var="X34" />
+        <With Var="X35" />
+        <With Var="X36" />
+        <With Var="X37" />
+        <With Var="X38" />
+        <With Var="vc_down30" />
+        <With Var="vc_down31" />
+        <With Var="vc_down35" />
+        <With Var="vc_down37" />
+        <With Var="venturi_on" />
+        <With Var="venturi_off" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="s0" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="s1" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="s2" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="s3" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="X1" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="X2" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="X3" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="X11" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="X21" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="pp0" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="vcu" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="vcd" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="vacuum" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="VCGD" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="L1CGI" Type="BOOL" />
+      <VarDeclaration Name="L2CGI" Type="BOOL" />
+      <VarDeclaration Name="X30" Type="BOOL" />
+      <VarDeclaration Name="X31" Type="BOOL" />
+      <VarDeclaration Name="X32" Type="BOOL" />
+      <VarDeclaration Name="X33" Type="BOOL" />
+      <VarDeclaration Name="X34" Type="BOOL" />
+      <VarDeclaration Name="X35" Type="BOOL" />
+      <VarDeclaration Name="X36" Type="BOOL" />
+      <VarDeclaration Name="X37" Type="BOOL" />
+      <VarDeclaration Name="X38" Type="BOOL" />
+      <VarDeclaration Name="vc_down30" Type="BOOL" />
+      <VarDeclaration Name="vc_down31" Type="BOOL" />
+      <VarDeclaration Name="vc_down35" Type="BOOL" />
+      <VarDeclaration Name="vc_down37" Type="BOOL" />
+      <VarDeclaration Name="venturi_on" Type="BOOL" />
+      <VarDeclaration Name="venturi_off" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC >
+      <ECState Name="START" Comment="Initial State" x="2072.2222" y="416.66666" >
+        <ECAction Algorithm="REQ" Output="CNF" />
+      </ECState>
+      <ECState Name="INIT" Comment="Initialization" x="2066.6665" y="144.44444" >
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="X3136" Comment="Normal execution" x="2066.6665" y="961.1111" >
+        <ECAction Algorithm="X3136" Output="CNF" />
+      </ECState>
+      <ECState Name="X32" x="2066.6665" y="1405.5555" >
+        <ECAction Algorithm="X32" Output="CNF" />
+      </ECState>
+      <ECState Name="X3334" x="2055.5554" y="1716.6666" >
+        <ECAction Algorithm="X3334" Output="CNF" />
+      </ECState>
+      <ECState Name="X35" x="2055.5554" y="2005.5554" >
+        <ECAction Algorithm="X35" Output="CNF" />
+      </ECState>
+      <ECState Name="X37" x="2055.5554" y="2322.2222" >
+        <ECAction Algorithm="X37" Output="CNF" />
+      </ECState>
+      <ECState Name="X38" x="2055.5554" y="2594.4443" >
+        <ECAction Algorithm="X38" Output="CNF" />
+      </ECState>
+      <ECState Name="X30" x="2066.6665" y="700.0" >
+        <ECAction Algorithm="X30" Output="CNF" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="2233.3333" y="283.3333" />
+      <ECTransition Source="INIT" Destination="START" Condition="1" x="2072.2222" y="261.1111" />
+      <ECTransition Source="X3136" Destination="X32" Condition="REQ&#38;vacuum &#38; (NOT X11 OR NOT X21)" x="2066.6665" y="1177.7777" />
+      <ECTransition Source="X32" Destination="X3334" Condition="REQ&#38;vcu" x="2055.5554" y="1555.5555" />
+      <ECTransition Source="X3334" Destination="X35" Condition="REQ&#38;s0 &#38; NOT pp0" x="2055.5554" y="1844.4443" />
+      <ECTransition Source="X35" Destination="X37" Condition="REQ&#38;vcd" x="2055.5554" y="2144.4443" />
+      <ECTransition Source="X37" Destination="X38" Condition="REQ&#38;NOT vacuum" x="2055.5554" y="2438.889" />
+      <ECTransition Source="X30" Destination="X3136" Condition="REQ&#38;vcd" x="2066.6665" y="816.6666" />
+      <ECTransition Source="X38" Destination="X30" Condition="REQ&#38;vcu" x="833.3333" y="1222.2222" />
+      <ECTransition Source="START" Destination="X30" Condition="1" x="2066.6665" y="600.0" />
+      <ECTransition Source="X30" Destination="X30" Condition="REQ" x="1672.2222" y="494.44443" />
+    </ECC>
+  <Algorithm Name="INIT" Comment="Initialization algorithm" >
+    <ST Text="X30:=true;&#10;VCGD:=false;&#10;L2CGI:=false;&#10;L1CGI:=false;&#10;X31:=false;&#10;X32:=false;&#10;X33:=false;&#10;X34:=false;&#10;X35:=false;&#10;X36:=false;&#10;X37:=false;&#10;X38:=false;&#10;vc_down30:=false;&#10;vc_down31:=false;&#10;vc_down35:=false;&#10;vc_down37:=false;&#10;venturi_on:=false;&#10;venturi_off:=false;&#10;System.out.println(&#34;SFC4: INIT&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="REQ" Comment="Normally executed algorithm" >
+    <Other Language="Java" Text="X38.value=false;&#10;X30.value=true;&#10;//System.out.println(s0.value + &#34; &#34; + s1.value + &#34; &#34; + s2.value + &#34; &#34; + s3.value + &#34; &#34; + X11.value + &#34; &#34; + X21.value);&#10;" />
+  </Algorithm>
+  <Algorithm Name="X30" >
+    <ST Text="X30:=true;&#10;X38:=false;&#10;IF (((s1 &#38; X1) OR (s2 &#38; X2) OR (s3 &#38; X3)) &#38; (NOT X11 OR NOT X21)) THEN &#10;VCGD:= true;&#10;vc_down30:=true;&#10;END_IF&#10;venturi_off:=false;&#10;" />
+  </Algorithm>
+  <Algorithm Name="X3136" >
+    <ST Text="venturi_on:=true;&#10;vc_down30:=false;&#10;vc_down31:=true;&#10;X30:=false;&#10;vc_down31:=true;&#10;X31:=true;&#10;X36:=true;&#10;System.out.println(&#34;SFC4: X3136&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="X32" >
+    <ST Text="VCGD:=false;&#10;X32:=true;&#10;vc_down31:=false;&#10;X31:=false;&#10;X36:=true;&#10;System.out.println(&#34;SFC4: X32&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="X3334" >
+    <ST Text="L1CGI:=true;&#10;L2CGI:=true;&#10;vc_down31:=false;&#10;X32:=false;&#10;X36:=true;&#10;X33:=true;&#10;X34:=true;&#10;System.out.println(&#34;SFC4: X3334&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="X35" >
+    <ST Text="VCGD:=true;&#10;L2CGI:=false;&#10;L1CGI:=false;&#10;vc_down35:=true;&#10;X36:=true;&#10;X33:=false;&#10;X34:=false;&#10;X35:=true;&#10;System.out.println(&#34;SFC4: X35&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="X37" >
+    <ST Text="venturi_on:=false;&#10;venturi_off:=true;&#10;vc_down37:=true;&#10;vc_down35:=false;&#10;X36:=false;&#10;X35:=false;&#10;X37:=true;&#10;System.out.println(&#34;SFC4: X37&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="X38" >
+    <ST Text="VCGD:=false;&#10;vc_down37:=false;&#10;X37:=false;&#10;X38:=true;&#10;System.out.println(&#34;SFC4: X38&#34;);&#10;" />
+  </Algorithm>
+  </BasicFB>
+</FBType>

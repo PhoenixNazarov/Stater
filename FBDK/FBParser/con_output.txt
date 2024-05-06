@@ -1,0 +1,4 @@
+Verification output:
+
+spin: spinModel.ltl:694, Error: cyclic inline attempt on: SFC4_fbt
+

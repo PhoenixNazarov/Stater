@@ -1,0 +1,325 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>GenFinder</name>
+  <data>
+    <Statemachine>
+      <event name="_namespace" comment="" />
+      <event name="_class" comment="Найден класс автомата" />
+      <event name="gen_functions" comment="Найден макрос, сигнализирующий генерируемые функции." />
+      <event name="eof" comment="Дошли до конца файла." />
+      <event name="next_line" comment="Следующая строчка кода того же типа." />
+      <event name="action_found" comment="Нашли выходное воздействие" />
+    </Statemachine>
+  </data>
+  <widget id="0" type="State">
+    <attributes>
+      <name>UserIncludes</name>
+      <type>1</type>
+      <incoming id="11" />
+      <outgoing id="2" />
+      <outgoing id="11" />
+      <outgoing id="31" />
+      <outgoing id="40" />
+    </attributes>
+  </widget>
+  <widget id="11" type="Transition">
+    <attributes>
+      <event name="next_line" comment="Следующая строчка кода того же типа." />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="2" type="Transition">
+    <attributes>
+      <event name="_namespace" comment="" />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <action name="WriteBuffer" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="31" type="Transition">
+    <attributes>
+      <event name="_class" comment="Найден класс автомата" />
+      <action name="InsertNamespace" comment="" synchro="1" />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <action name="WriteBuffer" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="1" type="State">
+    <attributes>
+      <name>NamespaceFound</name>
+      <type>0</type>
+      <incoming id="2" />
+      <outgoing id="17" />
+      <outgoing id="19" />
+    </attributes>
+  </widget>
+  <widget id="17" type="Transition">
+    <attributes>
+      <event name="_class" comment="Найден класс автомата" />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <action name="WriteBuffer" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="19" type="Transition">
+    <attributes>
+      <event name="next_line" comment="Следующая строчка кода того же типа." />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="3" type="State">
+    <attributes>
+      <name>UserDefinitions</name>
+      <type>0</type>
+      <incoming id="13" />
+      <incoming id="19" />
+      <outgoing id="13" />
+      <outgoing id="24" />
+      <outgoing id="26" />
+    </attributes>
+  </widget>
+  <widget id="13" type="Transition">
+    <attributes>
+      <event name="next_line" comment="Следующая строчка кода того же типа." />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="24" type="Transition">
+    <attributes>
+      <event name="gen_functions" comment="Найден макрос, сигнализирующий генерируемые функции." />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="26" type="Transition">
+    <attributes>
+      <event name="_class" comment="Найден класс автомата" />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <action name="WriteBuffer" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="5" type="State">
+    <attributes>
+      <name>GenFunctions</name>
+      <type>0</type>
+      <incoming id="14" />
+      <incoming id="22" />
+      <outgoing id="8" />
+      <outgoing id="14" />
+    </attributes>
+  </widget>
+  <widget id="14" type="Transition">
+    <attributes>
+      <event name="next_line" comment="Следующая строчка кода того же типа." />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="22" type="Transition">
+    <attributes>
+      <event name="gen_functions" comment="Найден макрос, сигнализирующий генерируемые функции." />
+      <action name="WriteFunctions" comment="" synchro="1" />
+      <action name="WriteBuffer" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="8" type="Transition">
+    <attributes>
+      <event name="gen_functions" comment="Найден макрос, сигнализирующий генерируемые функции." />
+      <action name="WriteGeneratedFunctions" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="7" type="State">
+    <attributes>
+      <name>RemainUserLines</name>
+      <type>0</type>
+      <incoming id="8" />
+      <incoming id="15" />
+      <incoming id="36" />
+      <outgoing id="10" />
+      <outgoing id="15" />
+      <outgoing id="36" />
+    </attributes>
+  </widget>
+  <widget id="15" type="Transition">
+    <attributes>
+      <event name="next_line" comment="Следующая строчка кода того же типа." />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="36" type="Transition">
+    <attributes>
+      <event name="action_found" comment="Нашли выходное воздействие" />
+      <action name="RegisterAction" comment="" synchro="1" />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="10" type="Transition">
+    <attributes>
+      <event name="eof" comment="Дошли до конца файла." />
+      <action name="WriteRemainActions" comment="" synchro="1" />
+      <action name="CheckBrackets" comment="" synchro="1" />
+      <action name="WriteBuffer" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="9" type="State">
+    <attributes>
+      <name>CheckBrackets</name>
+      <type>2</type>
+      <incoming id="10" />
+      <incoming id="37" />
+      <incoming id="38" />
+    </attributes>
+  </widget>
+  <widget id="37" type="Transition">
+    <attributes>
+      <event name="eof" comment="Дошли до конца файла." />
+      <action name="WriteGeneratedFunctions" comment="" synchro="1" />
+      <action name="WriteRemainActions" comment="" synchro="1" />
+      <action name="WriteBuffer" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="38" type="Transition">
+    <attributes>
+      <event name="eof" comment="Дошли до конца файла." />
+      <action name="WriteGeneratedFunctions" comment="" synchro="1" />
+      <action name="WriteRemainActions" comment="" synchro="1" />
+      <action name="WriteBuffer" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="16" type="State">
+    <attributes>
+      <name>ImmediateClass</name>
+      <type>0</type>
+      <incoming id="17" />
+      <incoming id="31" />
+      <outgoing id="21" />
+      <outgoing id="34" />
+      <outgoing id="37" />
+    </attributes>
+  </widget>
+  <widget id="21" type="Transition">
+    <attributes>
+      <event name="next_line" comment="Следующая строчка кода того же типа." />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="34" type="Transition">
+    <attributes>
+      <event name="action_found" comment="Нашли выходное воздействие" />
+      <action name="RegisterAction" comment="" synchro="1" />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="20" type="State">
+    <attributes>
+      <name>UserDefinitions2</name>
+      <type>0</type>
+      <incoming id="21" />
+      <incoming id="27" />
+      <incoming id="28" />
+      <incoming id="33" />
+      <incoming id="34" />
+      <incoming id="35" />
+      <outgoing id="22" />
+      <outgoing id="27" />
+      <outgoing id="35" />
+      <outgoing id="38" />
+    </attributes>
+  </widget>
+  <widget id="27" type="Transition">
+    <attributes>
+      <event name="next_line" comment="Следующая строчка кода того же типа." />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="28" type="Transition">
+    <attributes>
+      <event name="next_line" comment="Следующая строчка кода того же типа." />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="33" type="Transition">
+    <attributes>
+      <event name="action_found" comment="Нашли выходное воздействие" />
+      <action name="RegisterAction" comment="" synchro="1" />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="35" type="Transition">
+    <attributes>
+      <event name="action_found" comment="Нашли выходное воздействие" />
+      <action name="RegisterAction" comment="" synchro="1" />
+      <action name="WriteCurLine" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="23" type="State">
+    <attributes>
+      <name>Error</name>
+      <type>2</type>
+      <incoming id="24" />
+    </attributes>
+  </widget>
+  <widget id="25" type="State">
+    <attributes>
+      <name>ClassFound</name>
+      <type>0</type>
+      <incoming id="26" />
+      <outgoing id="28" />
+      <outgoing id="33" />
+    </attributes>
+  </widget>
+  <widget id="39" type="State">
+    <attributes>
+      <name>VoidFile</name>
+      <type>2</type>
+      <incoming id="40" />
+    </attributes>
+  </widget>
+  <widget id="40" type="Transition">
+    <attributes>
+      <event name="eof" comment="Дошли до конца файла." />
+      <action name="WriteNewFile" comment="" synchro="1" />
+      <code>
+</code>
+      <guard></guard>
+    </attributes>
+  </widget>
+</diagram>

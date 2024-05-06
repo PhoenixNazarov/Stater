@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>AParser</name>
+  <data>
+    <Statemachine>
+      <event name="variable" comment="tag &quot;variable&quot;" />
+      <event name="decl" comment="tag &quot;decl&quot;" />
+      <event name="autoreject" comment="tag &quot;autoreject&quot;" />
+      <autoreject>False</autoreject>
+    </Statemachine>
+  </data>
+  <widget id="0" type="State">
+    <attributes>
+      <name>state0</name>
+      <type>1</type>
+      <outgoing id="3" />
+    </attributes>
+  </widget>
+  <widget id="3" type="Transition">
+    <attributes>
+      <event name="diagram" comment="tag &quot;diagram&quot;" />
+      <action name="CreateDiagram" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="1" type="State">
+    <attributes>
+      <name>Diagram</name>
+      <type>0</type>
+      <incoming id="3" />
+      <incoming id="5" />
+      <incoming id="9" />
+      <incoming id="15" />
+      <outgoing id="4" />
+      <outgoing id="8" />
+      <outgoing id="14" />
+    </attributes>
+  </widget>
+  <widget id="5" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="9" type="Transition">
+    <attributes>
+      <event name="data" comment="tag &quot;data&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="15" type="Transition">
+    <attributes>
+      <event name="widget" comment="tag &quot;widget&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="4" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="8" type="Transition">
+    <attributes>
+      <event name="data" comment="tag &quot;data&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="14" type="Transition">
+    <attributes>
+      <event name="widget" comment="tag &quot;widget&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="2" type="State">
+    <attributes>
+      <name>Name</name>
+      <type>0</type>
+      <incoming id="4" />
+      <incoming id="6" />
+      <outgoing id="5" />
+      <outgoing id="6" />
+    </attributes>
+  </widget>
+  <widget id="6" type="Transition">
+    <attributes>
+      <event name="value" comment="value of an XML-tag" />
+      <action name="SetDiagramName" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="7" type="State">
+    <attributes>
+      <name>Data</name>
+      <type>0</type>
+      <incoming id="8" />
+      <incoming id="12" />
+      <outgoing id="9" />
+      <outgoing id="11" />
+    </attributes>
+  </widget>
+  <widget id="12" type="Transition">
+    <attributes>
+      <event name="Statemachine" comment="tag &quot;Statemachine&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="11" type="Transition">
+    <attributes>
+      <event name="Statemachine" comment="tag &quot;Statemachine&quot;" />
+      <action name="SetStatemachineType" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="10" type="State">
+    <attributes>
+      <name>StatemachineData</name>
+      <type>0</type>
+      <incoming id="11" />
+      <incoming id="18" />
+      <incoming id="22" />
+      <outgoing id="12" />
+      <outgoing id="17" />
+      <outgoing id="21" />
+      <nested type="AEvent" name="EventParse" />
+    </attributes>
+  </widget>
+  <widget id="18" type="Transition">
+    <attributes>
+      <event name="variable" comment="tag &quot;variable&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="22" type="Transition">
+    <attributes>
+      <event name="autoreject" comment="tag &quot;autoreject&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="17" type="Transition">
+    <attributes>
+      <event name="variable" comment="tag &quot;variable&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="21" type="Transition">
+    <attributes>
+      <event name="autoreject" comment="tag &quot;autoreject&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="13" type="State">
+    <attributes>
+      <name>Widget</name>
+      <type>0</type>
+      <incoming id="14" />
+      <outgoing id="15" />
+      <nested type="AWidget" name="WidgetParse" />
+    </attributes>
+  </widget>
+  <widget id="16" type="State">
+    <attributes>
+      <name>Variables</name>
+      <type>0</type>
+      <incoming id="17" />
+      <incoming id="19" />
+      <outgoing id="18" />
+      <outgoing id="19" />
+    </attributes>
+  </widget>
+  <widget id="19" type="Transition">
+    <attributes>
+      <event name="decl" comment="tag &quot;decl&quot;" />
+      <action name="CreateVariable" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="20" type="State">
+    <attributes>
+      <name>Autoreject</name>
+      <type>0</type>
+      <incoming id="21" />
+      <incoming id="23" />
+      <outgoing id="22" />
+      <outgoing id="23" />
+    </attributes>
+  </widget>
+  <widget id="23" type="Transition">
+    <attributes>
+      <event name="value" comment="value of an XML-tag" />
+      <action name="SetAutoReject" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+</diagram>

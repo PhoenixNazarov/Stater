@@ -1,0 +1,32 @@
+namespace XMLDiagramParser
+{
+	public enum Events
+	{
+		diagram,
+		name,
+		data,
+		widget,
+		value,
+		Statemachine,
+		variable,
+		autoreject,
+		decl,
+		attributes,
+		id,
+		type,
+		_event,
+		comment,
+		incoming,
+		outgoing,
+		action,
+		nested,
+		execution,
+		effect,
+		code,
+		guard,
+		EntryAction,
+		synchro,
+		descritpion,
+		effect_type,
+	}
+}

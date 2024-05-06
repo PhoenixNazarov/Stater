@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>SFC4_fbt</name>
+  <data>
+    <Statemachine>
+      <event name="INIT" comment="" />
+      <event name="REQ" comment="" />
+      <variable decl="bool s0 = false;" />
+      <variable decl="bool s1 = false;" />
+      <variable decl="bool s2 = false;" />
+      <variable decl="bool s3 = false;" />
+      <variable decl="bool X1 = false;" />
+      <variable decl="bool X2 = false;" />
+      <variable decl="bool X3 = false;" />
+      <variable decl="bool X11 = false;" />
+      <variable decl="bool X21 = false;" />
+      <variable decl="bool pp0 = false;" />
+      <variable decl="bool vcu = false;" />
+      <variable decl="bool vcd = false;" />
+      <variable decl="bool vacuum = false;" />
+      <variable decl="bool VCGD = false;" />
+      <variable decl="bool L1CGI = false;" />
+      <variable decl="bool L2CGI = false;" />
+      <variable decl="bool X30 = false;" />
+      <variable decl="bool X31 = false;" />
+      <variable decl="bool X32 = false;" />
+      <variable decl="bool X33 = false;" />
+      <variable decl="bool X34 = false;" />
+      <variable decl="bool X35 = false;" />
+      <variable decl="bool X36 = false;" />
+      <variable decl="bool X37 = false;" />
+      <variable decl="bool X38 = false;" />
+      <variable decl="bool vc_down30 = false;" />
+      <variable decl="bool vc_down31 = false;" />
+      <variable decl="bool vc_down35 = false;" />
+      <variable decl="bool vc_down37 = false;" />
+      <variable decl="bool venturi_on = false;" />
+      <variable decl="bool venturi_off = false;" />
+      <autoreject>False</autoreject>
+    </Statemachine>
+  </data>
+  <widget id="32" type="State">
+    <attributes>
+      <name>START</name>
+      <type>1</type>
+      <incoming id="42" />
+      <outgoing id="41" />
+      <outgoing id="50" />
+    </attributes>
+  </widget>
+  <widget id="42" type="Transition">
+    <attributes>
+      <event name="*" comment="No event" />
+      <code />
+      <guard>1</guard>
+    </attributes>
+  </widget>
+  <widget id="41" type="Transition">
+    <attributes>
+      <event name="INIT" comment="" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="50" type="Transition">
+    <attributes>
+      <event name="*" comment="No event" />
+      <code />
+      <guard>1</guard>
+    </attributes>
+  </widget>
+  <widget id="33" type="State">
+    <attributes>
+      <name>INIT</name>
+      <type>0</type>
+      <incoming id="41" />
+      <outgoing id="42" />
+    </attributes>
+  </widget>
+  <widget id="34" type="State">
+    <attributes>
+      <name>X3136</name>
+      <type>0</type>
+      <incoming id="48" />
+      <outgoing id="43" />
+    </attributes>
+  </widget>
+  <widget id="48" type="Transition">
+    <attributes>
+      <event name="REQ" comment="" />
+      <code />
+      <guard>vcd</guard>
+    </attributes>
+  </widget>
+  <widget id="43" type="Transition">
+    <attributes>
+      <event name="REQ" comment="" />
+      <code />
+      <guard>vacuum &amp;&amp; (! X11 || ! X21)</guard>
+    </attributes>
+  </widget>
+  <widget id="35" type="State">
+    <attributes>
+      <name>X32</name>
+      <type>0</type>
+      <incoming id="43" />
+      <outgoing id="44" />
+    </attributes>
+  </widget>
+  <widget id="44" type="Transition">
+    <attributes>
+      <event name="REQ" comment="" />
+      <code />
+      <guard>vcu</guard>
+    </attributes>
+  </widget>
+  <widget id="36" type="State">
+    <attributes>
+      <name>X3334</name>
+      <type>0</type>
+      <incoming id="44" />
+      <outgoing id="45" />
+    </attributes>
+  </widget>
+  <widget id="45" type="Transition">
+    <attributes>
+      <event name="REQ" comment="" />
+      <code />
+      <guard>s0 &amp;&amp; ! pp0</guard>
+    </attributes>
+  </widget>
+  <widget id="37" type="State">
+    <attributes>
+      <name>X35</name>
+      <type>0</type>
+      <incoming id="45" />
+      <outgoing id="46" />
+    </attributes>
+  </widget>
+  <widget id="46" type="Transition">
+    <attributes>
+      <event name="REQ" comment="" />
+      <code />
+      <guard>vcd</guard>
+    </attributes>
+  </widget>
+  <widget id="38" type="State">
+    <attributes>
+      <name>X37</name>
+      <type>0</type>
+      <incoming id="46" />
+      <outgoing id="47" />
+    </attributes>
+  </widget>
+  <widget id="47" type="Transition">
+    <attributes>
+      <event name="REQ" comment="" />
+      <code />
+      <guard>! vacuum</guard>
+    </attributes>
+  </widget>
+  <widget id="39" type="State">
+    <attributes>
+      <name>X38</name>
+      <type>0</type>
+      <incoming id="47" />
+      <outgoing id="49" />
+    </attributes>
+  </widget>
+  <widget id="49" type="Transition">
+    <attributes>
+      <event name="REQ" comment="" />
+      <code />
+      <guard>vcu</guard>
+    </attributes>
+  </widget>
+  <widget id="40" type="State">
+    <attributes>
+      <name>X30</name>
+      <type>0</type>
+      <incoming id="49" />
+      <incoming id="50" />
+      <incoming id="51" />
+      <outgoing id="48" />
+      <outgoing id="51" />
+    </attributes>
+  </widget>
+  <widget id="51" type="Transition">
+    <attributes>
+      <event name="REQ" comment="" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+</diagram>

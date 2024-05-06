@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>AComposite</name>
+  <data>
+    <Statemachine>
+      <autoreject>False</autoreject>
+    </Statemachine>
+  </data>
+  <widget id="0" type="State">
+    <attributes>
+      <name>state0</name>
+      <type>1</type>
+      <outgoing id="2" />
+    </attributes>
+  </widget>
+  <widget id="2" type="Transition">
+    <attributes>
+      <event name="FBType" comment="Tag &quot;FBType&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="1" type="State">
+    <attributes>
+      <name>state1</name>
+      <type>0</type>
+      <incoming id="2" />
+    </attributes>
+  </widget>
+</diagram>

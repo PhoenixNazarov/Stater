@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>AParser</name>
+  <data>
+    <Statemachine>
+      <event name="name" comment="tag &quot;name&quot;" />
+      <event name="diagram" comment="tag &quot;diagram&quot;" />
+      <event name="value" comment="value of an XML-tag" />
+      <event name="data" comment="tag &quot;data&quot;" />
+      <event name="Statemachine" comment="tag &quot;Statemachine&quot;" />
+      <event name="widget" comment="tag &quot;widget&quot;" />
+    </Statemachine>
+  </data>
+  <widget id="0" type="State">
+    <attributes>
+      <name>state0</name>
+      <type>1</type>
+      <outgoing id="3" />
+    </attributes>
+  </widget>
+  <widget id="1" type="State">
+    <attributes>
+      <name>Diagram</name>
+      <type>0</type>
+      <incoming id="3" />
+      <incoming id="5" />
+      <incoming id="9" />
+      <incoming id="15" />
+      <outgoing id="4" />
+      <outgoing id="8" />
+      <outgoing id="14" />
+    </attributes>
+  </widget>
+  <widget id="2" type="State">
+    <attributes>
+      <name>Name</name>
+      <type>0</type>
+      <incoming id="4" />
+      <incoming id="6" />
+      <outgoing id="5" />
+      <outgoing id="6" />
+    </attributes>
+  </widget>
+  <widget id="3" type="Transition">
+    <attributes>
+      <event name="diagram" comment="tag &quot;diagram&quot;" />
+      <action name="CreateDiagram" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="4" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+    </attributes>
+  </widget>
+  <widget id="5" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+    </attributes>
+  </widget>
+  <widget id="6" type="Transition">
+    <attributes>
+      <event name="value" comment="value of an XML-tag" />
+      <action name="SetDiagramName" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="7" type="State">
+    <attributes>
+      <name>Data</name>
+      <type>0</type>
+      <incoming id="8" />
+      <incoming id="12" />
+      <outgoing id="9" />
+      <outgoing id="11" />
+    </attributes>
+  </widget>
+  <widget id="8" type="Transition">
+    <attributes>
+      <event name="data" comment="tag &quot;data&quot;" />
+    </attributes>
+  </widget>
+  <widget id="9" type="Transition">
+    <attributes>
+      <event name="data" comment="tag &quot;data&quot;" />
+    </attributes>
+  </widget>
+  <widget id="10" type="State">
+    <attributes>
+      <name>StatemachineData</name>
+      <type>0</type>
+      <incoming id="11" />
+      <outgoing id="12" />
+      <nested name="AEvent" />
+    </attributes>
+  </widget>
+  <widget id="11" type="Transition">
+    <attributes>
+      <event name="Statemachine" comment="tag &quot;Statemachine&quot;" />
+      <action name="SetStatemachineType" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="12" type="Transition">
+    <attributes>
+      <event name="Statemachine" comment="tag &quot;Statemachine&quot;" />
+    </attributes>
+  </widget>
+  <widget id="13" type="State">
+    <attributes>
+      <name>Widget</name>
+      <type>0</type>
+      <incoming id="14" />
+      <outgoing id="15" />
+      <nested name="AWidget" />
+    </attributes>
+  </widget>
+  <widget id="14" type="Transition">
+    <attributes>
+      <event name="widget" comment="tag &quot;widget&quot;" />
+    </attributes>
+  </widget>
+  <widget id="15" type="Transition">
+    <attributes>
+      <event name="widget" comment="tag &quot;widget&quot;" />
+    </attributes>
+  </widget>
+</diagram>

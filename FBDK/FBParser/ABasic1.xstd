@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>ABasic</name>
+  <data>
+    <Statemachine>
+      <event name="BasicFB" comment="" />
+      <event name="ECC" comment="" />
+      <event name="ECState" comment="" />
+      <event name="ECAction" comment="" />
+      <event name="Algorithm" comment="" />
+      <event name="Output" comment="" />
+      <event name="ECTransition" comment="" />
+      <event name="ECTransition" comment="" />
+      <event name="InitialState" comment="" />
+      <variable decl="int8 cnt = 0;" />
+      <variable decl="bool firstState = false;" />
+      <autoreject>False</autoreject>
+    </Statemachine>
+  </data>
+  <widget id="0" type="State">
+    <attributes>
+      <name>state0</name>
+      <type>1</type>
+      <outgoing id="2" />
+    </attributes>
+  </widget>
+  <widget id="2" type="Transition">
+    <attributes>
+      <event name="BasicFB" comment="" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="1" type="State">
+    <attributes>
+      <name>InsideBasicFB</name>
+      <type>0</type>
+      <incoming id="2" />
+      <incoming id="21" />
+      <outgoing id="4" />
+    </attributes>
+  </widget>
+  <widget id="21" type="Transition">
+    <attributes>
+      <event name="ECC" comment="" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="4" type="Transition">
+    <attributes>
+      <event name="ECC" comment="" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="3" type="State">
+    <attributes>
+      <name>InsideECC</name>
+      <type>0</type>
+      <incoming id="4" />
+      <incoming id="7" />
+      <incoming id="17" />
+      <outgoing id="6" />
+      <outgoing id="16" />
+      <outgoing id="21" />
+    </attributes>
+  </widget>
+  <widget id="7" type="Transition">
+    <attributes>
+      <event name="ECState" comment="" />
+      <action name="ApplyState" comment="" synchro="1" />
+      <code>firstState - true;
+</code>
+      <guard></guard>
+    </attributes>
+  </widget>
+    <widget id="15" type="State">
+      <attributes>
+        <name>InsideECTransition</name>
+        <type>0</type>
+        <incoming id="16" />
+        <incoming id="18" />
+        <incoming id="19" />
+        <incoming id="20" />
+        <outgoing id="17" />
+        <outgoing id="18" />
+        <outgoing id="19" />
+        <outgoing id="20" />
+      </attributes>
+    </widget>
+  <widget id="17" type="Transition">
+    <attributes>
+      <event name="ECTransition" comment="" />
+      <action name="ApplyTransition" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="6" type="Transition">
+    <attributes>
+      <event name="ECState" comment="" />
+      <action name="CreateState" comment="" synchro="1" />
+      <code>cnt++;
+</code>
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="16" type="Transition">
+    <attributes>
+      <event name="ECTransition" comment="" />
+      <action name="CreateTransition" comment="" synchro="1" />
+      <code>cnt++;
+</code>
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="5" type="State">
+    <attributes>
+      <name>InsideECState</name>
+      <type>0</type>
+      <incoming id="6" />
+      <incoming id="8" />
+      <incoming id="9" />
+      <incoming id="12" />
+      <outgoing id="7" />
+      <outgoing id="8" />
+      <outgoing id="9" />
+      <outgoing id="11" />
+    </attributes>
+    <widget id="8" type="Transition">
+      <attributes>
+        <event name="Name" comment="" />
+        <action name="SetName" comment="" synchro="1" />
+        <code />
+        <guard></guard>
+      </attributes>
+    </widget>
+    <widget id="9" type="Transition">
+      <attributes>
+        <event name="Comment" comment="" />
+        <action name="TestComment" comment="" synchro="1" />
+        <action name="SetStateComment" comment="" synchro="1" />
+        <code />
+        <guard></guard>
+      </attributes>
+    </widget>
+    <widget id="10" type="State">
+      <attributes>
+        <name>InsideAction</name>
+        <type>0</type>
+        <incoming id="11" />
+        <incoming id="13" />
+        <incoming id="14" />
+        <outgoing id="12" />
+        <outgoing id="13" />
+        <outgoing id="14" />
+      </attributes>
+    </widget>
+    <widget id="12" type="Transition">
+      <attributes>
+        <event name="ECAction" comment="" />
+        <code />
+        <guard></guard>
+      </attributes>
+    </widget>
+    <widget id="11" type="Transition">
+      <attributes>
+        <event name="ECAction" comment="" />
+        <code />
+        <guard></guard>
+      </attributes>
+    </widget>
+    <widget id="13" type="Transition">
+      <attributes>
+        <event name="Algorithm" comment="" />
+        <code />
+        <guard></guard>
+      </attributes>
+    </widget>
+    <widget id="14" type="Transition">
+      <attributes>
+        <event name="Output" comment="" />
+        <code />
+        <guard></guard>
+      </attributes>
+    </widget>
+    <widget id="18" type="Transition">
+      <attributes>
+        <event name="Source" comment="" />
+        <action name="SetSource" comment="" synchro="1" />
+        <code />
+        <guard></guard>
+      </attributes>
+    </widget>
+    <widget id="19" type="Transition">
+      <attributes>
+        <event name="Destination" comment="" />
+        <action name="SetDst" comment="" synchro="1" />
+        <code />
+        <guard></guard>
+      </attributes>
+    </widget>
+    <widget id="20" type="Transition">
+      <attributes>
+        <event name="Condition" comment="" />
+        <action name="SetCondition" comment="" synchro="1" />
+        <code />
+        <guard></guard>
+      </attributes>
+    </widget>
+  </widget>
+</diagram>

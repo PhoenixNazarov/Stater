@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Options xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FormulaeLTL>
+    <string>[]({fb.INIT} -&gt; &lt;&gt;{fb.INIT})</string>
+  </FormulaeLTL>
+  <VerifySystem>false</VerifySystem>
+  <VerifyEnteredObjects>true</VerifyEnteredObjects>
+  <TextBefore />
+  <TextAfter />
+  <OnlyFSM>false</OnlyFSM>
+  <OnlyScriptsMode>false</OnlyScriptsMode>
+  <ModelName>spinModel.ltl</ModelName>
+  <CompilePanOptions>DBITSTATE</CompilePanOptions>
+  <ForkSource>OnlyStarter</ForkSource>
+  <EventSource>Fair</EventSource>
+  <EnteredObjects>
+    <ObjectName>
+      <Name>fb</Name>
+      <Type>SFC4_fbt</Type>
+    </ObjectName>
+  </EnteredObjects>
+  <FillLonelyAutomata>false</FillLonelyAutomata>
+  <VerifyOnlyOneMachine>false</VerifyOnlyOneMachine>
+</Options>

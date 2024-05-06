@@ -1,0 +1,31 @@
+namespace StateFlow.SFDParser
+{
+	public enum Events
+	{
+		Stateflow,
+		open_curl_br,
+		close_curl_br,
+		machine,
+		chart,
+		state,
+		data,
+		transition,
+		props,
+		src,
+		dst,
+		array,
+		id,
+		number,
+		size,
+		quote,
+		word,
+		subviewS,
+		slide,
+		name,
+		labelString,
+		INPUT_DATA,
+		OUTPUT_DATA,
+		LOCAL_DATA,
+		scope,
+	}
+}

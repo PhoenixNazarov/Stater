@@ -1,0 +1,4 @@
+Verification fail! Model icorrect!
+spin: spinModel.ltl:3, Error: syntax error
+spin: spinModel.ltl:3, Error: no runable process
+

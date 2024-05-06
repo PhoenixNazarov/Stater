@@ -1,0 +1,21 @@
+ltl f0: <> ((parser.state==20))
+spin: couldn't find claim 3 (ignored)
+                  parsersource sent _machine_type_
+                  parsersource sent _machine_type_
+              machine0.state = LTLParser.state0 
+              machine0. event_happened: _machine_type_ 
+                  parsersource sent _machine_type_
+              machine0.state = LTLParser.MachineType 
+                  parsersource sent _machine_type_
+spin: trail ends after 56 steps
+#processes: 3
+		parser.state = 0
+		parser.curEvent = 0
+		parser.ID = 0
+		parser.functionCall = 0
+		parser.nestedMachine = 0
+		parserFinished = 0
+ 56:	proc  2 (parserEventSource) spinModel.ltl:370 (state 2)
+ 56:	proc  1 (parserProc) spinModel.ltl:348 (state 244)
+ 56:	proc  0 (:init:) spinModel.ltl:398 (state 5) <valid end state>
+3 processes created

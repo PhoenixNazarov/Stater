@@ -1,0 +1,1042 @@
+
+
+
+#define AParser_state0 0
+#define AParser_state1 1
+#define AParser_CompositeFB 2
+#define AParser_BasicFB 3
+
+#define ABasic_state0 0
+#define ABasic_InsideBasicFB 1
+#define ABasic_InsideECC 2
+#define ABasic_InsideECState 3
+#define ABasic_InsideECTransition 4
+#define ABasic_InsideAction 5
+#define ABasic_InsideEventInputs 6
+#define ABasic_InsideEvent 7
+#define ABasic_InsideVarDeclaration 8
+
+#define AComposite_state0 0
+#define AComposite_state1 1
+
+#define SFC4_fbt_START 0
+#define SFC4_fbt_INIT 1
+#define SFC4_fbt_X3136 2
+#define SFC4_fbt_X32 3
+#define SFC4_fbt_X3334 4
+#define SFC4_fbt_X35 5
+#define SFC4_fbt_X37 6
+#define SFC4_fbt_X38 7
+#define SFC4_fbt_X30 8
+
+#define FBType 1
+#define Comment 2
+#define Name 3
+#define Composite 4
+#define Basic 5
+#define EventInputs 6
+#define VarDeclaration 7
+#define BasicFB 8
+#define ECC 9
+#define ECState 10
+#define ECTransition 11
+#define ECAction 12
+#define Source 13
+#define Destination 14
+#define Condition 15
+#define Algorithm 16
+#define Output 17
+#define Event 18
+#define Type 19
+#define InitialState 20
+#define epsilon 21
+#define INIT 22
+#define REQ 23
+
+#define AParser_TestComment 1
+#define AParser_CreateProject 2
+#define AParser_CreateFSM 3
+#define ABasic_ApplyVariable 4
+#define ABasic_CreateNewVariable 5
+#define ABasic_ApplyState 6
+#define ABasic_ApplyTransition 7
+#define ABasic_CreateState 8
+#define ABasic_CreateTransition 9
+#define ABasic_SetName 10
+#define ABasic_SetStateComment 11
+#define ABasic_SetSource 12
+#define ABasic_SetDst 13
+#define ABasic_SetCondition 14
+#define ABasic_ApplyEvent 15
+#define ABasic_CreateEvent 16
+#define ABasic_SetEventName 17
+#define ABasic_SetEventComment 18
+#define ABasic_SetVariableName 19
+#define ABasic_SetVariableType 20
+#define composite_call 1
+#define basic_call 2
+typedef AParserData
+{
+	byte state;
+	byte curEvent;
+	byte ID;
+	byte functionCall;
+	byte nestedMachine;
+	byte forkMachine;
+	bool started;
+	bool finished;
+}
+
+typedef ABasicData
+{
+	byte state;
+	byte curEvent;
+	byte ID;
+	byte functionCall;
+	byte nestedMachine;
+	byte forkMachine;
+	bool started;
+	bool finished;
+	byte cnt = 0;
+	bool firstState = false;
+}
+
+typedef ACompositeData
+{
+	byte state;
+	byte curEvent;
+	byte ID;
+	byte functionCall;
+	byte nestedMachine;
+	byte forkMachine;
+	bool started;
+	bool finished;
+}
+
+typedef SFC4_fbtData
+{
+	byte state;
+	byte curEvent;
+	byte ID;
+	byte functionCall;
+	byte nestedMachine;
+	byte forkMachine;
+	bool started;
+	bool finished;
+	bool s0 = false;
+	bool s1 = false;
+	bool s2 = false;
+	bool s3 = false;
+	bool X1 = false;
+	bool X2 = false;
+	bool X3 = false;
+	bool X11 = false;
+	bool X21 = false;
+	bool pp0 = false;
+	bool vcu = false;
+	bool vcd = false;
+	bool vacuum = false;
+	bool VCGD = false;
+	bool L1CGI = false;
+	bool L2CGI = false;
+	bool X30 = false;
+	bool X31 = false;
+	bool X32 = false;
+	bool X33 = false;
+	bool X34 = false;
+	bool X35 = false;
+	bool X36 = false;
+	bool X37 = false;
+	bool X38 = false;
+	bool vc_down30 = false;
+	bool vc_down31 = false;
+	bool vc_down35 = false;
+	bool vc_down37 = false;
+	bool venturi_on = false;
+	bool venturi_off = false;
+}
+
+inline random(var, nBits)
+{
+	int index = 0;
+	var = 0;
+	do
+		:: index < nBits -> 
+			index = index + 1;
+			var = var * 2;
+			if
+				:: var = var + 1;
+				:: var = var + 0;
+			fi;
+		:: else -> break;
+	od;
+}
+
+#define p0 (fb.state == SFC4_fbt_INIT)
+#define p1 (fb.state == SFC4_fbt_INIT)
+chan fb_ch = [0] of {int}
+inline AParser(machine, evt)
+{
+	byte sendEvt;
+	if
+		::(machine.state == AParser_state0) ->
+			printf("machine%d.state = AParser.state0 \n", machine.ID);
+			if
+				::((evt == FBType)) ->
+					machine.state = AParser_state1;
+					atomic
+					{
+						printf("machine%d. event_happened: _FBType_ \n", machine.ID);
+						machine.curEvent = FBType;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == AParser_state1) ->
+			printf("machine%d.state = AParser.state1 \n", machine.ID);
+			if
+				::((evt == Comment)) ->
+					machine.state = AParser_state1;
+					atomic
+					{
+						printf("machine%d. event_happened: _Comment_ \n", machine.ID);
+						machine.curEvent = Comment;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.TestComment()\n", machine.ID);
+						machine.functionCall = 1;
+					}
+				::((evt == Name)) ->
+					machine.state = AParser_state1;
+					atomic
+					{
+						printf("machine%d. event_happened: _Name_ \n", machine.ID);
+						machine.curEvent = Name;
+					}
+					//Code
+					//Code
+				::((evt == Composite)) ->
+					machine.state = AParser_CompositeFB;
+					atomic
+					{
+						printf("machine%d. event_happened: _Composite_ \n", machine.ID);
+						machine.curEvent = Composite;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.CreateProject()\n", machine.ID);
+						machine.functionCall = 2;
+					}
+				::((evt == Basic)) ->
+					machine.state = AParser_BasicFB;
+					atomic
+					{
+						printf("machine%d. event_happened: _Basic_ \n", machine.ID);
+						machine.curEvent = Basic;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.CreateFSM()\n", machine.ID);
+						machine.functionCall = 3;
+					}
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == AParser_CompositeFB) ->
+			printf("machine%d.state = AParser.CompositeFB \n", machine.ID);
+			if
+				:: else -> 
+					atomic
+					{
+						printf("machine%d. Nested machine: composite\n", machine.ID);
+						machine.nestedMachine = composite_call;
+					}
+					AComposite(composite, evt);
+			fi;
+		::(machine.state == AParser_BasicFB) ->
+			printf("machine%d.state = AParser.BasicFB \n", machine.ID);
+			if
+				:: else -> 
+					atomic
+					{
+						printf("machine%d. Nested machine: basic\n", machine.ID);
+						machine.nestedMachine = basic_call;
+					}
+					ABasic(basic, evt);
+			fi;
+	fi;
+}
+
+inline ABasic(machine, evt)
+{
+	byte sendEvt;
+	printf("machine%d.cnt = %d\n", machine.ID, machine.cnt);
+	printf("machine%d.firstState = %d\n", machine.ID, machine.firstState);
+	if
+		::(machine.state == ABasic_state0) ->
+			printf("machine%d.state = ABasic.state0 \n", machine.ID);
+			if
+				::((evt == BasicFB)) ->
+					machine.state = ABasic_InsideBasicFB;
+					atomic
+					{
+						printf("machine%d. event_happened: _BasicFB_ \n", machine.ID);
+						machine.curEvent = BasicFB;
+					}
+					//Code
+					//Code
+				::((evt == EventInputs)) ->
+					machine.state = ABasic_InsideEventInputs;
+					atomic
+					{
+						printf("machine%d. event_happened: _EventInputs_ \n", machine.ID);
+						machine.curEvent = EventInputs;
+					}
+					//Code
+					//Code
+				::((evt == VarDeclaration)) ->
+					machine.state = ABasic_InsideVarDeclaration;
+					atomic
+					{
+						printf("machine%d. event_happened: _VarDeclaration_ \n", machine.ID);
+						machine.curEvent = VarDeclaration;
+					}
+					//Code
+					machine.cnt++;
+					//Code
+					atomic
+					{
+						printf("machine%d.CreateNewVariable()\n", machine.ID);
+						machine.functionCall = 5;
+					}
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == ABasic_InsideBasicFB) ->
+			printf("machine%d.state = ABasic.InsideBasicFB \n", machine.ID);
+			if
+				::((evt == ECC)) ->
+					machine.state = ABasic_InsideECC;
+					atomic
+					{
+						printf("machine%d. event_happened: _ECC_ \n", machine.ID);
+						machine.curEvent = ECC;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == ABasic_InsideECC) ->
+			printf("machine%d.state = ABasic.InsideECC \n", machine.ID);
+			if
+				::((evt == ECC)) ->
+					machine.state = ABasic_InsideBasicFB;
+					atomic
+					{
+						printf("machine%d. event_happened: _ECC_ \n", machine.ID);
+						machine.curEvent = ECC;
+					}
+					//Code
+					//Code
+				::((evt == ECState)) ->
+					machine.state = ABasic_InsideECState;
+					atomic
+					{
+						printf("machine%d. event_happened: _ECState_ \n", machine.ID);
+						machine.curEvent = ECState;
+					}
+					//Code
+					machine.cnt++;
+					//Code
+					atomic
+					{
+						printf("machine%d.CreateState()\n", machine.ID);
+						machine.functionCall = 8;
+					}
+				::((evt == ECTransition)) ->
+					machine.state = ABasic_InsideECTransition;
+					atomic
+					{
+						printf("machine%d. event_happened: _ECTransition_ \n", machine.ID);
+						machine.curEvent = ECTransition;
+					}
+					//Code
+					machine.cnt++;
+					//Code
+					atomic
+					{
+						printf("machine%d.CreateTransition()\n", machine.ID);
+						machine.functionCall = 9;
+					}
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == ABasic_InsideECState) ->
+			printf("machine%d.state = ABasic.InsideECState \n", machine.ID);
+			if
+				::((evt == ECState)) ->
+					machine.state = ABasic_InsideECC;
+					atomic
+					{
+						printf("machine%d. event_happened: _ECState_ \n", machine.ID);
+						machine.curEvent = ECState;
+					}
+					//Code
+					machine.firstState=true;
+					//Code
+					atomic
+					{
+						printf("machine%d.ApplyState()\n", machine.ID);
+						machine.functionCall = 6;
+					}
+				::((evt == Name)) ->
+					machine.state = ABasic_InsideECState;
+					atomic
+					{
+						printf("machine%d. event_happened: _Name_ \n", machine.ID);
+						machine.curEvent = Name;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.SetName()\n", machine.ID);
+						machine.functionCall = 10;
+					}
+				::((evt == Comment)) ->
+					machine.state = ABasic_InsideECState;
+					atomic
+					{
+						printf("machine%d. event_happened: _Comment_ \n", machine.ID);
+						machine.curEvent = Comment;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.SetStateComment()\n", machine.ID);
+						machine.functionCall = 11;
+					}
+				::((evt == ECAction)) ->
+					machine.state = ABasic_InsideAction;
+					atomic
+					{
+						printf("machine%d. event_happened: _ECAction_ \n", machine.ID);
+						machine.curEvent = ECAction;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == ABasic_InsideECTransition) ->
+			printf("machine%d.state = ABasic.InsideECTransition \n", machine.ID);
+			if
+				::((evt == ECTransition)) ->
+					machine.state = ABasic_InsideECC;
+					atomic
+					{
+						printf("machine%d. event_happened: _ECTransition_ \n", machine.ID);
+						machine.curEvent = ECTransition;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.ApplyTransition()\n", machine.ID);
+						machine.functionCall = 7;
+					}
+				::((evt == Source)) ->
+					machine.state = ABasic_InsideECTransition;
+					atomic
+					{
+						printf("machine%d. event_happened: _Source_ \n", machine.ID);
+						machine.curEvent = Source;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.SetSource()\n", machine.ID);
+						machine.functionCall = 12;
+					}
+				::((evt == Destination)) ->
+					machine.state = ABasic_InsideECTransition;
+					atomic
+					{
+						printf("machine%d. event_happened: _Destination_ \n", machine.ID);
+						machine.curEvent = Destination;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.SetDst()\n", machine.ID);
+						machine.functionCall = 13;
+					}
+				::((evt == Condition)) ->
+					machine.state = ABasic_InsideECTransition;
+					atomic
+					{
+						printf("machine%d. event_happened: _Condition_ \n", machine.ID);
+						machine.curEvent = Condition;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.SetCondition()\n", machine.ID);
+						machine.functionCall = 14;
+					}
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == ABasic_InsideAction) ->
+			printf("machine%d.state = ABasic.InsideAction \n", machine.ID);
+			if
+				::((evt == ECAction)) ->
+					machine.state = ABasic_InsideECState;
+					atomic
+					{
+						printf("machine%d. event_happened: _ECAction_ \n", machine.ID);
+						machine.curEvent = ECAction;
+					}
+					//Code
+					//Code
+				::((evt == Algorithm)) ->
+					machine.state = ABasic_InsideAction;
+					atomic
+					{
+						printf("machine%d. event_happened: _Algorithm_ \n", machine.ID);
+						machine.curEvent = Algorithm;
+					}
+					//Code
+					//Code
+				::((evt == Output)) ->
+					machine.state = ABasic_InsideAction;
+					atomic
+					{
+						printf("machine%d. event_happened: _Output_ \n", machine.ID);
+						machine.curEvent = Output;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == ABasic_InsideEventInputs) ->
+			printf("machine%d.state = ABasic.InsideEventInputs \n", machine.ID);
+			if
+				::((evt == EventInputs)) ->
+					machine.state = ABasic_state0;
+					atomic
+					{
+						printf("machine%d. event_happened: _EventInputs_ \n", machine.ID);
+						machine.curEvent = EventInputs;
+					}
+					//Code
+					//Code
+				::((evt == Event)) ->
+					machine.state = ABasic_InsideEvent;
+					atomic
+					{
+						printf("machine%d. event_happened: _Event_ \n", machine.ID);
+						machine.curEvent = Event;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.CreateEvent()\n", machine.ID);
+						machine.functionCall = 16;
+					}
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == ABasic_InsideEvent) ->
+			printf("machine%d.state = ABasic.InsideEvent \n", machine.ID);
+			if
+				::((evt == Event)) ->
+					machine.state = ABasic_InsideEventInputs;
+					atomic
+					{
+						printf("machine%d. event_happened: _Event_ \n", machine.ID);
+						machine.curEvent = Event;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.ApplyEvent()\n", machine.ID);
+						machine.functionCall = 15;
+					}
+				::((evt == Name)) ->
+					machine.state = ABasic_InsideEvent;
+					atomic
+					{
+						printf("machine%d. event_happened: _Name_ \n", machine.ID);
+						machine.curEvent = Name;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.SetEventName()\n", machine.ID);
+						machine.functionCall = 17;
+					}
+				::((evt == Comment)) ->
+					machine.state = ABasic_InsideEvent;
+					atomic
+					{
+						printf("machine%d. event_happened: _Comment_ \n", machine.ID);
+						machine.curEvent = Comment;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.SetEventComment()\n", machine.ID);
+						machine.functionCall = 18;
+					}
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == ABasic_InsideVarDeclaration) ->
+			printf("machine%d.state = ABasic.InsideVarDeclaration \n", machine.ID);
+			if
+				::((evt == VarDeclaration)) ->
+					machine.state = ABasic_state0;
+					atomic
+					{
+						printf("machine%d. event_happened: _VarDeclaration_ \n", machine.ID);
+						machine.curEvent = VarDeclaration;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.ApplyVariable()\n", machine.ID);
+						machine.functionCall = 4;
+					}
+				::((evt == Name)) ->
+					machine.state = ABasic_InsideVarDeclaration;
+					atomic
+					{
+						printf("machine%d. event_happened: _Name_ \n", machine.ID);
+						machine.curEvent = Name;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.SetVariableName()\n", machine.ID);
+						machine.functionCall = 19;
+					}
+				::((evt == Type)) ->
+					machine.state = ABasic_InsideVarDeclaration;
+					atomic
+					{
+						printf("machine%d. event_happened: _Type_ \n", machine.ID);
+						machine.curEvent = Type;
+					}
+					//Code
+					//Code
+					atomic
+					{
+						printf("machine%d.SetVariableType()\n", machine.ID);
+						machine.functionCall = 20;
+					}
+				:: else -> 
+				skip;
+			fi;
+	fi;
+}
+
+inline AComposite(machine, evt)
+{
+	byte sendEvt;
+	if
+		::(machine.state == AComposite_state0) ->
+			printf("machine%d.state = AComposite.state0 \n", machine.ID);
+			if
+				::((evt == FBType)) ->
+					machine.state = AComposite_state1;
+					atomic
+					{
+						printf("machine%d. event_happened: _FBType_ \n", machine.ID);
+						machine.curEvent = FBType;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == AComposite_state1) ->
+			printf("machine%d.state = AComposite.state1 \n", machine.ID);
+			if
+				:: else -> 
+				skip;
+			fi;
+	fi;
+}
+
+inline SFC4_fbt(machine, evt)
+{
+	byte sendEvt;
+	printf("machine%d.s0 = %d\n", machine.ID, machine.s0);
+	printf("machine%d.s1 = %d\n", machine.ID, machine.s1);
+	printf("machine%d.s2 = %d\n", machine.ID, machine.s2);
+	printf("machine%d.s3 = %d\n", machine.ID, machine.s3);
+	printf("machine%d.X1 = %d\n", machine.ID, machine.X1);
+	printf("machine%d.X2 = %d\n", machine.ID, machine.X2);
+	printf("machine%d.X3 = %d\n", machine.ID, machine.X3);
+	printf("machine%d.X11 = %d\n", machine.ID, machine.X11);
+	printf("machine%d.X21 = %d\n", machine.ID, machine.X21);
+	printf("machine%d.pp0 = %d\n", machine.ID, machine.pp0);
+	printf("machine%d.vcu = %d\n", machine.ID, machine.vcu);
+	printf("machine%d.vcd = %d\n", machine.ID, machine.vcd);
+	printf("machine%d.vacuum = %d\n", machine.ID, machine.vacuum);
+	printf("machine%d.VCGD = %d\n", machine.ID, machine.VCGD);
+	printf("machine%d.L1CGI = %d\n", machine.ID, machine.L1CGI);
+	printf("machine%d.L2CGI = %d\n", machine.ID, machine.L2CGI);
+	printf("machine%d.X30 = %d\n", machine.ID, machine.X30);
+	printf("machine%d.X31 = %d\n", machine.ID, machine.X31);
+	printf("machine%d.X32 = %d\n", machine.ID, machine.X32);
+	printf("machine%d.X33 = %d\n", machine.ID, machine.X33);
+	printf("machine%d.X34 = %d\n", machine.ID, machine.X34);
+	printf("machine%d.X35 = %d\n", machine.ID, machine.X35);
+	printf("machine%d.X36 = %d\n", machine.ID, machine.X36);
+	printf("machine%d.X37 = %d\n", machine.ID, machine.X37);
+	printf("machine%d.X38 = %d\n", machine.ID, machine.X38);
+	printf("machine%d.vc_down30 = %d\n", machine.ID, machine.vc_down30);
+	printf("machine%d.vc_down31 = %d\n", machine.ID, machine.vc_down31);
+	printf("machine%d.vc_down35 = %d\n", machine.ID, machine.vc_down35);
+	printf("machine%d.vc_down37 = %d\n", machine.ID, machine.vc_down37);
+	printf("machine%d.venturi_on = %d\n", machine.ID, machine.venturi_on);
+	printf("machine%d.venturi_off = %d\n", machine.ID, machine.venturi_off);
+	if
+		::(machine.state == SFC4_fbt_START) ->
+			printf("machine%d.state = SFC4_fbt.START \n", machine.ID);
+			if
+				::((evt == INIT)) ->
+					machine.state = SFC4_fbt_INIT;
+					atomic
+					{
+						printf("machine%d. event_happened: _INIT_ \n", machine.ID);
+						machine.curEvent = INIT;
+					}
+					SFC4_fbt(machine, epsilon);
+					//Code
+					//Code
+				::((evt == epsilon) && (1)) ->
+					machine.state = SFC4_fbt_X30;
+					atomic
+					{
+						printf("machine%d. event_happened: _epsilon_ \n", machine.ID);
+						machine.curEvent = epsilon;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == SFC4_fbt_INIT) ->
+			printf("machine%d.state = SFC4_fbt.INIT \n", machine.ID);
+			if
+				::((evt == epsilon) && (1)) ->
+					machine.state = SFC4_fbt_START;
+					atomic
+					{
+						printf("machine%d. event_happened: _epsilon_ \n", machine.ID);
+						machine.curEvent = epsilon;
+					}
+					SFC4_fbt(machine, epsilon);
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == SFC4_fbt_X3136) ->
+			printf("machine%d.state = SFC4_fbt.X3136 \n", machine.ID);
+			if
+				::((evt == REQ) && (machine.vacuum&(!machine.X11||!X21))) ->
+					machine.state = SFC4_fbt_X32;
+					atomic
+					{
+						printf("machine%d. event_happened: _REQ_ \n", machine.ID);
+						machine.curEvent = REQ;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == SFC4_fbt_X32) ->
+			printf("machine%d.state = SFC4_fbt.X32 \n", machine.ID);
+			if
+				::((evt == REQ) && (machine.vcu)) ->
+					machine.state = SFC4_fbt_X3334;
+					atomic
+					{
+						printf("machine%d. event_happened: _REQ_ \n", machine.ID);
+						machine.curEvent = REQ;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == SFC4_fbt_X3334) ->
+			printf("machine%d.state = SFC4_fbt.X3334 \n", machine.ID);
+			if
+				::((evt == REQ) && (machine.s0&!machine.pp0)) ->
+					machine.state = SFC4_fbt_X35;
+					atomic
+					{
+						printf("machine%d. event_happened: _REQ_ \n", machine.ID);
+						machine.curEvent = REQ;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == SFC4_fbt_X35) ->
+			printf("machine%d.state = SFC4_fbt.X35 \n", machine.ID);
+			if
+				::((evt == REQ) && (machine.vcd)) ->
+					machine.state = SFC4_fbt_X37;
+					atomic
+					{
+						printf("machine%d. event_happened: _REQ_ \n", machine.ID);
+						machine.curEvent = REQ;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == SFC4_fbt_X37) ->
+			printf("machine%d.state = SFC4_fbt.X37 \n", machine.ID);
+			if
+				::((evt == REQ) && (!machine.vacuum)) ->
+					machine.state = SFC4_fbt_X38;
+					atomic
+					{
+						printf("machine%d. event_happened: _REQ_ \n", machine.ID);
+						machine.curEvent = REQ;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == SFC4_fbt_X38) ->
+			printf("machine%d.state = SFC4_fbt.X38 \n", machine.ID);
+			if
+				::((evt == REQ) && (machine.vcu)) ->
+					machine.state = SFC4_fbt_X30;
+					atomic
+					{
+						printf("machine%d. event_happened: _REQ_ \n", machine.ID);
+						machine.curEvent = REQ;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+		::(machine.state == SFC4_fbt_X30) ->
+			printf("machine%d.state = SFC4_fbt.X30 \n", machine.ID);
+			if
+				::((evt == REQ) && (machine.vcd)) ->
+					machine.state = SFC4_fbt_X3136;
+					atomic
+					{
+						printf("machine%d. event_happened: _REQ_ \n", machine.ID);
+						machine.curEvent = REQ;
+					}
+					//Code
+					//Code
+				::((evt == REQ)) ->
+					machine.state = SFC4_fbt_X30;
+					atomic
+					{
+						printf("machine%d. event_happened: _REQ_ \n", machine.ID);
+						machine.curEvent = REQ;
+					}
+					//Code
+					//Code
+				:: else -> 
+				skip;
+			fi;
+	fi;
+}
+
+inline fbVolatileChange()
+{
+	int r;
+	int ind = 0;
+}
+
+inline fbParamChange()
+{
+	int r;
+	int ind = 0;
+}
+
+SFC4_fbtData fb;
+ACompositeData composite;
+ABasicData basic;
+
+
+proctype fbProc ()
+{
+	byte newEvt;
+	fb.started= true;
+	fb_ch ? newEvt;
+	fbParamChange();
+	do
+		:: fb.finished == false ->
+			fb_ch ? newEvt;
+			SFC4_fbt(fb, newEvt);
+		:: else -> skip;
+	od;
+}
+proctype fbEventSource ()
+{
+	byte newEvt;
+	do
+		:: (fb.state == SFC4_fbt_START) ->
+		if
+			:: (1) -> newEvt = INIT;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _INIT_\n");
+				}
+			:: (1) -> newEvt = epsilon;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _epsilon_\n");
+				}
+		fi;
+		:: (fb.state == SFC4_fbt_INIT) ->
+		if
+			:: (1) -> newEvt = epsilon;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _epsilon_\n");
+				}
+		fi;
+		:: (fb.state == SFC4_fbt_X3136) ->
+		if
+			:: (1) -> newEvt = REQ;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _REQ_\n");
+				}
+		fi;
+		:: (fb.state == SFC4_fbt_X32) ->
+		if
+			:: (1) -> newEvt = REQ;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _REQ_\n");
+				}
+		fi;
+		:: (fb.state == SFC4_fbt_X3334) ->
+		if
+			:: (1) -> newEvt = REQ;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _REQ_\n");
+				}
+		fi;
+		:: (fb.state == SFC4_fbt_X35) ->
+		if
+			:: (1) -> newEvt = REQ;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _REQ_\n");
+				}
+		fi;
+		:: (fb.state == SFC4_fbt_X37) ->
+		if
+			:: (1) -> newEvt = REQ;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _REQ_\n");
+				}
+		fi;
+		:: (fb.state == SFC4_fbt_X38) ->
+		if
+			:: (1) -> newEvt = REQ;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _REQ_\n");
+				}
+		fi;
+		:: (fb.state == SFC4_fbt_X30) ->
+		if
+			:: (1) -> newEvt = REQ;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _REQ_\n");
+				}
+			:: (1) -> newEvt = REQ;
+				fbVolatileChange();
+				atomic
+				{
+					fb_ch ! newEvt;
+					printf("fbsource sent _REQ_\n");
+				}
+		fi;
+		od;
+	}
+
+
+	init
+	{
+		fb.ID = 0;
+		fb.started = false;
+		fb.finished = false;
+		fb.state = SFC4_fbt_START;
+		run fbProc();
+		run fbEventSource();
+	}
+
+
+
+
+
+ltl f0 {[](p0 -> <>p1)}

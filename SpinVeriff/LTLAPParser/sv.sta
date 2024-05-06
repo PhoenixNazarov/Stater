@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Options xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <FormulaeLTL />
+  <VerifySystem>false</VerifySystem>
+  <VerifyEnteredObjects>true</VerifyEnteredObjects>
+  <ForkSource>Environment</ForkSource>
+  <EnteredObjects>
+    <ObjectName>
+      <Name>parser</Name>
+      <Type>APParser</Type>
+    </ObjectName>
+  </EnteredObjects>
+  <FillLonelyAutomata>false</FillLonelyAutomata>
+  <VerifyOnlyOneMachine>false</VerifyOnlyOneMachine>
+</Options>

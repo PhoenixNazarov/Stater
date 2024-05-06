@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>AEvent</name>
+  <data>
+    <Statemachine />
+  </data>
+  <widget id="0" type="State">
+    <attributes>
+      <name>state0</name>
+      <type>1</type>
+      <incoming id="3" />
+      <outgoing id="2" />
+    </attributes>
+  </widget>
+  <widget id="3" type="Transition">
+    <attributes>
+      <event name="event" comment="&quot;event&quot; tag" />
+    </attributes>
+  </widget>
+  <widget id="2" type="Transition">
+    <attributes>
+      <event name="event" comment="&quot;event&quot; tag" />
+      <action name="CreateEvent" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="1" type="State">
+    <attributes>
+      <name>NewEvent</name>
+      <type>0</type>
+      <incoming id="2" />
+      <incoming id="4" />
+      <incoming id="5" />
+      <outgoing id="3" />
+      <outgoing id="4" />
+      <outgoing id="5" />
+    </attributes>
+  </widget>
+  <widget id="4" type="Transition">
+    <attributes>
+      <event name="name" comment="tag &quot;name&quot;" />
+      <action name="SetEventName" comment="" synchro="1" />
+    </attributes>
+  </widget>
+  <widget id="5" type="Transition">
+    <attributes>
+      <event name="comment" comment="tag or attribute &quot;comment&quot;" />
+      <action name="SetEventComment" comment="" synchro="1" />
+    </attributes>
+  </widget>
+</diagram>

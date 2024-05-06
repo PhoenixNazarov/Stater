@@ -1,0 +1,12 @@
+﻿**/bin/*
+**/obj/*
+FBDK/FBParser/_spin_nvr.tmp
+FBDK/FBParser/pan.b
+**/pan.?
+**/pan.exe
+Release
+**/_ReSharper*
+TestResults
+StaterV/bu
+**/.svn
+FBDK/FBParser/exp

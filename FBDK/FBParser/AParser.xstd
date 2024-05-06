@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<diagram>
+  <name>AParser</name>
+  <data>
+    <Statemachine>
+      <event name="FBType" comment="Tag &quot;FBType&quot;" />
+      <event name="Name" comment="" />
+      <event name="Comment" comment="" />
+      <event name="Composite" comment="" />
+      <event name="Basic" comment="Basic function block type" />
+      <autoreject>False</autoreject>
+    </Statemachine>
+  </data>
+  <widget id="0" type="State">
+    <attributes>
+      <name>state0</name>
+      <type>1</type>
+      <outgoing id="2" />
+    </attributes>
+  </widget>
+  <widget id="2" type="Transition">
+    <attributes>
+      <event name="FBType" comment="Tag &quot;FBType&quot;" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="1" type="State">
+    <attributes>
+      <name>state1</name>
+      <type>0</type>
+      <incoming id="2" />
+      <incoming id="4" />
+      <incoming id="5" />
+      <outgoing id="4" />
+      <outgoing id="5" />
+      <outgoing id="6" />
+      <outgoing id="8" />
+    </attributes>
+  </widget>
+  <widget id="4" type="Transition">
+    <attributes>
+      <event name="Comment" comment="" />
+      <action name="TestComment" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="5" type="Transition">
+    <attributes>
+      <event name="Name" comment="" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="6" type="Transition">
+    <attributes>
+      <event name="Composite" comment="" />
+      <action name="CreateProject" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="8" type="Transition">
+    <attributes>
+      <event name="Basic" comment="Basic function block type" />
+      <action name="CreateFSM" comment="" synchro="1" />
+      <code />
+      <guard></guard>
+    </attributes>
+  </widget>
+  <widget id="3" type="State">
+    <attributes>
+      <name>CompositeFB</name>
+      <type>0</type>
+      <incoming id="6" />
+      <nested type="AComposite" name="composite" />
+    </attributes>
+  </widget>
+  <widget id="7" type="State">
+    <attributes>
+      <name>BasicFB</name>
+      <type>0</type>
+      <incoming id="8" />
+      <nested type="ABasic" name="basic" />
+    </attributes>
+  </widget>
+</diagram>

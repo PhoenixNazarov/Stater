@@ -1,0 +1,411 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B90AF5E3-3BFA-4501-ADAB-CF32D2677DB7}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StaterV</RootNamespace>
+    <AssemblyName>StaterV</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\MainIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SandBar, Version=1.4.3.1, Culture=neutral, PublicKeyToken=71e05a6732a2d9f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sand\SandBar.dll</HintPath>
+    </Reference>
+    <Reference Include="SandDock, Version=3.0.6.1, Culture=neutral, PublicKeyToken=71e05a6732a2d9f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\sand\SandDock.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Design" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\Action.cs" />
+    <Compile Include="Attributes\Attributes.cs" />
+    <Compile Include="Attributes\AutomatonEffect.cs" />
+    <Compile Include="Attributes\AutomatonExecution.cs" />
+    <Compile Include="Attributes\Condition.cs" />
+    <Compile Include="Attributes\EditEventForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Attributes\EditEventForm.Designer.cs">
+      <DependentUpon>EditEventForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Attributes\EditEventWrapper.cs" />
+    <Compile Include="Attributes\Enumarations.cs" />
+    <Compile Include="Attributes\Event.cs" />
+    <Compile Include="Attributes\EventStorage.cs" />
+    <Compile Include="Attributes\NestedMachine.cs" />
+    <Compile Include="Attributes\StateAttributes.cs" />
+    <Compile Include="Attributes\StateAttributesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Attributes\StateAttributesForm.Designer.cs">
+      <DependentUpon>StateAttributesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Attributes\TransitionAttributes.cs" />
+    <Compile Include="Attributes\TransitionAttributesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Attributes\TransitionAttributesForm.Designer.cs">
+      <DependentUpon>TransitionAttributesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Attributes\TransitionAttributesFormWrapper.cs" />
+    <Compile Include="Attributes\TransitionAttrsLogic.cs" />
+    <Compile Include="Automaton.cs" />
+    <Compile Include="BasePlugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BatchModeStarter.cs" />
+    <Compile Include="ButtonPlugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Commands\AddEventCommand.cs" />
+    <Compile Include="Commands\AddEventParams.cs" />
+    <Compile Include="Commands\ChangeStateCommand.cs" />
+    <Compile Include="Commands\ChangeStateParams.cs" />
+    <Compile Include="Commands\ChangeTransitionCommand.cs" />
+    <Compile Include="Commands\ChangeTransitionParams.cs" />
+    <Compile Include="Commands\ChangeVariablesParams.cs" />
+    <Compile Include="Commands\ChangeVariablesCommand.cs" />
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CommandMacro.cs" />
+    <Compile Include="Commands\CommandParams.cs" />
+    <Compile Include="Commands\CompositeCommand.cs" />
+    <Compile Include="Commands\CompositeParams.cs" />
+    <Compile Include="Commands\CreateWidgetCommand.cs" />
+    <Compile Include="Commands\CreateWidgetParams.cs" />
+    <Compile Include="Commands\DeleteArrowCommand.cs" />
+    <Compile Include="Commands\DeleteCommand.cs" />
+    <Compile Include="Commands\DeleteShapeCommand.cs" />
+    <Compile Include="Commands\EditEventCommand.cs" />
+    <Compile Include="Commands\EditEventParams.cs" />
+    <Compile Include="Commands\MoveWidgetCommand.cs" />
+    <Compile Include="Commands\MoveWidgetParams.cs" />
+    <Compile Include="Commands\RenameEventCommand.cs" />
+    <Compile Include="Drawers\Drawer.cs" />
+    <Compile Include="Drawers\EndingDrawer.cs" />
+    <Compile Include="Drawers\LineDrawer.cs" />
+    <Compile Include="Drawers\OvalLineDrawer.cs" />
+    <Compile Include="Drawers\SimpleArrowDrawer.cs" />
+    <Compile Include="Drawers\StateTypeDrawer.cs" />
+    <Compile Include="Drawers\StraightLineDrawer.cs" />
+    <Compile Include="Drawers\TextDrawer.cs" />
+    <Compile Include="Exceptions\DiagramNameException.cs" />
+    <Compile Include="Exceptions\FormStructureException.cs" />
+    <Compile Include="Exceptions\InvalidDiagramException.cs" />
+    <Compile Include="Exceptions\InvalidWidgetException.cs" />
+    <Compile Include="FilesInfo.cs" />
+    <Compile Include="MachineProperties\MachinePropertiesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MachineProperties\MachinePropertiesForm.Designer.cs">
+      <DependentUpon>MachinePropertiesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MachineProperties\MachinePropertiesLogic.cs" />
+    <Compile Include="MachineProperties\MPWrapperWinForm.cs" />
+    <Compile Include="PluginManager\ButtonOfPlugin.cs" />
+    <Compile Include="PluginManager\ControlOfPlugin.cs" />
+    <Compile Include="PluginManager\IndependentLoader.cs" />
+    <Compile Include="PluginManager\MenuOfPlugin.cs" />
+    <Compile Include="PluginManager\PluginLoader.cs" />
+    <Compile Include="PluginManager\PluginManager.cs" />
+    <Compile Include="PluginManager\PluginParams.cs" />
+    <Compile Include="PluginManager\PluginRetVal.cs" />
+    <Compile Include="Project\DiagramInfo.cs" />
+    <Compile Include="Project\DiagramType.cs" />
+    <Compile Include="Project\NewDiagramForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Project\NewDiagramForm.Designer.cs">
+      <DependentUpon>NewDiagramForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\NewProjectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Project\NewProjectForm.Designer.cs">
+      <DependentUpon>NewProjectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\ProjectInfo.cs" />
+    <Compile Include="Project\ProjectManager.cs" />
+    <Compile Include="Project\ProjectWindow.cs" />
+    <Compile Include="Project\ProjectWindowDotNet.cs" />
+    <Compile Include="ResultDialog.cs" />
+    <Compile Include="StateMachine\Array.cs" />
+    <Compile Include="StateMachine\SingleVariable.cs" />
+    <Compile Include="StateMachine\StateMachine.cs" />
+    <Compile Include="StateMachine\Variable.cs" />
+    <Compile Include="Utility\MathSupport.cs" />
+    <Compile Include="Variables\EditVariablesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Variables\EditVariablesForm.Designer.cs">
+      <DependentUpon>EditVariablesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Variables\EditVariablesLogic.cs" />
+    <Compile Include="Variables\EditVariablesWrapper.cs" />
+    <Compile Include="Widgets\Arrow.cs" />
+    <Compile Include="Widgets\Shape.cs" />
+    <Compile Include="Widgets\State.cs" />
+    <Compile Include="Widgets\Transition.cs" />
+    <Compile Include="Widgets\Widget.cs" />
+    <Compile Include="Widgets\WidgetType.cs" />
+    <Compile Include="Windows\WindowBase.cs" />
+    <Compile Include="Windows\WindowData.cs" />
+    <Compile Include="Windows\WindowDotNet.cs" />
+    <Compile Include="Windows\WindowFactory.cs" />
+    <Compile Include="Wrappers\ControlWrapper.cs" />
+    <Compile Include="Wrappers\ControlWrapperWinForms.cs" />
+    <Compile Include="IObserver.cs" />
+    <Compile Include="Notifier.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IEventSource.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Attributes\EditEventForm.resx">
+      <DependentUpon>EditEventForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Attributes\EditEventForm.ru-RU.resx">
+      <DependentUpon>EditEventForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Attributes\StateAttributesForm.resx">
+      <DependentUpon>StateAttributesForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Attributes\StateAttributesForm.ru-RU.resx">
+      <DependentUpon>StateAttributesForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Attributes\TransitionAttributesForm.resx">
+      <DependentUpon>TransitionAttributesForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Attributes\TransitionAttributesForm.ru-RU.resx">
+      <DependentUpon>TransitionAttributesForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Attributes\TransitionAttributesForm.ru.resx">
+      <DependentUpon>TransitionAttributesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.en-US.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.en.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.ru-RU.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MachineProperties\MachinePropertiesForm.resx">
+      <DependentUpon>MachinePropertiesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\NewDiagramForm.resx">
+      <DependentUpon>NewDiagramForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\NewDiagramForm.ru-RU.resx">
+      <DependentUpon>NewDiagramForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\NewProjectForm.resx">
+      <DependentUpon>NewProjectForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\NewProjectForm.ru-RU.resx">
+      <DependentUpon>NewProjectForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Variables\EditVariablesForm.resx">
+      <DependentUpon>EditVariablesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Wrappers\GraphicsWrapper.cs" />
+    <Compile Include="Wrappers\GraphicsWrapperWinForms.cs" />
+    <Compile Include="XMLDiagramParser\AAttributes.xstd.cs" />
+    <Compile Include="XMLDiagramParser\AEvent.xstd.cs" />
+    <Compile Include="XMLDiagramParser\AParser.xstd.cs" />
+    <Compile Include="XMLDiagramParser\AWidget.xstd.cs" />
+    <Compile Include="XMLDiagramParser\CAttributes.cs" />
+    <Compile Include="XMLDiagramParser\CEvent.cs" />
+    <Compile Include="XMLDiagramParser\CParser.cs" />
+    <Compile Include="XMLDiagramParser\CWidget.cs" />
+    <Compile Include="XMLDiagramParser\Events.cs" />
+    <Compile Include="XMLDiagramParser\PositionsAgent.cs" />
+    <Compile Include="XMLDiagramParser\PositionsLoader\APosLoader.xstd.cs" />
+    <Compile Include="XMLDiagramParser\PositionsLoader\CPosLoader.cs" />
+    <Compile Include="XMLDiagramParser\PositionsLoader\Events.cs" />
+    <Compile Include="XMLDiagramParser\XMLAgent.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PluginData\PluginData.csproj">
+      <Project>{41A0B9E4-C529-4F6D-8F69-AB0EE1AE6951}</Project>
+      <Name>PluginData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StateFlow\StateFlow.csproj">
+      <Project>{2FC95B0A-B404-4E88-8FB0-11F357D2A7C1}</Project>
+      <Name>StateFlow</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TextProcessor\TextProcessor.csproj">
+      <Project>{412DC173-85E2-4A92-B886-11F173CB40E4}</Project>
+      <Name>TextProcessor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MainIcon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

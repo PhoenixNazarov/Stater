@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>XMLDiagramParser</Name>
+  <Diagrams>
+    <DiagramInfo>
+      <Name>AParser</Name>
+      <Type>StateMachine</Type>
+    </DiagramInfo>
+    <DiagramInfo>
+      <Name>AWidget</Name>
+      <Type>StateMachine</Type>
+    </DiagramInfo>
+    <DiagramInfo>
+      <Name>AEvent</Name>
+      <Type>StateMachine</Type>
+    </DiagramInfo>
+    <DiagramInfo>
+      <Name>AAttributes</Name>
+      <Type>StateMachine</Type>
+    </DiagramInfo>
+  </Diagrams>
+</ProjectInfo>

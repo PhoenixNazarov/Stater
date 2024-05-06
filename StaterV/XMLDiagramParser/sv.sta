@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Options xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FormulaeLTL />
+  <VerifySystem>false</VerifySystem>
+  <VerifyEnteredObjects>true</VerifyEnteredObjects>
+  <TextBefore />
+  <TextAfter />
+  <OnlyFSM>false</OnlyFSM>
+  <OnlyScriptsMode>false</OnlyScriptsMode>
+  <ModelName>spinModel.ltl</ModelName>
+  <CompilePanOptions>DBITSTATE</CompilePanOptions>
+  <ForkSource>OnlyStarter</ForkSource>
+  <EventSource>Fair</EventSource>
+  <FillLonelyAutomata>false</FillLonelyAutomata>
+  <VerifyOnlyOneMachine>false</VerifyOnlyOneMachine>
+</Options>
