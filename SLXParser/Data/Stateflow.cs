@@ -1,0 +1,7 @@
+namespace SLXParser.Data
+{
+    public class Stateflow
+    {
+        public Machine Machine { get; set; }
+    }
+}
