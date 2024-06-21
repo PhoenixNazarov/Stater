@@ -4,7 +4,7 @@ namespace SLXParser.Data
     {
         public string Name { get; set; }
         public string Scope { get; set; }
-        public Props Props => new Props();
+        public Props Props = new Props();
         public string DataType { get; set; }
     }
 

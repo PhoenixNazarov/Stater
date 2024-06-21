@@ -1,4 +1,10 @@
-﻿namespace SLXParser
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using SLXParser.Data;
+
+namespace SLXParser
 {
     internal class Program
     {
@@ -8,6 +14,9 @@
 
             var parser = new Parser(path);
             var stateflow = parser.Parse();
+
+            Console.WriteLine(stateflow.Machine.Chart.ChildrenState);
+            Console.WriteLine(stateflow.Machine.Chart.ChildrenState.Count);
         }
     }
 }

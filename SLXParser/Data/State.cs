@@ -14,10 +14,9 @@ namespace SLXParser.Data
         public string Decomposition { get; set; }
         public int ExecutionOrder { get; set; }
 
-        public static ActiveStateOutput ActiveStateOutput => new ActiveStateOutput();
-
-        public List<State> ChildrenState => new List<State>();
-        public List<Transition> ChildrenTransition => new List<Transition>();
+        public static ActiveStateOutput ActiveStateOutput = new ActiveStateOutput();
+        public List<State> ChildrenState = new List<State>();
+        public List<Transition> ChildrenTransition = new List<Transition>();
     }
 
     public class ActiveStateOutput
