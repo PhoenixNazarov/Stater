@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Xml;
 using SLXParser.Data;
 using SLXParser.Utils;
@@ -86,9 +85,44 @@ namespace SLXParser
                 {
                     stateflow.Machine = ParseMachine(node);
                 }
+
+                if (node.Name == "instance")
+                {
+                    stateflow.Instance = ParseInstance(node);
+                }
             }
 
             return stateflow;
+        }
+
+        private Instance ParseInstance(XmlNode xmlNode)
+        {
+            var instance = new Instance
+            {
+                Id = ParseId(xmlNode)
+            };
+
+            foreach (XmlNode node in xmlNode.ChildNodes)
+            {
+                if (node.Name == "P")
+                {
+                    {
+                        var name = node.Attributes?["Name"].Value;
+                        switch (name)
+                        {
+                            case null:
+                                continue;
+                            case "name":
+                                instance.Name = node.InnerText;
+                                break;
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            return instance;
         }
 
         private Machine ParseMachine(XmlNode xmlNode)
@@ -207,7 +241,7 @@ namespace SLXParser
                         break;
                 }
             }
-            
+
             return chart;
         }
 
@@ -486,7 +520,8 @@ namespace SLXParser
                                                             case null:
                                                                 continue;
                                                             case "scalingMode":
-                                                                data.Props.TypeFixptScalingMode = childrenNode3.InnerText;
+                                                                data.Props.TypeFixptScalingMode =
+                                                                    childrenNode3.InnerText;
                                                                 break;
                                                             case "fractionLength":
                                                                 data.Props.TypeFixptFractionLength =
@@ -549,6 +584,7 @@ namespace SLXParser
             {
                 return int.Parse(xmlNode.InnerText);
             }
+
             return -1;
         }
 
@@ -588,7 +624,7 @@ namespace SLXParser
         {
             line = line.Substring(1, line.Length - 2);
             var numbers = line.Split(' ');
-            
+
             var x1 = float.Parse(numbers[0], CultureInfo.InvariantCulture);
             var y1 = float.Parse(numbers[1], CultureInfo.InvariantCulture);
             var x2 = float.Parse(numbers[2], CultureInfo.InvariantCulture);

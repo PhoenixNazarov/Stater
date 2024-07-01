@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using SLXParser.Data;
 
 namespace SLXParser
 {
@@ -14,6 +10,7 @@ namespace SLXParser
 
             var parser = new Parser(path);
             var stateflow = parser.Parse();
+            var pluginStateflow = new Translator().Convert(stateflow);
 
             Console.WriteLine(stateflow.Machine.Chart.ChildrenState);
             Console.WriteLine(stateflow.Machine.Chart.ChildrenState.Count);

@@ -48,6 +48,7 @@
         <Compile Include="Data\BaseNode.cs" />
         <Compile Include="Data\Chart.cs" />
         <Compile Include="Data\Data.cs" />
+        <Compile Include="Data\Instance.cs" />
         <Compile Include="Data\Machine.cs" />
         <Compile Include="Data\State.cs" />
         <Compile Include="Data\Stateflow.cs" />
@@ -55,6 +56,8 @@
         <Compile Include="Parser.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="SLXPlugin.cs" />
+        <Compile Include="Translator.cs" />
         <Compile Include="Utils\Color.cs" />
         <Compile Include="Utils\Point2D.cs" />
     </ItemGroup>
@@ -63,6 +66,16 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include="BR_GATES_HDL.slx" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\PluginData\PluginData.csproj">
+        <Project>{41a0b9e4-c529-4f6d-8f69-ab0ee1ae6951}</Project>
+        <Name>PluginData</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\StaterV\StaterV.csproj">
+        <Project>{b90af5e3-3bfa-4501-adab-cf32d2677db7}</Project>
+        <Name>StaterV</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
