@@ -1,28 +1,30 @@
-using System;
-using System.Collections.Generic;
-using StaterV;
-using StaterV.PluginManager;
-using StaterV.StateMachine;
+using System.Windows.Forms;
+using PluginData;
 
 namespace SLXParser
 {
-    public class SLXPlugin: ButtonPlugin
+    public class SLXPlugin : IndependentPlugin
     {
-        public override PluginRetVal Start(PluginParams pluginParams)
+        public override IReturn Start(IParams param)
         {
-            var result = new PluginRetVal();
-            const string path = "./BR_GATES_HDL.slx";
-
-            var parser = new Parser(path);
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Function block files|*.slx";
+            ofd.FilterIndex = 0;
+            var dialogResult = ofd.ShowDialog();
+            var result = new IReturn();
+            if (dialogResult != DialogResult.OK) return result;
+            
+            var parser = new Parser(ofd.SafeFileName);
             var stateflow = parser.Parse();
             var pluginStateflow = new Translator().Convert(stateflow);
-            result.machines = new List<StateMachine>();
-            result.machines.Add(pluginStateflow);
+            result.ChangedMachines.Add(pluginStateflow);
+
+            return result;
         }
 
-        public override PluginRetVal SilentStart(PluginParams pluginParams)
+        public override bool NeedParams
         {
-            throw new NotImplementedException();
+            get { return false; }
         }
     }
 }
