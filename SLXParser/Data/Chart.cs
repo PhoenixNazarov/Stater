@@ -6,8 +6,8 @@ namespace SLXParser.Data
     public class Chart : BaseNode
     {
         public string Name { get; set; }
-        public (Point2D, Point2D) WindowPosition { get; set; }
-        public (Point2D, Point2D) ViewLimits { get; set; }
+        public DoublePoint WindowPosition { get; set; }
+        public DoublePoint ViewLimits { get; set; }
         public float ZoomFactor { get; set; }
         public Color StateColor { get; set; }
         public Color StateLabelColor { get; set; }

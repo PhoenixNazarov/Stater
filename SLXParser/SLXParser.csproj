@@ -6,11 +6,11 @@
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <ProjectGuid>{3917F540-90B0-4DBB-9B3F-95967F2549B7}</ProjectGuid>
-        <OutputType>Exe</OutputType>
+        <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>SLXParser</RootNamespace>
         <AssemblyName>SLXParser</AssemblyName>
-        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+        <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     </PropertyGroup>
@@ -72,10 +72,6 @@
       <ProjectReference Include="..\PluginData\PluginData.csproj">
         <Project>{41a0b9e4-c529-4f6d-8f69-ab0ee1ae6951}</Project>
         <Name>PluginData</Name>
-      </ProjectReference>
-      <ProjectReference Include="..\StaterV\StaterV.csproj">
-        <Project>{b90af5e3-3bfa-4501-adab-cf32d2677db7}</Project>
-        <Name>StaterV</Name>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

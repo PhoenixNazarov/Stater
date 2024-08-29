@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Forms;
+using PluginData;
 
 namespace SLXParser
 {
@@ -6,14 +8,16 @@ namespace SLXParser
     {
         public static void Main(string[] args)
         {
-            const string path = "./BR_GATES_HDL.slx";
-
-            var parser = new Parser(path);
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Function block files|*.slx";
+            ofd.FilterIndex = 0;
+            var dialogResult = ofd.ShowDialog();
+            var result = new IReturn();
+            
+            var parser = new Parser(ofd.SafeFileName);
             var stateflow = parser.Parse();
             var pluginStateflow = new Translator().Convert(stateflow);
-
-            Console.WriteLine(stateflow.Machine.Chart.ChildrenState);
-            Console.WriteLine(stateflow.Machine.Chart.ChildrenState.Count);
+            result.ChangedMachines.Add(pluginStateflow);
         }
     }
 }

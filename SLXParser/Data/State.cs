@@ -6,7 +6,7 @@ namespace SLXParser.Data
     public class State : BaseNode
     {
         public string LabelString { get; set; }
-        public (Point2D, Point2D) Position { get; set; }
+        public DoublePoint Position { get; set; }
         public int FontSize { get; set; }
         public bool Visible { get; set; }
         public int Subviewer { get; set; }

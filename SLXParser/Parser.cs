@@ -606,7 +606,7 @@ namespace SLXParser
             return new Point2D(x1, y1);
         }
 
-        private static (Point2D, Point2D) Parse4Point(string line)
+        private static DoublePoint Parse4Point(string line)
         {
             line = line.Substring(1, line.Length - 2);
 
@@ -617,10 +617,10 @@ namespace SLXParser
             var x2 = float.Parse(numbers[2], CultureInfo.InvariantCulture);
             var y2 = float.Parse(numbers[3], CultureInfo.InvariantCulture);
 
-            return (new Point2D(x1, y1), new Point2D(x2, y2));
+            return new DoublePoint(new Point2D(x1, y1), new Point2D(x2, y2));
         }
 
-        private static (Point2D, Point2D, Point2D, Point2D) Parse8Point(string line)
+        private static DoubleDoublePoint Parse8Point(string line)
         {
             line = line.Substring(1, line.Length - 2);
             var numbers = line.Split(' ');
@@ -634,7 +634,8 @@ namespace SLXParser
             var x4 = float.Parse(numbers[6], CultureInfo.InvariantCulture);
             var y4 = float.Parse(numbers[7], CultureInfo.InvariantCulture);
 
-            return (new Point2D(x1, y1), new Point2D(x2, y2), new Point2D(x3, y3), new Point2D(x4, y4));
+            return new DoubleDoublePoint(new DoublePoint(new Point2D(x1, y1), new Point2D(x2, y2)),
+                new DoublePoint(new Point2D(x3, y3), new Point2D(x4, y4)));
         }
 
         private static Color ParseColor(string line)

@@ -11,4 +11,29 @@ namespace SLXParser.Utils
             Y = y;
         }
     }
+
+    public class DoublePoint
+    {
+        public Point2D X { get; set; }
+        public Point2D Y { get; set; }
+
+        public DoublePoint(Point2D x, Point2D y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
+    
+    
+    public class DoubleDoublePoint
+    {
+        public DoublePoint X { get; set; }
+        public DoublePoint Y { get; set; }
+
+        public DoubleDoublePoint(DoublePoint x, DoublePoint y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
 }
