@@ -16,6 +16,7 @@ namespace StaterV.PluginManager
         private PluginManager()
         {
             ButtonPluginList = new List<ButtonPlugin>();
+            IndependentPluginList = new List<IndependentPlugin>();
         }
         private static PluginManager instance = new PluginManager();
         public static PluginManager Instance
@@ -48,7 +49,7 @@ namespace StaterV.PluginManager
                 try
                 {
                     var plugin = pluginLoader.LoadPlugin(filename);
-                    if (plugin.GetType().IsSubclassOf(typeof(ButtonPlugin)))
+                    if (plugin != null && plugin.GetType().IsSubclassOf(typeof(ButtonPlugin)))
                     {
                         ButtonPluginList.Add((ButtonPlugin)plugin);
                     }
