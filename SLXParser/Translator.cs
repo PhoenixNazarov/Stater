@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PluginData;
@@ -74,7 +75,11 @@ namespace SLXParser
 
             foreach (var transition in slxState.ChildrenTransition)
             {
-                transitions.Add(ConvertTransition(transition, slxStateOriginList));
+                var transition_ = ConvertTransition(transition, slxStateOriginList);
+                if (transition_ != null)
+                {
+                    transitions.Add(transition_);
+                }
             }
 
             return transitions;
@@ -90,6 +95,8 @@ namespace SLXParser
             var start = FindStateById(new UID(slxTransition.Src.SSID), slxStateOriginList);
             var end = FindStateById(new UID(slxTransition.Dst.SSID), slxStateOriginList);
 
+            if (start == null || end == null) return null;
+
             transition.Start = start;
             transition.End = end;
 
@@ -101,7 +108,12 @@ namespace SLXParser
 
         private static State FindStateById(UID id, List<State> slxStateOriginList)
         {
-            return slxStateOriginList.FirstOrDefault(state => state.ID == id);
+            Console.WriteLine();
+            return slxStateOriginList.FirstOrDefault(state =>
+            {
+                Console.WriteLine(state.ID + " " + id);
+                return state.ID.Value == id.Value;
+            });
         }
     }
 }

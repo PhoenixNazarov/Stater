@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Windows.Forms;
-using PluginData;
-
 namespace SLXParser
 {
     internal class Program
     {
         public static void Main(string[] args)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Function block files|*.slx";
-            ofd.FilterIndex = 0;
-            var dialogResult = ofd.ShowDialog();
-            var result = new IReturn();
-            
-            var parser = new Parser(ofd.SafeFileName);
+            const string path = "/Users/vnazarov/PycharmProjects/ya-hakaton/BR_GATES_HDL.slx";
+
+            var parser = new Parser(path);
             var stateflow = parser.Parse();
             var pluginStateflow = new Translator().Convert(stateflow);
-            result.ChangedMachines.Add(pluginStateflow);
+
+            Console.WriteLine(stateflow.Machine.Chart.ChildrenState);
+            Console.WriteLine(stateflow.Machine.Chart.ChildrenState.Count);
         }
     }
 }

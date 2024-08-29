@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Forms;
 using PluginData;
 
@@ -12,13 +13,18 @@ namespace SLXParser
             ofd.FilterIndex = 0;
             var dialogResult = ofd.ShowDialog();
             var result = new IReturn();
-            if (dialogResult != DialogResult.OK) return result;
+            result.Message = "OK";
+            if (dialogResult != DialogResult.OK)
+            {
+                result.Message = "DialogResult is not OK";
+                return result;
+            }
             
-            var parser = new Parser(ofd.SafeFileName);
+            var parser = new Parser(ofd.FileName);
             var stateflow = parser.Parse();
             var pluginStateflow = new Translator().Convert(stateflow);
+            Console.WriteLine(pluginStateflow);
             result.ChangedMachines.Add(pluginStateflow);
-
             return result;
         }
 

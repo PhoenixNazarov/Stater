@@ -326,9 +326,7 @@ namespace SLXParser
                             switch (childrenNode.Name)
                             {
                                 case "state":
-                                    Console.WriteLine("State");
                                     state.ChildrenState.Add(ParseState(childrenNode));
-                                    Console.WriteLine(state.ChildrenState.Count);
                                     break;
                                 case "transition":
                                     state.ChildrenTransition.Add(ParseTransition(childrenNode));
@@ -583,6 +581,11 @@ namespace SLXParser
             if (name != null && name.Value == "SSID")
             {
                 return int.Parse(xmlNode.InnerText);
+            }
+            var ssid = xmlNode.Attributes?["SSID"];
+            if (ssid != null)
+            {
+                return int.Parse(ssid.Value);
             }
 
             return -1;
