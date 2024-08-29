@@ -22,7 +22,8 @@ namespace SLXParser
             };
 
             stateMachine.Transitions = ConvertChartTransitions(stateflow.Machine.Chart, stateMachine.States);
-
+            stateMachine.StartState = stateMachine.States[0];
+            stateMachine.EndStates.Add(stateMachine.States[stateMachine.States.Count - 1]);
             return stateMachine;
         }
 
@@ -82,6 +83,11 @@ namespace SLXParser
                 }
             }
 
+            foreach (var state in slxState.ChildrenState)
+            {
+                transitions.AddRange(ConvertStateTransition(state, slxStateOriginList));
+            }
+
             return transitions;
         }
 
@@ -95,10 +101,14 @@ namespace SLXParser
             var start = FindStateById(new UID(slxTransition.Src.SSID), slxStateOriginList);
             var end = FindStateById(new UID(slxTransition.Dst.SSID), slxStateOriginList);
 
-            if (start == null || end == null) return null;
+            if (start == null || end == null)
+            {
+                return null;
+            }
 
             transition.Start = start;
             transition.End = end;
+            transition.Name = slxTransition.LabelString;
 
             start.Outgoing.Add(transition);
             end.Incoming.Add(transition);
@@ -108,12 +118,7 @@ namespace SLXParser
 
         private static State FindStateById(UID id, List<State> slxStateOriginList)
         {
-            Console.WriteLine();
-            return slxStateOriginList.FirstOrDefault(state =>
-            {
-                Console.WriteLine(state.ID + " " + id);
-                return state.ID.Value == id.Value;
-            });
+            return slxStateOriginList.FirstOrDefault(state => { return state.ID.Value == id.Value; });
         }
     }
 }
