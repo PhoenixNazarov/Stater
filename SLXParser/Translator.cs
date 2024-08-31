@@ -7,6 +7,7 @@ using State = PluginData.State;
 using SLXState = SLXParser.Data.State;
 using Transition = PluginData.Transition;
 using SLXTransition = SLXParser.Data.Transition;
+using SLXData = SLXParser.Data.Data;
 
 namespace SLXParser
 {
@@ -18,7 +19,8 @@ namespace SLXParser
             {
                 Type = "SLX",
                 Name = stateflow.Instance.Name,
-                States = ConvertChart(stateflow.Machine.Chart)
+                States = ConvertChart(stateflow.Machine.Chart),
+                Variables = ConvertVariable(stateflow.Machine.Chart.ChildrenData),
             };
 
             stateMachine.Transitions = ConvertChartTransitions(stateflow.Machine.Chart, stateMachine.States);
@@ -119,6 +121,20 @@ namespace SLXParser
         private static State FindStateById(UID id, List<State> slxStateOriginList)
         {
             return slxStateOriginList.FirstOrDefault(state => { return state.ID.Value == id.Value; });
+        }
+
+        private static List<Variable> ConvertVariable(List<SLXData> datas)
+        {
+            var result = new List<Variable>();
+            foreach (var data in datas)
+            {
+                var variable = new SingleVariable();
+                variable.Name = data.Name;
+                variable.ID = new UID(data.Id);
+                result.Add(variable);
+            }
+
+            return result;
         }
     }
 }
