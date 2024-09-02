@@ -10,7 +10,7 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>SLXParser</RootNamespace>
         <AssemblyName>SLXParser</AssemblyName>
-        <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+        <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     </PropertyGroup>
@@ -66,13 +66,13 @@
       <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
-      <Content Include="BR_GATES_HDL.slx" />
-    </ItemGroup>
-    <ItemGroup>
       <ProjectReference Include="..\PluginData\PluginData.csproj">
         <Project>{41a0b9e4-c529-4f6d-8f69-ab0ee1ae6951}</Project>
         <Name>PluginData</Name>
       </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="TestData\BR_GATES_HDL.slx" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
