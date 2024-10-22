@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using StateFlow.SFDParser;
-using TextProcessor;
-using System.IO;
+﻿using StateFlow.SFDParser;
 using PluginData;
+using TextProcessor;
 
 namespace StateFlow
 {

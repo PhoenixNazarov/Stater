@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms; 
-using StaterV;
+﻿using StaterV;
 
 namespace FirstPlugin
 {
@@ -11,7 +6,7 @@ namespace FirstPlugin
     {
         public CFirstPlugin()
         {
-            MessageBox.Show("First plugin!");
+            // MessageBox.Show("First plugin!");
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PluginData;
 using SpinVeriff.Exceptions;
 using SpinVeriff.Parameters;
 using StaterV;

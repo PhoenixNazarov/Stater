@@ -65,5 +65,6 @@ namespace PluginData
         /// </summary>
         public List<NestedMachine> NestedMachines { get; set; }
 
+        public List<Arrow> OutgoingArrows { get; set; }
     }
 }

@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-using StaterV;
 using Common;
 using StaterV.PluginManager;
-using StaterV.StateMachine;
+
 
 namespace CppCodeGenerator
 {
