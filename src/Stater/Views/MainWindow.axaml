@@ -1,0 +1,53 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Stater.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Stater.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Stater">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <Menu Height="32" DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New Project" Command="{Binding NewCommand}" />
+                <MenuItem Header="_Open" Command="{Binding OpenCommand }" />
+                <MenuItem Header="_Save" />
+                <MenuItem Header="_Exit" />
+
+                <MenuItem Header="_New StateMachine" Command="{Binding NewStateMachineCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo" />
+                <MenuItem Header="_Redo" />
+                <MenuItem Header="_Cut" />
+                <MenuItem Header="_Copy" />
+                <MenuItem Header="_Paste" />
+            </MenuItem>
+        </Menu>
+        <Rectangle Fill="Green" Height="200" DockPanel.Dock="Bottom" />
+        <StackPanel DockPanel.Dock="Left" Width="200">
+            <TextBlock Text="{Binding Project.Name}" />
+            <ListBox ItemsSource="{Binding Project.StateMachines}" 
+                     SelectedItem="{Binding StateMachine}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        <Rectangle Fill="Orange" Width="200" DockPanel.Dock="Right" Opacity="0.5" />
+        <StackPanel Background="Azure">
+            <TextBlock Background="Black" Text="{Binding StateMachine.Name}" />
+        </StackPanel>
+    </DockPanel>
+</Window>
