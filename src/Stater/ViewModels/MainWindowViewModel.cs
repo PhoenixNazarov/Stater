@@ -1,44 +1,72 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
-using Avalonia.Controls;
+using Avalonia.Input;
+using DynamicData;
+using ReactiveUI.SourceGenerators;
 using Stater.Models;
-using Stater.Models.impl;
 
 namespace Stater.ViewModels;
 
 using ReactiveUI;
 
-public partial class MainWindowViewModel : ReactiveObject
+public class MainWindowViewModel : ReactiveObject
 {
-    private readonly IProjectManager projectManager;
-    public ICommand NewCommand { get; }
-    public ICommand OpenCommand { get; }
-
-    public ICommand NewStateMachineCommand { get; }
-
-    private Project? project;
-
-    public Project? Project
+    public MainWindowViewModel(IProjectManager projectManager)
     {
-        get => project;
-        private set => this.RaiseAndSetIfChanged(ref project, value);
-    }
-
-    private StateMachine? _stateMachine;
-
-    public StateMachine? StateMachine
-    {
-        get => _stateMachine;
-        set => this.RaiseAndSetIfChanged(ref _stateMachine, value);
-    }
-
-    public MainWindowViewModel()
-    {
-        projectManager = new ProjectManager();
+        _projectManager = projectManager;
         NewCommand = ReactiveCommand.Create(NewProject);
         OpenCommand = ReactiveCommand.Create(OpenProject);
         NewStateMachineCommand = ReactiveCommand.Create(NewStateMachine);
+
+        projectManager
+            .StateMachines
+            .Bind(out _stateMachines)
+            .Subscribe();
+
+        projectManager
+            .Project
+            .Subscribe(x => Project = x);
+
+        projectManager
+            .StateMachine
+            .Subscribe(x => StateMachine = x);
     }
+
+    private readonly IProjectManager _projectManager;
+
+    private Project _project;
+
+    public Project Project
+    {
+        get => _project;
+        private set => this.RaiseAndSetIfChanged(ref _project, value);
+    }
+
+    private StateMachine _stateMachine;
+
+    public StateMachine StateMachine
+    {
+        get => _stateMachine;
+        private set => this.RaiseAndSetIfChanged(ref _stateMachine, value);
+    }
+
+    private readonly ReadOnlyObservableCollection<StateMachine> _stateMachines;
+    public ReadOnlyObservableCollection<StateMachine> StateMachines => _stateMachines;
+
+    public ICommand NewCommand { get; }
+    public ICommand OpenCommand { get; }
+    public ICommand NewStateMachineCommand { get; }
+
+    private double _scale = 1.0;
+
+    public double Scale
+    {
+        get => _scale;
+        set => this.RaiseAndSetIfChanged(ref _scale, value);
+    }
+
 
     private void OpenProject()
     {
@@ -46,11 +74,17 @@ public partial class MainWindowViewModel : ReactiveObject
 
     private void NewProject()
     {
-        Project = projectManager.CreateProject("New Project");
+        _projectManager.CreateProject("New Project");
     }
-    
+
     private void NewStateMachine()
     {
-        Project?.StateMachines.Add(new StateMachine("Test", new List<State>()));
+        _projectManager.CreateStateMachine();
+    }
+
+    void Canvas_PointerWheelChanged(object sender, PointerWheelEventArgs e)
+    {
+        double zoomFactor = e.Delta.Y > 0 ? 1.1 : 0.9;
+        Scale *= zoomFactor;
     }
 }

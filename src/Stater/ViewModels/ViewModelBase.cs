@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ReactiveUI;
 
 namespace Stater.ViewModels;
 
-public class ViewModelBase : ObservableObject
+public class ViewModelBase : ReactiveObject
 {
 }

@@ -4,6 +4,5 @@ namespace Stater.Models;
 
 public record Project(
     string Name,
-    string? Location,
-    ObservableCollection<StateMachine> StateMachines
+    string? Location
 );

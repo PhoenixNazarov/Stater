@@ -3,6 +3,8 @@
         xmlns:vm="using:Stater.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:Stater.Models"
+        xmlns:views="clr-namespace:Stater.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Stater.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -36,7 +38,7 @@
         <Rectangle Fill="Green" Height="200" DockPanel.Dock="Bottom" />
         <StackPanel DockPanel.Dock="Left" Width="200">
             <TextBlock Text="{Binding Project.Name}" />
-            <ListBox ItemsSource="{Binding Project.StateMachines}" 
+            <ListBox ItemsSource="{Binding StateMachines}"
                      SelectedItem="{Binding StateMachine}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -46,8 +48,47 @@
             </ListBox>
         </StackPanel>
         <Rectangle Fill="Orange" Width="200" DockPanel.Dock="Right" Opacity="0.5" />
-        <StackPanel Background="Azure">
-            <TextBlock Background="Black" Text="{Binding StateMachine.Name}" />
-        </StackPanel>
+        <DockPanel HorizontalAlignment="Stretch">
+            <TextBlock Background="Black" Text="{Binding StateMachine.Name}" DockPanel.Dock="Top" />
+            <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}" DockPanel.Dock="Top" />
+
+            <ItemsControl ItemsSource="{Binding StateMachine.States}" DockPanel.Dock="Top">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Background="Yellow" Height="400" Width="400"
+                                x:Name="TheCanvas2">
+                            <Canvas.RenderTransform>
+                                <MatrixTransform>
+                                    <MatrixTransform.Matrix>
+                                        <!-- OffsetX="{Binding Offset.X}" OffsetY="{Binding Offset.Y}" -->
+                                    </MatrixTransform.Matrix>
+                                </MatrixTransform>
+                            </Canvas.RenderTransform>
+                        </Canvas>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemContainerTheme>
+                    <ControlTheme x:DataType="models:State" TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                    </ControlTheme>
+                </ItemsControl.ItemContainerTheme>
+
+                <!-- PointerPressed="Rectangle_PointerPressed" -->
+                <!-- PointerMoved="Rectangle_PointerMoved" -->
+                <!-- PointerReleased="Rectangle_PointerReleased" -->
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle
+                            Fill="{Binding Color}"
+                            Height="{Binding Size}"
+                            Width="{Binding Size}">
+                        </Rectangle>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </DockPanel>
     </DockPanel>
 </Window>
