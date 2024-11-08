@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows.Input;
 using Avalonia.Input;
 using DynamicData;
-using ReactiveUI.SourceGenerators;
+using ReactiveUI.Fody.Helpers;
 using Stater.Models;
 
 namespace Stater.ViewModels;
@@ -36,21 +35,8 @@ public class MainWindowViewModel : ReactiveObject
 
     private readonly IProjectManager _projectManager;
 
-    private Project _project;
-
-    public Project Project
-    {
-        get => _project;
-        private set => this.RaiseAndSetIfChanged(ref _project, value);
-    }
-
-    private StateMachine _stateMachine;
-
-    public StateMachine StateMachine
-    {
-        get => _stateMachine;
-        private set => this.RaiseAndSetIfChanged(ref _stateMachine, value);
-    }
+    [Reactive] public Project Project { get; private set; }
+    [Reactive] public StateMachine StateMachine { get; private set; }
 
     private readonly ReadOnlyObservableCollection<StateMachine> _stateMachines;
     public ReadOnlyObservableCollection<StateMachine> StateMachines => _stateMachines;
@@ -80,11 +66,5 @@ public class MainWindowViewModel : ReactiveObject
     private void NewStateMachine()
     {
         _projectManager.CreateStateMachine();
-    }
-
-    void Canvas_PointerWheelChanged(object sender, PointerWheelEventArgs e)
-    {
-        double zoomFactor = e.Delta.Y > 0 ? 1.1 : 0.9;
-        Scale *= zoomFactor;
     }
 }

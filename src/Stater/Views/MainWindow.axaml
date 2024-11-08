@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:models="clr-namespace:Stater.Models"
-        xmlns:views="clr-namespace:Stater.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Stater.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -14,7 +13,7 @@
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel />
+        <vm:MainWindowViewModel />a
     </Design.DataContext>
 
     <DockPanel>
@@ -48,7 +47,7 @@
             </ListBox>
         </StackPanel>
         <Rectangle Fill="Orange" Width="200" DockPanel.Dock="Right" Opacity="0.5" />
-        <DockPanel HorizontalAlignment="Stretch">
+        <DockPanel HorizontalAlignment="Stretch" >
             <TextBlock Background="Black" Text="{Binding StateMachine.Name}" DockPanel.Dock="Top" />
             <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}" DockPanel.Dock="Top" />
 
@@ -56,11 +55,13 @@
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas Background="Yellow" Height="400" Width="400"
-                                x:Name="TheCanvas2">
+                                PointerWheelChanged="InputElement_OnPointerWheelChanged"
+                                PointerPressed="InputElement_OnPointerPressed"
+                                PointerMoved="InputElement_OnPointerMoved"
+                                PointerReleased="InputElement_OnPointerReleased">
                             <Canvas.RenderTransform>
                                 <MatrixTransform>
                                     <MatrixTransform.Matrix>
-                                        <!-- OffsetX="{Binding Offset.X}" OffsetY="{Binding Offset.Y}" -->
                                     </MatrixTransform.Matrix>
                                 </MatrixTransform>
                             </Canvas.RenderTransform>
