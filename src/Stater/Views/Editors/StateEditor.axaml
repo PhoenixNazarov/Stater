@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Stater.ViewModels.Editors"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Stater.Views.Editors.StateEditor"
+             x:DataType="vm:StateEditorViewModel">
+    <StackPanel>
+        <TextBlock Margin="0 5">Name:</TextBlock>
+        <TextBox
+            Watermark="Enter state name"
+            Text="{Binding Name}" />
+        <TextBlock Margin="0 15 0 5">Description:</TextBlock>
+        <TextBox Height="100" AcceptsReturn="True" TextWrapping="Wrap"
+                 Text="{Binding Description}" />
+        <TextBlock Margin="0 15 0 5">Type:</TextBlock>
+        <ComboBox SelectedIndex="0" MaxDropDownHeight="100" SelectedValue="{Binding Type}">
+            <ComboBoxItem>Common</ComboBoxItem>
+            <ComboBoxItem>Start</ComboBoxItem>
+            <ComboBoxItem>End</ComboBoxItem>
+        </ComboBox>
+    </StackPanel>
+</UserControl>

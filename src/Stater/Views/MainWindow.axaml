@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Stater.ViewModels"
+        xmlns:editors="using:Stater.Views.Editors"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:models="clr-namespace:Stater.Models"
@@ -23,8 +24,6 @@
                 <MenuItem Header="_Open" Command="{Binding OpenCommand }" />
                 <MenuItem Header="_Save" />
                 <MenuItem Header="_Exit" />
-
-                <MenuItem Header="_New StateMachine" Command="{Binding NewStateMachineCommand}" />
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Undo" />
@@ -32,6 +31,10 @@
                 <MenuItem Header="_Cut" />
                 <MenuItem Header="_Copy" />
                 <MenuItem Header="_Paste" />
+            </MenuItem>
+            <MenuItem Header="_Project">
+                <MenuItem Header="_New StateMachine" Command="{Binding NewStateMachineCommand}" />
+                <MenuItem Header="_New State" Command="{Binding NewStateCommand}" />
             </MenuItem>
         </Menu>
         <Rectangle Fill="Green" Height="200" DockPanel.Dock="Bottom" />
@@ -46,15 +49,20 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
-        <Rectangle Fill="Orange" Width="200" DockPanel.Dock="Right" Opacity="0.5" />
-        <DockPanel HorizontalAlignment="Stretch" >
+        
+        <editors:StateEditor
+            Width="200"
+            DockPanel.Dock="Right"
+            IsVisible="{Binding State, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <DockPanel HorizontalAlignment="Stretch" Name="TheCanvasPanel">
             <TextBlock Background="Black" Text="{Binding StateMachine.Name}" DockPanel.Dock="Top" />
             <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}" DockPanel.Dock="Top" />
 
             <ItemsControl ItemsSource="{Binding StateMachine.States}" DockPanel.Dock="Top">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas Background="Yellow" Height="400" Width="400"
+                        <Canvas Background="Yellow" Height="400" Width="400" Name="TheCanvas"
                                 PointerWheelChanged="InputElement_OnPointerWheelChanged"
                                 PointerPressed="InputElement_OnPointerPressed"
                                 PointerMoved="InputElement_OnPointerMoved"
@@ -76,16 +84,16 @@
                     </ControlTheme>
                 </ItemsControl.ItemContainerTheme>
 
-                <!-- PointerPressed="Rectangle_PointerPressed" -->
-                <!-- PointerMoved="Rectangle_PointerMoved" -->
-                <!-- PointerReleased="Rectangle_PointerReleased" -->
-
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Rectangle
-                            Fill="{Binding Color}"
-                            Height="{Binding Size}"
-                            Width="{Binding Size}">
+                            Height="50"
+                            Width="50"
+                            Fill="Red"
+                            Name="State"
+                            PointerPressed="State_OnPointerPressed"
+                            PointerMoved="State_OnPointerMoved"
+                            PointerReleased="State_OnPointerReleased">
                         </Rectangle>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

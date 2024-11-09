@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Numerics;
+using System.Reactive;
 using System.Windows.Input;
-using Avalonia.Input;
+using Avalonia.Controls;
 using DynamicData;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
+using ReactiveUI;
 
 namespace Stater.ViewModels;
-
-using ReactiveUI;
 
 public class MainWindowViewModel : ReactiveObject
 {
     public MainWindowViewModel(IProjectManager projectManager)
     {
         _projectManager = projectManager;
-        NewCommand = ReactiveCommand.Create(NewProject);
-        OpenCommand = ReactiveCommand.Create(OpenProject);
-        NewStateMachineCommand = ReactiveCommand.Create(NewStateMachine);
 
         projectManager
             .StateMachines
@@ -31,12 +29,32 @@ public class MainWindowViewModel : ReactiveObject
         projectManager
             .StateMachine
             .Subscribe(x => StateMachine = x);
+
+        NewCommand = ReactiveCommand.Create(NewProject);
+        OpenCommand = ReactiveCommand.Create(OpenProject);
+        NewStateMachineCommand = ReactiveCommand.Create(NewStateMachine);
+        NewStateCommand = ReactiveCommand.Create(NewState);
+        StateClickCommand = ReactiveCommand.Create<State>(OnStateClicked);
+        UpdateStateCoordsCommand = ReactiveCommand.Create<Vector2>(UpdateStateCoords);
     }
 
     private readonly IProjectManager _projectManager;
 
     [Reactive] public Project Project { get; private set; }
-    [Reactive] public StateMachine StateMachine { get; private set; }
+
+    private StateMachine _stateMachine;
+
+    public StateMachine StateMachine
+    {
+        get => _stateMachine;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _stateMachine, value);
+            _projectManager.OpenStateMachine(value.Guid);
+        }
+    }
+
+    [Reactive] public State? State { get; private set; }
 
     private readonly ReadOnlyObservableCollection<StateMachine> _stateMachines;
     public ReadOnlyObservableCollection<StateMachine> StateMachines => _stateMachines;
@@ -44,14 +62,9 @@ public class MainWindowViewModel : ReactiveObject
     public ICommand NewCommand { get; }
     public ICommand OpenCommand { get; }
     public ICommand NewStateMachineCommand { get; }
-
-    private double _scale = 1.0;
-
-    public double Scale
-    {
-        get => _scale;
-        set => this.RaiseAndSetIfChanged(ref _scale, value);
-    }
+    public ICommand NewStateCommand { get; }
+    public ReactiveCommand<State, Unit> StateClickCommand { get; }
+    public ReactiveCommand<Vector2, Unit> UpdateStateCoordsCommand { get; }
 
 
     private void OpenProject()
@@ -66,5 +79,31 @@ public class MainWindowViewModel : ReactiveObject
     private void NewStateMachine()
     {
         _projectManager.CreateStateMachine();
+    }
+
+    private void NewState()
+    {
+        var state = _projectManager.CreateState();
+        if (state != null)
+        {
+            State = state;
+        }
+    }
+
+    private void OnStateClicked(State state)
+    {
+        var selectedState = _projectManager.GetState(state.Guid);
+        State = selectedState ?? null;
+    }
+
+    private void UpdateStateCoords(Vector2 coords)
+    {
+        if (State == null) return;
+        var newState = State with
+        {
+            X = State.X + coords.X,
+            Y = State.Y + coords.Y
+        };
+        _projectManager.UpdateState(newState);
     }
 }
