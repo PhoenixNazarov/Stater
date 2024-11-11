@@ -3,19 +3,20 @@ using System.Collections.ObjectModel;
 using System.Numerics;
 using System.Reactive;
 using System.Windows.Input;
-using Avalonia.Controls;
 using DynamicData;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
 using ReactiveUI;
+using Stater.Models.Editors;
 
 namespace Stater.ViewModels;
 
 public class MainWindowViewModel : ReactiveObject
 {
-    public MainWindowViewModel(IProjectManager projectManager)
+    public MainWindowViewModel(IProjectManager projectManager, IEditorManager editorManager)
     {
         _projectManager = projectManager;
+        _editorManager = editorManager;
 
         projectManager
             .StateMachines
@@ -39,6 +40,7 @@ public class MainWindowViewModel : ReactiveObject
     }
 
     private readonly IProjectManager _projectManager;
+    private readonly IEditorManager _editorManager;
 
     [Reactive] public Project Project { get; private set; }
 
@@ -50,7 +52,9 @@ public class MainWindowViewModel : ReactiveObject
         set
         {
             this.RaiseAndSetIfChanged(ref _stateMachine, value);
-            _projectManager.OpenStateMachine(value.Guid);
+            var openStateMachine = _projectManager.OpenStateMachine(value.Guid);
+            if (openStateMachine != null)
+                _editorManager.DoSelectStateMachine(openStateMachine);
         }
     }
 
@@ -78,7 +82,8 @@ public class MainWindowViewModel : ReactiveObject
 
     private void NewStateMachine()
     {
-        _projectManager.CreateStateMachine();
+        var stateMachine = _projectManager.CreateStateMachine();
+        _editorManager.DoSelectStateMachine(stateMachine);
     }
 
     private void NewState()
@@ -94,6 +99,7 @@ public class MainWindowViewModel : ReactiveObject
     {
         var selectedState = _projectManager.GetState(state.Guid);
         State = selectedState ?? null;
+        if (State != null) _editorManager.DoSelectState(State);
     }
 
     private void UpdateStateCoords(Vector2 coords)

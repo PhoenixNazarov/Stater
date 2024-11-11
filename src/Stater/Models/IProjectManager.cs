@@ -12,8 +12,10 @@ public interface IProjectManager
     void CreateProject(string name);
     Project LoadProject(string path);
     void SaveProject(Project project, string path);
-    void CreateStateMachine();
-    void OpenStateMachine(Guid guid);
+    
+    StateMachine CreateStateMachine();
+    void UpdateStateMachine(StateMachine newStateMachine);
+    StateMachine? OpenStateMachine(Guid guid);
     State? CreateState();
     State? GetState(Guid guid);
     void UpdateState(State state);

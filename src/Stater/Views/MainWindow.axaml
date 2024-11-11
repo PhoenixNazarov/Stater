@@ -49,11 +49,10 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
-        
-        <editors:StateEditor
+
+        <editors:MainEditor
             Width="200"
-            DockPanel.Dock="Right"
-            IsVisible="{Binding State, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            DockPanel.Dock="Right" />
 
         <DockPanel HorizontalAlignment="Stretch" Name="TheCanvasPanel">
             <TextBlock Background="Black" Text="{Binding StateMachine.Name}" DockPanel.Dock="Top" />

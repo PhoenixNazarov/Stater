@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Subjects;
-using Avalonia.Animation;
 using DynamicData;
 
 namespace Stater.Models.impl;
@@ -50,13 +49,13 @@ internal class ProjectManager : IProjectManager
         throw new NotImplementedException();
     }
 
-    private void UpdateStateMachine(StateMachine newStateMachine)
+    public void UpdateStateMachine(StateMachine newStateMachine)
     {
         _stateMachines.AddOrUpdate(newStateMachine);
         _stateMachine.OnNext(newStateMachine);
     }
 
-    public void CreateStateMachine()
+    public StateMachine CreateStateMachine()
     {
         var stateMachine = new StateMachine(
             Guid: Guid.NewGuid(),
@@ -64,14 +63,16 @@ internal class ProjectManager : IProjectManager
             States: new List<State>()
         );
         UpdateStateMachine(stateMachine);
+        return stateMachine;
     }
 
-    public void OpenStateMachine(Guid guid)
+    public StateMachine? OpenStateMachine(Guid guid)
     {
         var currentStateMachine = GetCurrentStateMachine();
-        if (currentStateMachine?.Guid == guid) return;
+        if (currentStateMachine?.Guid == guid) return null;
         var stateMachine = _stateMachines.KeyValues[guid.ToString()];
         _stateMachine.OnNext(stateMachine);
+        return stateMachine;
     }
 
     public State? CreateState()
