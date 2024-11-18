@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Stater.Views.Board.BoardCanvas"
+             x:DataType="vm:MainWindowViewModel"
+             xmlns:vm="using:Stater.ViewModels"
+             xmlns:models="clr-namespace:Stater.Models">
+    <DockPanel HorizontalAlignment="Stretch" Name="TheCanvasPanel">
+        <TextBlock Background="Black" Text="{Binding StateMachine.Name}" DockPanel.Dock="Top" />
+        <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}" DockPanel.Dock="Top" />
+        <TextBlock Background="Black" Text="{Binding StateMachine.Transitions.Count}" DockPanel.Dock="Top" />
+
+        <Canvas Background="Aquamarine" Height="400" Width="400" Name="TheCanvas"
+                PointerWheelChanged="InputElement_OnPointerWheelChanged"
+                PointerPressed="InputElement_OnPointerPressed"
+                PointerMoved="InputElement_OnPointerMoved"
+                PointerReleased="InputElement_OnPointerReleased">
+            <ItemsControl ItemsSource="{Binding StateMachine.States}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Height="400" Width="400" Name="StatesCanvas" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerTheme>
+                    <ControlTheme x:DataType="models:State" TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                    </ControlTheme>
+                </ItemsControl.ItemContainerTheme>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle
+                            Height="50"
+                            Width="50"
+                            Fill="Red"
+                            Name="State"
+                            PointerPressed="State_OnPointerPressed"
+                            PointerMoved="State_OnPointerMoved"
+                            PointerReleased="State_OnPointerReleased">
+                        </Rectangle>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ItemsControl ItemsSource="{Binding Transitions}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Height="400" Width="400" Name="TransitionsCanvas" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Line StartPoint="{Binding StartPoint}" EndPoint="{Binding EndPoint}" Stroke="Red"
+                              StrokeThickness="2" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Canvas>
+    </DockPanel>
+</UserControl>

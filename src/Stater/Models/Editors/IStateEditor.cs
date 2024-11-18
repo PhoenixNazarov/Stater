@@ -7,5 +7,5 @@ public interface IStateEditor
     IObservable<State> State { get; }
 
     void DoSelect(State state);
-    void Update(State stateMachine);
+    void Update(State state);
 }

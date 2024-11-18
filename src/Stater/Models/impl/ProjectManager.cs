@@ -60,7 +60,8 @@ internal class ProjectManager : IProjectManager
         var stateMachine = new StateMachine(
             Guid: Guid.NewGuid(),
             Name: "StateMachine " + _stateMachines.Count,
-            States: new List<State>()
+            States: new List<State>(),
+            Transitions: new List<Transition>()
         );
         UpdateStateMachine(stateMachine);
         return stateMachine;
@@ -109,6 +110,39 @@ internal class ProjectManager : IProjectManager
         var newStateMachine = currentStateMachine with
         {
             States = new List<State>(states) { state }
+        };
+        UpdateStateMachine(newStateMachine);
+    }
+
+    public Transition? CreateTransition(State start, State end)
+    {
+        var currentStateMachine = GetCurrentStateMachine();
+        if (currentStateMachine == null) return null;
+        Transition transition = new(
+            Guid: Guid.NewGuid(),
+            Name: "State",
+            Start: start.Guid,
+            End: end.Guid
+        );
+        var newStateMachine = currentStateMachine with
+        {
+            Transitions = new List<Transition>(currentStateMachine.Transitions)
+            {
+                transition
+            }
+        };
+        UpdateStateMachine(newStateMachine);
+        return transition;
+    }
+
+    public void RemoveTransition(Guid guid)
+    {
+        var currentStateMachine = GetCurrentStateMachine();
+        if (currentStateMachine == null) return;
+        var transitions = currentStateMachine.Transitions.Where(el => el.Guid != guid);
+        var newStateMachine = currentStateMachine with
+        {
+            Transitions = new List<Transition>(transitions)
         };
         UpdateStateMachine(newStateMachine);
     }

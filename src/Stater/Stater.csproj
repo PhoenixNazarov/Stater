@@ -31,5 +31,13 @@
         <DependentUpon>MainEditor.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\Board\BoardCanvas.axaml.cs">
+        <DependentUpon>BoardCanvas.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="ViewModels\Board\" />
     </ItemGroup>
 </Project>

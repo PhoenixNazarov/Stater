@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Numerics;
 using System.Reactive;
 using System.Windows.Input;
+using Avalonia;
 using DynamicData;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
@@ -10,6 +13,15 @@ using ReactiveUI;
 using Stater.Models.Editors;
 
 namespace Stater.ViewModels;
+
+public record AssociateTransition
+(
+    State? Start,
+    Point StartPoint,
+    State? End,
+    Point EndPoint,
+    Transition Transition
+);
 
 public class MainWindowViewModel : ReactiveObject
 {
@@ -29,7 +41,23 @@ public class MainWindowViewModel : ReactiveObject
 
         projectManager
             .StateMachine
-            .Subscribe(x => StateMachine = x);
+            .Subscribe(x =>
+            {
+                StateMachine = x;
+                Transitions = x.Transitions.Select(y =>
+                    {
+                        var startState = x.States.Find(s => s.Guid == y.Start);
+                        var endState = x.States.Find(s => s.Guid == y.End);
+                        return new AssociateTransition(
+                            Transition: y,
+                            StartPoint: new Point(startState.X, startState.Y),
+                            EndPoint: new Point(endState.X, endState.Y),
+                            Start: startState,
+                            End: endState
+                        );
+                    }
+                ).ToList();
+            });
 
         NewCommand = ReactiveCommand.Create(NewProject);
         OpenCommand = ReactiveCommand.Create(OpenProject);
@@ -57,6 +85,8 @@ public class MainWindowViewModel : ReactiveObject
                 _editorManager.DoSelectStateMachine(openStateMachine);
         }
     }
+
+    [Reactive] public List<AssociateTransition> Transitions { get; set; }
 
     [Reactive] public State? State { get; private set; }
 

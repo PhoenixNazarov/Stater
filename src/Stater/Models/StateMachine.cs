@@ -6,5 +6,6 @@ namespace Stater.Models;
 public record StateMachine(
     Guid Guid,
     string Name,
-    List<State> States
+    List<State> States,
+    List<Transition> Transitions
 );

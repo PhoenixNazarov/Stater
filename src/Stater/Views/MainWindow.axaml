@@ -2,9 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Stater.ViewModels"
         xmlns:editors="using:Stater.Views.Editors"
+        xmlns:board="using:Stater.Views.Board"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:models="clr-namespace:Stater.Models"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Stater.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -17,86 +17,58 @@
         <vm:MainWindowViewModel />a
     </Design.DataContext>
 
-    <DockPanel>
-        <Menu Height="32" DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_New Project" Command="{Binding NewCommand}" />
-                <MenuItem Header="_Open" Command="{Binding OpenCommand }" />
-                <MenuItem Header="_Save" />
-                <MenuItem Header="_Exit" />
-            </MenuItem>
-            <MenuItem Header="_Edit">
-                <MenuItem Header="_Undo" />
-                <MenuItem Header="_Redo" />
-                <MenuItem Header="_Cut" />
-                <MenuItem Header="_Copy" />
-                <MenuItem Header="_Paste" />
-            </MenuItem>
-            <MenuItem Header="_Project">
-                <MenuItem Header="_New StateMachine" Command="{Binding NewStateMachineCommand}" />
-                <MenuItem Header="_New State" Command="{Binding NewStateCommand}" />
-            </MenuItem>
-        </Menu>
+    <DockPanel Background="#383838">
+        <Border BorderBrush="Black"
+                BorderThickness="1"
+                DockPanel.Dock="Top">
+            <Menu Height="32">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New Project" Command="{Binding NewCommand}" />
+                    <MenuItem Header="_Open" Command="{Binding OpenCommand }" />
+                    <MenuItem Header="_Save" />
+                    <MenuItem Header="_Exit" />
+                </MenuItem>
+                <MenuItem Header="_Edit">
+                    <MenuItem Header="_Undo" />
+                    <MenuItem Header="_Redo" />
+                    <MenuItem Header="_Cut" />
+                    <MenuItem Header="_Copy" />
+                    <MenuItem Header="_Paste" />
+                </MenuItem>
+                <MenuItem Header="_Project">
+                    <MenuItem Header="_New StateMachine" Command="{Binding NewStateMachineCommand}" />
+                    <MenuItem Header="_New State" Command="{Binding NewStateCommand}" />
+                </MenuItem>
+            </Menu>
+        </Border>
         <Rectangle Fill="Green" Height="200" DockPanel.Dock="Bottom" />
-        <StackPanel DockPanel.Dock="Left" Width="200">
-            <TextBlock Text="{Binding Project.Name}" />
-            <ListBox ItemsSource="{Binding StateMachines}"
-                     SelectedItem="{Binding StateMachine}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </StackPanel>
 
-        <editors:MainEditor
-            Width="200"
-            DockPanel.Dock="Right" />
 
-        <DockPanel HorizontalAlignment="Stretch" Name="TheCanvasPanel">
-            <TextBlock Background="Black" Text="{Binding StateMachine.Name}" DockPanel.Dock="Top" />
-            <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}" DockPanel.Dock="Top" />
+        <Border BorderBrush="Black"
+                BorderThickness="1"
+                DockPanel.Dock="Left"
+                Width="200">
+            <StackPanel>
+                <TextBlock Text="{Binding Project.Name}" />
+                <ListBox ItemsSource="{Binding StateMachines}"
+                         SelectedItem="{Binding StateMachine}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
 
-            <ItemsControl ItemsSource="{Binding StateMachine.States}" DockPanel.Dock="Top">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas Background="Yellow" Height="400" Width="400" Name="TheCanvas"
-                                PointerWheelChanged="InputElement_OnPointerWheelChanged"
-                                PointerPressed="InputElement_OnPointerPressed"
-                                PointerMoved="InputElement_OnPointerMoved"
-                                PointerReleased="InputElement_OnPointerReleased">
-                            <Canvas.RenderTransform>
-                                <MatrixTransform>
-                                    <MatrixTransform.Matrix>
-                                    </MatrixTransform.Matrix>
-                                </MatrixTransform>
-                            </Canvas.RenderTransform>
-                        </Canvas>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+        <Border BorderBrush="Black"
+                BorderThickness="1"
+                DockPanel.Dock="Right"
+                Padding="10"
+                Width="200">
+            <editors:MainEditor />
+        </Border>
 
-                <ItemsControl.ItemContainerTheme>
-                    <ControlTheme x:DataType="models:State" TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding X}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                    </ControlTheme>
-                </ItemsControl.ItemContainerTheme>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Rectangle
-                            Height="50"
-                            Width="50"
-                            Fill="Red"
-                            Name="State"
-                            PointerPressed="State_OnPointerPressed"
-                            PointerMoved="State_OnPointerMoved"
-                            PointerReleased="State_OnPointerReleased">
-                        </Rectangle>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </DockPanel>
+        <board:BoardCanvas />
     </DockPanel>
 </Window>

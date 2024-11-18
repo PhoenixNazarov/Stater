@@ -19,4 +19,7 @@ public interface IProjectManager
     State? CreateState();
     State? GetState(Guid guid);
     void UpdateState(State state);
+
+    Transition? CreateTransition(State start, State end);
+    void RemoveTransition(Guid guid);
 }

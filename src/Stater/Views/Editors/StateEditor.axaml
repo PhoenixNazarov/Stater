@@ -6,19 +6,69 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Stater.Views.Editors.StateEditor"
              x:DataType="vm:StateEditorViewModel">
-    <StackPanel>
-        <TextBlock Margin="0 5">Name:</TextBlock>
-        <TextBox
-            Watermark="Enter state name"
-            Text="{Binding Name}" />
-        <TextBlock Margin="0 15 0 5">Description:</TextBlock>
-        <TextBox Height="100" AcceptsReturn="True" TextWrapping="Wrap"
-                 Text="{Binding Description}" />
-        <TextBlock Margin="0 15 0 5">Type:</TextBlock>
-        <ComboBox SelectedIndex="0" MaxDropDownHeight="100" SelectedValue="{Binding Type}">
-            <ComboBoxItem>Common</ComboBoxItem>
-            <ComboBoxItem>Start</ComboBoxItem>
-            <ComboBoxItem>End</ComboBoxItem>
-        </ComboBox>
-    </StackPanel>
+    <ScrollViewer>
+        <StackPanel>
+            <TextBlock Margin="0 5">Name:</TextBlock>
+            <TextBox
+                Watermark="Enter state name"
+                Text="{Binding Name}" />
+            <TextBlock Margin="0 15 0 5">Description:</TextBlock>
+            <TextBox Height="100" AcceptsReturn="True" TextWrapping="Wrap"
+                     Text="{Binding Description}" />
+            <TextBlock Margin="0 15 0 5">Type:</TextBlock>
+            <ComboBox SelectedIndex="0" MaxDropDownHeight="100" SelectedValue="{Binding Type}">
+                <ComboBoxItem>Common</ComboBoxItem>
+                <ComboBoxItem>Start</ComboBoxItem>
+                <ComboBoxItem>End</ComboBoxItem>
+            </ComboBox>
+
+            <Button Margin="0 15 0 5 " Command="{Binding SaveCommand}">Save</Button>
+
+            <TextBlock Margin="0 15 0 5">Transitions:</TextBlock>
+            <ScrollViewer MaxHeight="300">
+                <ItemsControl ItemsSource="{Binding Transitions}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="-" FontSize="20" />
+                                    <TextBlock Text="{Binding Start}"></TextBlock>
+                                    <TextBlock Text="->" FontSize="20" />
+                                    <TextBlock Text="{Binding End}"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <TextBlock Margin="0 15 0 5">Include:</TextBlock>
+            <ScrollViewer Height="300">
+                <ItemsControl ItemsSource="{Binding AllStates}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Command="{Binding $parent[ItemsControl].((vm:StateEditorViewModel)DataContext).AddTransitionCommand}"
+                                CommandParameter="{Binding }" Width="100">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="+" />
+                                    <TextBlock Text="{Binding Name}" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
