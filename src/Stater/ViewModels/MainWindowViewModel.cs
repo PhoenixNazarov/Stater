@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Numerics;
-using System.Reactive;
 using System.Windows.Input;
-using Avalonia;
 using DynamicData;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
@@ -13,15 +8,6 @@ using ReactiveUI;
 using Stater.Models.Editors;
 
 namespace Stater.ViewModels;
-
-public record AssociateTransition
-(
-    State? Start,
-    Point StartPoint,
-    State? End,
-    Point EndPoint,
-    Transition Transition
-);
 
 public class MainWindowViewModel : ReactiveObject
 {
@@ -41,30 +27,12 @@ public class MainWindowViewModel : ReactiveObject
 
         projectManager
             .StateMachine
-            .Subscribe(x =>
-            {
-                StateMachine = x;
-                Transitions = x.Transitions.Select(y =>
-                    {
-                        var startState = x.States.Find(s => s.Guid == y.Start);
-                        var endState = x.States.Find(s => s.Guid == y.End);
-                        return new AssociateTransition(
-                            Transition: y,
-                            StartPoint: new Point(startState.X, startState.Y),
-                            EndPoint: new Point(endState.X, endState.Y),
-                            Start: startState,
-                            End: endState
-                        );
-                    }
-                ).ToList();
-            });
+            .Subscribe(x => { StateMachine = x; });
 
         NewCommand = ReactiveCommand.Create(NewProject);
         OpenCommand = ReactiveCommand.Create(OpenProject);
         NewStateMachineCommand = ReactiveCommand.Create(NewStateMachine);
         NewStateCommand = ReactiveCommand.Create(NewState);
-        StateClickCommand = ReactiveCommand.Create<State>(OnStateClicked);
-        UpdateStateCoordsCommand = ReactiveCommand.Create<Vector2>(UpdateStateCoords);
     }
 
     private readonly IProjectManager _projectManager;
@@ -86,9 +54,6 @@ public class MainWindowViewModel : ReactiveObject
         }
     }
 
-    [Reactive] public List<AssociateTransition> Transitions { get; set; }
-
-    [Reactive] public State? State { get; private set; }
 
     private readonly ReadOnlyObservableCollection<StateMachine> _stateMachines;
     public ReadOnlyObservableCollection<StateMachine> StateMachines => _stateMachines;
@@ -97,8 +62,6 @@ public class MainWindowViewModel : ReactiveObject
     public ICommand OpenCommand { get; }
     public ICommand NewStateMachineCommand { get; }
     public ICommand NewStateCommand { get; }
-    public ReactiveCommand<State, Unit> StateClickCommand { get; }
-    public ReactiveCommand<Vector2, Unit> UpdateStateCoordsCommand { get; }
 
 
     private void OpenProject()
@@ -119,27 +82,6 @@ public class MainWindowViewModel : ReactiveObject
     private void NewState()
     {
         var state = _projectManager.CreateState();
-        if (state != null)
-        {
-            State = state;
-        }
-    }
-
-    private void OnStateClicked(State state)
-    {
-        var selectedState = _projectManager.GetState(state.Guid);
-        State = selectedState ?? null;
-        if (State != null) _editorManager.DoSelectState(State);
-    }
-
-    private void UpdateStateCoords(Vector2 coords)
-    {
-        if (State == null) return;
-        var newState = State with
-        {
-            X = State.X + coords.X,
-            Y = State.Y + coords.Y
-        };
-        _projectManager.UpdateState(newState);
+        if (state != null) _editorManager.DoSelectState(state);
     }
 }
