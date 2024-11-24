@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Avalonia.Animation;
 
 namespace Stater.Models;
 
@@ -6,5 +8,6 @@ public record Transition(
     Guid Guid,
     string Name,
     Guid Start,
-    Guid End
+    Guid End,
+    Condition? Condition
 );

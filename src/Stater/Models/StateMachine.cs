@@ -7,5 +7,6 @@ public record StateMachine(
     Guid Guid,
     string Name,
     List<State> States,
-    List<Transition> Transitions
+    List<Transition> Transitions,
+    List<Variable> Variables
 );

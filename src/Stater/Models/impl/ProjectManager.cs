@@ -61,7 +61,8 @@ internal class ProjectManager : IProjectManager
             Guid: Guid.NewGuid(),
             Name: "StateMachine " + _stateMachines.Count,
             States: new List<State>(),
-            Transitions: new List<Transition>()
+            Transitions: new List<Transition>(),
+            Variables: new List<Variable>()
         );
         UpdateStateMachine(stateMachine);
         return stateMachine;
@@ -122,7 +123,8 @@ internal class ProjectManager : IProjectManager
             Guid: Guid.NewGuid(),
             Name: "State",
             Start: start.Guid,
-            End: end.Guid
+            End: end.Guid,
+            Condition: null
         );
         var newStateMachine = currentStateMachine with
         {
