@@ -1,27 +1,181 @@
 using System;
+using System.Linq;
 
 namespace Stater.Models;
 
-public abstract record Variable(
+public record Variable(
     Guid Guid,
-    string Name
-)
+    string Name,
+    VariableValue StartValue
+);
+
+public class VariableOperatorException(string message) : Exception(message);
+
+public class VariableMathException(string message) : Exception(message);
+
+public abstract record VariableValue
 {
-    public record IntVariable(
-        Guid Guid,
-        string Name,
-        int Value
-    ) : Variable(Guid, Name);
+    public record IntVariable(int Value) : VariableValue
+    {
+        protected override VariableValue Default() => new IntVariable(0);
 
-    public record StringVariable(
-        Guid Guid,
-        string Name,
-        string Value
-    ) : Variable(Guid, Name);
+        protected override bool Greater(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => Value > v.Value,
+            FloatVariable v => Value > v.Value,
+            _ => throw new VariableOperatorException("Integer must compare only with integer or float")
+        };
 
-    public record BoolVariable(
-        Guid Guid,
-        string Name,
-        bool Value
-    ) : Variable(Guid, Name);
+        protected override VariableValue Sum(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => new IntVariable(Value + v.Value),
+            FloatVariable v => new IntVariable(Value + (int)v.Value),
+            _ => throw new VariableMathException("Integer must sum only with integer or float")
+        };
+
+        protected override VariableValue Sub(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => new IntVariable(Value - v.Value),
+            FloatVariable v => new IntVariable(Value - (int)v.Value),
+            _ => throw new VariableMathException("Integer must sub only with integer or float")
+        };
+
+        protected override VariableValue Mul(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => new IntVariable(Value * v.Value),
+            FloatVariable v => new IntVariable(Value * (int)v.Value),
+            StringVariable v => new StringVariable(string.Concat(Enumerable.Repeat(v.Value, Value))),
+            _ => throw new VariableMathException("Integer must mul only with integer, float or string")
+        };
+
+        protected override VariableValue Div(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => new IntVariable(Value / v.Value),
+            FloatVariable v => new IntVariable(Value / (int)v.Value),
+            _ => throw new VariableMathException("Integer must div only with integer or float")
+        };
+    };
+
+    public record BoolVariable(bool Value) : VariableValue
+    {
+        protected override VariableValue Default() => new BoolVariable(false);
+
+        protected override bool Greater(VariableValue otherVariableValue)
+        {
+            throw new VariableOperatorException("Bool variables not support operations: >, <, <=, >=");
+        }
+
+        protected override VariableValue Sum(VariableValue otherVariableValue)
+        {
+            throw new VariableOperatorException("Bool variables not support operations: +, -, *, /");
+        }
+
+        protected override VariableValue Sub(VariableValue otherVariableValue)
+        {
+            throw new VariableOperatorException("Bool variables not support operations: +, -, *, /");
+        }
+
+        protected override VariableValue Mul(VariableValue otherVariableValue)
+        {
+            throw new VariableOperatorException("Bool variables not support operations: +, -, *, /");
+        }
+
+        protected override VariableValue Div(VariableValue otherVariableValue)
+        {
+            throw new VariableOperatorException("Bool variables not support operations: +, -, *, /");
+        }
+    }
+
+    public record FloatVariable(float Value) : VariableValue
+    {
+        protected override VariableValue Default() => new FloatVariable(0);
+
+        protected override bool Greater(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            FloatVariable v => Value > v.Value,
+            IntVariable v => Value > v.Value,
+            _ => throw new VariableOperatorException("Float must compare only with integer or float")
+        };
+
+        protected override VariableValue Sum(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => new FloatVariable(Value + v.Value),
+            FloatVariable v => new FloatVariable(Value + v.Value),
+            _ => throw new VariableMathException("Float must sum only with integer or float")
+        };
+
+        protected override VariableValue Sub(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => new FloatVariable(Value - v.Value),
+            FloatVariable v => new FloatVariable(Value - v.Value),
+            _ => throw new VariableMathException("Float must sub only with integer or float")
+        };
+
+        protected override VariableValue Mul(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => new FloatVariable(Value * v.Value),
+            FloatVariable v => new FloatVariable(Value * v.Value),
+            _ => throw new VariableMathException("Float must mul only with integer or float")
+        };
+
+        protected override VariableValue Div(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => new FloatVariable(Value / v.Value),
+            FloatVariable v => new FloatVariable(Value / v.Value),
+            _ => throw new VariableMathException("Float must div only with integer or float")
+        };
+    };
+
+    public record StringVariable(string Value) : VariableValue
+    {
+        protected override VariableValue Default() => new StringVariable("");
+
+        protected override bool Greater(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            StringVariable v => string.CompareOrdinal(Value, v.Value) > 0,
+            _ => throw new VariableOperatorException("String must compare only with string")
+        };
+
+        protected override VariableValue Sum(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            StringVariable v => new StringVariable(Value + v.Value),
+            _ => throw new VariableMathException("String must sum only with string")
+        };
+
+        protected override VariableValue Sub(VariableValue otherVariableValue)
+        {
+            throw new VariableOperatorException("String variables not support operations: +, -, *, /");
+        }
+
+        protected override VariableValue Mul(VariableValue otherVariableValue) => otherVariableValue switch
+        {
+            IntVariable v => new StringVariable(string.Concat(Enumerable.Repeat(Value, v.Value))),
+            _ => throw new VariableMathException("String must sum only with string")
+        };
+
+        protected override VariableValue Div(VariableValue otherVariableValue)
+        {
+            throw new VariableOperatorException("String variables not support operations /");
+        }
+    };
+
+    protected abstract VariableValue Default();
+
+    protected abstract bool Greater(VariableValue otherVariableValue); // >
+
+    public static bool operator >(VariableValue a, VariableValue b) => a.Greater(b);
+    public static bool operator >=(VariableValue a, VariableValue b) => a.Greater(b) || a == b;
+    public static bool operator <(VariableValue a, VariableValue b) => !(a.Greater(b) || a == b);
+    public static bool operator <=(VariableValue a, VariableValue b) => !a.Greater(b);
+
+
+    protected abstract VariableValue Sum(VariableValue otherVariableValue);
+    protected abstract VariableValue Sub(VariableValue otherVariableValue);
+    protected abstract VariableValue Mul(VariableValue otherVariableValue);
+    protected abstract VariableValue Div(VariableValue otherVariableValue);
+
+    public static VariableValue operator +(VariableValue a, VariableValue b) => a.Sum(b);
+    public static VariableValue operator -(VariableValue a, VariableValue b) => a.Sub(b);
+    public static VariableValue operator *(VariableValue a, VariableValue b) => a.Mul(b);
+    public static VariableValue operator /(VariableValue a, VariableValue b) => a.Div(b);
 }

@@ -26,7 +26,8 @@ internal class ProjectManager : IProjectManager
     private StateMachine? GetCurrentStateMachine()
     {
         StateMachine? currentStateMachine = null;
-        _stateMachine.Subscribe(stateMachine => currentStateMachine = stateMachine);
+        var s = _stateMachine.Subscribe(stateMachine => currentStateMachine = stateMachine);
+        s.Dispose();
         return currentStateMachine;
     }
 
