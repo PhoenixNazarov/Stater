@@ -29,19 +29,6 @@
                         <Setter Property="Canvas.Top" Value="{Binding Y}" />
                     </ControlTheme>
                 </ItemsControl.ItemContainerTheme>
-                <ItemsControl ItemsSource="{Binding Transitions}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas Height="400" Width="400" Name="TransitionsCanvas" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Line StartPoint="{Binding StartPoint}" EndPoint="{Binding EndPoint}" Stroke="Red"
-                                  StrokeThickness="2" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border BorderBrush="Black"
@@ -54,6 +41,20 @@
                                 Background="Bisque">
                             <TextBlock Text="{Binding Name}" />
                         </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+            <ItemsControl ItemsSource="{Binding Transitions}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Height="400" Width="400" Name="TransitionsCanvas" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Line StartPoint="{Binding StartPoint}" EndPoint="{Binding EndPoint}" Stroke="Red"
+                              StrokeThickness="2" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
