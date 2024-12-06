@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Stater.Models;
 
@@ -15,5 +16,21 @@ public record State(
     string Description,
     StateType Type,
     float X,
-    float Y
-);
+    float Y,
+    List<Event> EntryEvents,
+    List<Event> ExitEvents
+)
+{
+    public State() : this(
+        new Guid(),
+        "State",
+        "",
+        StateType.Common,
+        0,
+        0,
+        new List<Event>(),
+        new List<Event>()
+    )
+    {
+    }
+}

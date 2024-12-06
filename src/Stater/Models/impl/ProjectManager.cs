@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reactive.Subjects;
+using System.Xml;
 using DynamicData;
 
 namespace Stater.Models.impl;
@@ -23,6 +27,9 @@ internal class ProjectManager : IProjectManager
     private readonly ReplaySubject<Transition> _transtion = new();
     public IObservable<Transition> Transition => _transtion;
 
+    public Stack<StateMachine> UndoStack = new(); 
+    public Stack<StateMachine> RedoStack = new(); 
+    
     private StateMachine? GetCurrentStateMachine()
     {
         StateMachine? currentStateMachine = null;
@@ -40,18 +47,40 @@ internal class ProjectManager : IProjectManager
         _project.OnNext(project);
     }
 
-    public Project LoadProject(string path)
+    public Project LoadProject(StreamReader sr)
     {
-        throw new NotImplementedException();
+        XmlDocument doc = new XmlDocument();
+        var writer = new System.Xml.Serialization.XmlSerializer(typeof(Project));
+        var project = writer.Deserialize(sr);
+        if (project is not Project project1) throw new ValidationException();
+        _project.OnNext(project1);
+        return project1;
     }
 
-    public void SaveProject(Project project, string path)
+    public void SaveProject(StreamWriter sw)
     {
-        throw new NotImplementedException();
+        var writer = new System.Xml.Serialization.XmlSerializer(typeof(Project));
+        writer.Serialize(sw, _project);
+        sw.Close();
+    }
+
+    public void Undo()
+    {
+        var stateMachine = UndoStack.Peek();
+        RedoStack.Push(stateMachine);
+        _stateMachine.OnNext(stateMachine);
+    }
+
+    public void Redo()
+    {
+        var stateMachine = RedoStack.Peek();
+        UndoStack.Push(stateMachine);
+        _stateMachine.OnNext(stateMachine);
     }
 
     public void UpdateStateMachine(StateMachine newStateMachine)
     {
+        UndoStack.Push(newStateMachine);
         _stateMachines.AddOrUpdate(newStateMachine);
         _stateMachine.OnNext(newStateMachine);
     }
@@ -74,7 +103,10 @@ internal class ProjectManager : IProjectManager
         var currentStateMachine = GetCurrentStateMachine();
         if (currentStateMachine?.Guid == guid) return null;
         var stateMachine = _stateMachines.KeyValues[guid.ToString()];
+        UndoStack.Clear();
+        RedoStack.Clear();
         _stateMachine.OnNext(stateMachine);
+        UndoStack.Push(stateMachine);
         return stateMachine;
     }
 
@@ -88,7 +120,9 @@ internal class ProjectManager : IProjectManager
             Description: "",
             Type: StateType.Common,
             10,
-            10
+            10,
+            new List<Event>(),
+            new List<Event>()
         );
         var newStateMachine = currentStateMachine with
         {
@@ -138,6 +172,12 @@ internal class ProjectManager : IProjectManager
         return transition;
     }
 
+    public Transition? GetTransition(Guid guid)
+    {
+        var currentStateMachine = GetCurrentStateMachine();
+        return currentStateMachine?.Transitions.FirstOrDefault(e => e.Guid == guid);
+    }
+
     public void RemoveTransition(Guid guid)
     {
         var currentStateMachine = GetCurrentStateMachine();
@@ -146,6 +186,18 @@ internal class ProjectManager : IProjectManager
         var newStateMachine = currentStateMachine with
         {
             Transitions = new List<Transition>(transitions)
+        };
+        UpdateStateMachine(newStateMachine);
+    }
+
+    public void UpdateTransition(Transition transition)
+    {
+        var currentStateMachine = GetCurrentStateMachine();
+        if (currentStateMachine == null) return;
+        var transitions = currentStateMachine.Transitions.Where(el => el.Guid != transition.Guid);
+        var newStateMachine = currentStateMachine with
+        {
+            Transitions = new List<Transition>(transitions) { transition }
         };
         UpdateStateMachine(newStateMachine);
     }

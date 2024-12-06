@@ -17,5 +17,4 @@ public class StateEditor(IProjectManager projectManager): IStateEditor
     {
         projectManager.UpdateState(state);
     }
-    
 }

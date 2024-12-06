@@ -180,4 +180,12 @@ public partial class BoardCanvas : UserControl
         var context = (BoardCanvasViewModel)DataContext;
         context?.UpdateStateCoordsCommand.Execute(new Vector2((float)stateX, (float)stateY)).Subscribe();
     }
+
+    private void Transition_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        var rectangle = (Control)sender;
+        if (rectangle?.DataContext is not AssociateTransition transition) return;
+        var context = (BoardCanvasViewModel)DataContext;
+        context?.TransitionClickCommand.Execute(transition.Transition).Subscribe();
+    }
 }

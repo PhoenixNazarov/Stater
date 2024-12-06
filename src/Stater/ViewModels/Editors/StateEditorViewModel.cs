@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Windows.Input;
 using ReactiveUI;
@@ -59,10 +58,10 @@ public class StateEditorViewModel : ReactiveObject
 
     [Reactive] public List<State> AllStates { get; set; }
     [Reactive] public List<Transition> Transitions { get; set; }
+    
 
     private void AddTransition(State state)
     {
-        Console.WriteLine("Add");
         if (State == null) return;
         _projectManager.CreateTransition(State, state);
     }
@@ -77,7 +76,7 @@ public class StateEditorViewModel : ReactiveObject
         if (State == null) return;
         var tryParse = Enum.TryParse(Type, out StateType type);
         if (!tryParse) return;
-        var newStateMachine = State with { Name = Name, Description = Description, Type = type };
-        _stateEditor.Update(newStateMachine);
+        var newState = State with { Name = Name, Description = Description, Type = type };
+        _stateEditor.Update(newState);
     }
 }

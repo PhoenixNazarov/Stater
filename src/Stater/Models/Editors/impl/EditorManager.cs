@@ -10,13 +10,15 @@ public class EditorManager : IEditorManager
 
     private IStateMachineEditor _stateMachineEditor;
     private IStateEditor _stateEditor;
+    private ITransitionEditor _transitionEditor;
 
 
-    public EditorManager(IStateMachineEditor stateMachineEditor, IStateEditor stateEditor)
+    public EditorManager(IStateMachineEditor stateMachineEditor, IStateEditor stateEditor, ITransitionEditor transitionEditor)
     {
         _editorType.OnNext(EditorTypeEnum.Null);
         _stateMachineEditor = stateMachineEditor;
         _stateEditor = stateEditor;
+        _transitionEditor = transitionEditor;
     }
 
 
@@ -34,6 +36,7 @@ public class EditorManager : IEditorManager
 
     public void DoSelectTransition(Transition transition)
     {
-        throw new System.NotImplementedException();
+        _transitionEditor.DoSelect(transition);
+        _editorType.OnNext(EditorTypeEnum.Transition);
     }
 }

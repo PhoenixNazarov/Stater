@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 
 namespace Stater.Models;
@@ -7,16 +8,61 @@ public record Variable(
     Guid Guid,
     string Name,
     VariableValue StartValue
-);
+)
+{
+    public Variable() : this(
+        new Guid(),
+        "Variable",
+        VariableValueBuilder.fromString("")
+    )
+    {
+    }
+}
 
 public class VariableOperatorException(string message) : Exception(message);
 
 public class VariableMathException(string message) : Exception(message);
 
+public static class VariableValueBuilder
+{
+    public static VariableValue fromString(string input)
+    {
+        switch (input)
+        {
+            case "true":
+                return new VariableValue.BoolVariable(true);
+            case "false":
+                return new VariableValue.BoolVariable(false);
+        }
+
+        try
+        {
+            return new VariableValue.FloatVariable(float.Parse(input));
+        }
+        catch (Exception _)
+        {
+            // ignored
+        }
+
+        try
+        {
+            return new VariableValue.IntVariable(int.Parse(input));
+        }
+        catch (Exception _)
+        {
+            // ignored
+        }
+
+        return new VariableValue.StringVariable(input);
+    }
+}
+
 public abstract record VariableValue
 {
     public record IntVariable(int Value) : VariableValue
     {
+        public override string ToString() => Value.ToString();
+
         protected override VariableValue Default() => new IntVariable(0);
 
         protected override bool Greater(VariableValue otherVariableValue) => otherVariableValue switch
@@ -58,6 +104,7 @@ public abstract record VariableValue
 
     public record BoolVariable(bool Value) : VariableValue
     {
+        public override string ToString() => Value.ToString();
         protected override VariableValue Default() => new BoolVariable(false);
 
         protected override bool Greater(VariableValue otherVariableValue)
@@ -88,6 +135,7 @@ public abstract record VariableValue
 
     public record FloatVariable(float Value) : VariableValue
     {
+        public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
         protected override VariableValue Default() => new FloatVariable(0);
 
         protected override bool Greater(VariableValue otherVariableValue) => otherVariableValue switch
@@ -128,6 +176,7 @@ public abstract record VariableValue
 
     public record StringVariable(string Value) : VariableValue
     {
+        public override string ToString() => Value;
         protected override VariableValue Default() => new StringVariable("");
 
         protected override bool Greater(VariableValue otherVariableValue) => otherVariableValue switch
@@ -178,4 +227,9 @@ public abstract record VariableValue
     public static VariableValue operator -(VariableValue a, VariableValue b) => a.Sub(b);
     public static VariableValue operator *(VariableValue a, VariableValue b) => a.Mul(b);
     public static VariableValue operator /(VariableValue a, VariableValue b) => a.Div(b);
+
+    public override string ToString()
+    {
+        return base.ToString();
+    }
 }

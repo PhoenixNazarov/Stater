@@ -47,12 +47,14 @@ public partial class App : Application
         var projectManager = new ProjectManager();
         var stateMachineEditor = new StateMachineEditor(projectManager);
         var stateEditor = new StateEditor(projectManager);
+        var transitionEditor = new TransitionEditor(projectManager);
 
         Locator.CurrentMutable.RegisterConstant(projectManager, typeof(IProjectManager));
 
-        Locator.CurrentMutable.RegisterConstant(new EditorManager(stateMachineEditor, stateEditor),
+        Locator.CurrentMutable.RegisterConstant(new EditorManager(stateMachineEditor, stateEditor, transitionEditor),
             typeof(IEditorManager));
         Locator.CurrentMutable.RegisterConstant(stateMachineEditor, typeof(IStateMachineEditor));
         Locator.CurrentMutable.RegisterConstant(stateEditor, typeof(IStateEditor));
+        Locator.CurrentMutable.RegisterConstant(transitionEditor, typeof(ITransitionEditor));
     }
 }

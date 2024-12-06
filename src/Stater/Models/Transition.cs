@@ -7,7 +7,18 @@ namespace Stater.Models;
 public record Transition(
     Guid Guid,
     string Name,
-    Guid Start,
-    Guid End,
+    Guid? Start,
+    Guid? End,
     Condition? Condition
-);
+)
+{
+    public Transition() : this(
+        new Guid(),
+        "Transition",
+        null,
+        null,
+        null
+    )
+    {
+    }
+}

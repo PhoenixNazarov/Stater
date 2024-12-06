@@ -40,6 +40,7 @@ public class BoardCanvasViewModel : ReactiveObject
 
         StateClickCommand = ReactiveCommand.Create<State>(OnStateClicked);
         UpdateStateCoordsCommand = ReactiveCommand.Create<Vector2>(UpdateStateCoords);
+        TransitionClickCommand = ReactiveCommand.Create<Transition>(OnTransitionClicked);
     }
 
     private readonly IProjectManager _projectManager;
@@ -51,12 +52,20 @@ public class BoardCanvasViewModel : ReactiveObject
 
     public ReactiveCommand<State, Unit> StateClickCommand { get; }
     public ReactiveCommand<Vector2, Unit> UpdateStateCoordsCommand { get; }
-
+    
+    public ReactiveCommand<Transition, Unit> TransitionClickCommand { get; }
+    
     private void OnStateClicked(State state)
     {
         var selectedState = _projectManager.GetState(state.Guid);
         State = selectedState ?? null;
         if (State != null) _editorManager.DoSelectState(State);
+    }
+
+    private void OnTransitionClicked(Transition transition)
+    {
+        var selectedTransition = _projectManager.GetTransition(transition.Guid);
+        if (selectedTransition != null) _editorManager.DoSelectTransition(selectedTransition);
     }
 
     private void UpdateStateCoords(Vector2 coords)

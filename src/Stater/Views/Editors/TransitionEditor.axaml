@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Stater.Views.Editors.TransitionEditor"
+             xmlns:vm="using:Stater.ViewModels.Editors"
+             x:DataType="vm:TransitionEditorViewModel">
+    <StackPanel>
+        <TextBlock Margin="0 5">Name:</TextBlock>
+        <TextBox
+            Watermark="Enter state name" Text="{Binding Name}" />
+
+        <TextBlock Margin="0 5">Condition:</TextBlock>
+        <ComboBox SelectedIndex="0" MaxDropDownHeight="100">
+            <ComboBoxItem>Variable</ComboBoxItem>
+        </ComboBox>
+
+        <TextBlock Margin="0 5">Source Variable:</TextBlock>
+        <ComboBox SelectedIndex="0" MaxDropDownHeight="100"
+                  ItemsSource="{Binding Variables}"
+                  SelectedItem="{Binding Variable}" />
+
+        <TextBlock Margin="0 5">Condition:</TextBlock>
+        <ComboBox SelectedIndex="0" MaxDropDownHeight="100" SelectedItem="{Binding Condition}">
+            <!-- <ComboBoxItem><</ComboBoxItem> -->
+            <!-- <ComboBoxItem> <= </ComboBoxItem> -->
+            <ComboBoxItem>==</ComboBoxItem>
+            <ComboBoxItem>!=</ComboBoxItem>
+            <ComboBoxItem>></ComboBoxItem>
+            <ComboBoxItem>>=</ComboBoxItem>
+        </ComboBox>
+
+        <TextBlock Margin="0 5">Value:</TextBlock>
+        <TextBox
+            Watermark="0" Text="{Binding Value}" />
+        <Button Margin="0 15 0 5 " Command="{Binding SaveCommand}">Save</Button>
+    </StackPanel>
+</UserControl>

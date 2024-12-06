@@ -3,6 +3,7 @@
         xmlns:vm="using:Stater.ViewModels"
         xmlns:editors="using:Stater.Views.Editors"
         xmlns:board="using:Stater.Views.Board"
+        xmlns:execution="using:Stater.Views.Execution"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -24,16 +25,16 @@
             <Menu Height="32">
                 <MenuItem Header="_File">
                     <MenuItem Header="_New Project" Command="{Binding NewCommand}" />
-                    <MenuItem Header="_Open" Command="{Binding OpenCommand }" />
-                    <MenuItem Header="_Save" />
+                    <MenuItem Header="_Open" Click="OpenFileButton_Clicked" />
+                    <MenuItem Header="_Save" Click="SaveFileButton_Clicked" />
                     <MenuItem Header="_Exit" />
                 </MenuItem>
                 <MenuItem Header="_Edit">
                     <MenuItem Header="_Undo" />
                     <MenuItem Header="_Redo" />
-                    <MenuItem Header="_Cut" />
-                    <MenuItem Header="_Copy" />
-                    <MenuItem Header="_Paste" />
+                    <!-- <MenuItem Header="_Cut" /> -->
+                    <!-- <MenuItem Header="_Copy" /> -->
+                    <!-- <MenuItem Header="_Paste" /> -->
                 </MenuItem>
                 <MenuItem Header="_Project">
                     <MenuItem Header="_New StateMachine" Command="{Binding NewStateMachineCommand}" />
@@ -41,31 +42,37 @@
                 </MenuItem>
             </Menu>
         </Border>
-        <Rectangle Fill="Green" Height="200" DockPanel.Dock="Bottom" />
 
-
+        <Border BorderBrush="Black"
+                BorderThickness="1"
+                DockPanel.Dock="Bottom">
+            <execution:ExecutionGroup Height="200" />
+        </Border>
+        
         <Border BorderBrush="Black"
                 BorderThickness="1"
                 DockPanel.Dock="Left"
                 Width="200">
-            <StackPanel>
-                <TextBlock Text="{Binding Project.Name}" />
-                <ListBox ItemsSource="{Binding StateMachines}"
-                         SelectedItem="{Binding StateMachine}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </StackPanel>
+            <ScrollViewer>
+                <StackPanel>
+                    <TextBlock Text="{Binding Project.Name}" />
+                    <ListBox ItemsSource="{Binding StateMachines}"
+                             SelectedItem="{Binding StateMachine}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <Border BorderBrush="Black"
                 BorderThickness="1"
                 DockPanel.Dock="Right"
                 Padding="10"
-                Width="200">
+                Width="400">
             <editors:MainEditor />
         </Border>
 

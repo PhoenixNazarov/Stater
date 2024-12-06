@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using Avalonia.Animation;
 using DynamicData;
 
 namespace Stater.Models;
@@ -10,8 +12,11 @@ public interface IProjectManager
     IObservable<StateMachine> StateMachine { get; }
 
     void CreateProject(string name);
-    Project LoadProject(string path);
-    void SaveProject(Project project, string path);
+    Project LoadProject(StreamReader sr);
+    void SaveProject(StreamWriter sw);
+
+    void Undo();
+    void Redo();
     
     StateMachine CreateStateMachine();
     void UpdateStateMachine(StateMachine newStateMachine);
@@ -22,4 +27,6 @@ public interface IProjectManager
 
     Transition? CreateTransition(State start, State end);
     void RemoveTransition(Guid guid);
+    Transition? GetTransition(Guid guid);
+    void UpdateTransition(Transition transition);
 }

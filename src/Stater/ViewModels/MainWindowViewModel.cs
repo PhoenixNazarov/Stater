@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Reactive;
 using System.Windows.Input;
 using DynamicData;
 using ReactiveUI.Fody.Helpers;
@@ -30,7 +32,8 @@ public class MainWindowViewModel : ReactiveObject
             .Subscribe(x => { StateMachine = x; });
 
         NewCommand = ReactiveCommand.Create(NewProject);
-        OpenCommand = ReactiveCommand.Create(OpenProject);
+        OpenCommand = ReactiveCommand.Create<StreamReader>(OpenProject);
+        SaveCommand = ReactiveCommand.Create<StreamWriter>(SaveProject);
         NewStateMachineCommand = ReactiveCommand.Create(NewStateMachine);
         NewStateCommand = ReactiveCommand.Create(NewState);
     }
@@ -59,18 +62,25 @@ public class MainWindowViewModel : ReactiveObject
     public ReadOnlyObservableCollection<StateMachine> StateMachines => _stateMachines;
 
     public ICommand NewCommand { get; }
-    public ICommand OpenCommand { get; }
+    public ReactiveCommand<StreamReader, Unit> OpenCommand { get; }
+    public ReactiveCommand<StreamWriter, Unit> SaveCommand { get; }
     public ICommand NewStateMachineCommand { get; }
     public ICommand NewStateCommand { get; }
 
 
-    private void OpenProject()
+    private void OpenProject(StreamReader sr)
     {
+        _projectManager.LoadProject(sr);
     }
 
     private void NewProject()
     {
         _projectManager.CreateProject("New Project");
+    }
+
+    private void SaveProject(StreamWriter sw)
+    {
+        _projectManager.SaveProject(sw);
     }
 
     private void NewStateMachine()

@@ -53,7 +53,10 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Line StartPoint="{Binding StartPoint}" EndPoint="{Binding EndPoint}" Stroke="Red"
+                        <Line StartPoint="{Binding StartPoint}" 
+                              EndPoint="{Binding EndPoint}" 
+                              Stroke="Red"
+                              PointerPressed="Transition_OnPointerPressed"
                               StrokeThickness="2" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

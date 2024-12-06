@@ -21,5 +21,9 @@
             IsVisible="{Binding EditorType, Converter={StaticResource EditorTypeToBoolConverter}, ConverterParameter='State'}">
             <editors:StateEditor />
         </Panel>
+        <Panel
+            IsVisible="{Binding EditorType, Converter={StaticResource EditorTypeToBoolConverter}, ConverterParameter='Transition'}">
+            <editors:TransitionEditor />
+        </Panel>
     </StackPanel>
 </UserControl>
