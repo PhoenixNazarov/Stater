@@ -1,6 +1,5 @@
 using System;
 using System.Reactive.Subjects;
-using Avalonia.Animation;
 
 namespace Stater.Models.Editors.impl;
 

@@ -30,8 +30,8 @@
                     <MenuItem Header="_Exit" />
                 </MenuItem>
                 <MenuItem Header="_Edit">
-                    <MenuItem Header="_Undo" />
-                    <MenuItem Header="_Redo" />
+                    <MenuItem Header="_Undo" Command="{Binding UndoCommand}" HotKey="{OnPlatform Ctrl+Z, macOS=⌘+z}"/>
+                    <MenuItem Header="_Redo" Command="{Binding RedoCommand}" HotKey="Ctrl+Shift+Z"/>
                     <!-- <MenuItem Header="_Cut" /> -->
                     <!-- <MenuItem Header="_Copy" /> -->
                     <!-- <MenuItem Header="_Paste" /> -->
@@ -46,7 +46,7 @@
         <Border BorderBrush="Black"
                 BorderThickness="1"
                 DockPanel.Dock="Bottom">
-            <execution:ExecutionGroup Height="200" />
+            <execution:ExecutionGroup Height="300" />
         </Border>
         
         <Border BorderBrush="Black"

@@ -12,7 +12,7 @@ public record StateMachine(
 )
 {
     public StateMachine() : this(
-        new Guid(),
+        Guid.NewGuid(),
         "",
         new List<State>(),
         new List<Transition>(),

@@ -13,7 +13,7 @@ public record Transition(
 )
 {
     public Transition() : this(
-        new Guid(),
+        Guid.NewGuid(),
         "Transition",
         null,
         null,

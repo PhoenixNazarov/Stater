@@ -11,9 +11,9 @@ public record Variable(
 )
 {
     public Variable() : this(
-        new Guid(),
+        Guid.NewGuid(),
         "Variable",
-        VariableValueBuilder.fromString("")
+        VariableValueBuilder.fromString("0")
     )
     {
     }

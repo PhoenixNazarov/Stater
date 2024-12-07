@@ -36,6 +36,8 @@ public class MainWindowViewModel : ReactiveObject
         SaveCommand = ReactiveCommand.Create<StreamWriter>(SaveProject);
         NewStateMachineCommand = ReactiveCommand.Create(NewStateMachine);
         NewStateCommand = ReactiveCommand.Create(NewState);
+        UndoCommand = ReactiveCommand.Create(Undo);
+        RedoCommand = ReactiveCommand.Create(Redo);
     }
 
     private readonly IProjectManager _projectManager;
@@ -66,6 +68,8 @@ public class MainWindowViewModel : ReactiveObject
     public ReactiveCommand<StreamWriter, Unit> SaveCommand { get; }
     public ICommand NewStateMachineCommand { get; }
     public ICommand NewStateCommand { get; }
+    public ICommand UndoCommand { get; }
+    public ICommand RedoCommand { get; }
 
 
     private void OpenProject(StreamReader sr)
@@ -94,4 +98,7 @@ public class MainWindowViewModel : ReactiveObject
         var state = _projectManager.CreateState();
         if (state != null) _editorManager.DoSelectState(state);
     }
+
+    private void Undo() => _projectManager.Undo();
+    private void Redo() => _projectManager.Redo();
 }

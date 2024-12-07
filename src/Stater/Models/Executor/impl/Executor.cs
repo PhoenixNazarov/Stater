@@ -7,35 +7,33 @@ using DynamicData;
 
 namespace Stater.Models.Executor.impl;
 
-public class Executor : IExecutor
+public class Executor(IProjectManager projectManager) : IExecutor
 {
     private readonly ReplaySubject<State?> _state = new();
     public IObservable<State?> State => _state;
 
     private StateMachine? _stateMachine;
 
-    private readonly SourceList<ExecuteLog> _logs = new();
-    public IObservable<IChangeSet<ExecuteLog>> Logs => _logs.Connect();
+    private readonly ReplaySubject<LogContainer> _logs = new();
+    public IObservable<LogContainer> Logs => _logs;
 
     private readonly ReplaySubject<IDictionary<Guid, VariableValue>?> _variables = new();
     public IObservable<IDictionary<Guid, VariableValue>?> Variables => _variables;
 
-    private readonly IProjectManager _projectManager;
-
     private Thread? ExecuteThread;
     private bool StopExecution;
-
-    Executor(IProjectManager projectManager)
-    {
-        _projectManager = projectManager;
-    }
 
     private void WriteLog(
         string message,
         int tab = 0,
         ExecuteLog.ExecuteLogStatusEnum executeLogStatus = ExecuteLog.ExecuteLogStatusEnum.Info)
     {
-        _logs.Add(new ExecuteLog(Text: message, Tab: tab, ExecuteLogStatus: executeLogStatus));
+        LogContainer? logs = null;
+        var s = _logs.Subscribe(x => logs = x);
+        s.Dispose();
+        logs ??= new LogContainer(new List<ExecuteLog>());
+        logs.Logs.Add(new ExecuteLog(Text: message, Tab: tab, ExecuteLogStatus: executeLogStatus));
+        _logs.OnNext(logs);
     }
 
     private State? GetCurrentState()
@@ -57,7 +55,7 @@ public class Executor : IExecutor
     private StateMachine? GetCurrentStateMachine()
     {
         StateMachine? currentStateMachine = null;
-        var s = _projectManager.StateMachine.Subscribe(stateMachine => currentStateMachine = stateMachine);
+        var s = projectManager.StateMachine.Subscribe(stateMachine => currentStateMachine = stateMachine);
         s.Dispose();
         return currentStateMachine;
     }
@@ -67,6 +65,7 @@ public class Executor : IExecutor
         WriteLog("Starting executing.");
         if (_stateMachine == null)
         {
+            Console.WriteLine("YES");
             var currentStateMachine = GetCurrentStateMachine();
             if (currentStateMachine == null)
             {
@@ -78,7 +77,7 @@ public class Executor : IExecutor
             _state.OnNext(null);
             _variables.OnNext(null);
         }
-
+        
         WriteLog("State Machine: " + _stateMachine.Name);
 
         var state = GetCurrentState();

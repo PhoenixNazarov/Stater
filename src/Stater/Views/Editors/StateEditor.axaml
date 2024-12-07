@@ -16,7 +16,7 @@
             <TextBox Height="100" AcceptsReturn="True" TextWrapping="Wrap"
                      Text="{Binding Description}" />
             <TextBlock Margin="0 15 0 5">Type:</TextBlock>
-            <ComboBox SelectedIndex="0" MaxDropDownHeight="100" SelectedValue="{Binding Type}">
+            <ComboBox SelectedIndex="{Binding TypeIndex}" MaxDropDownHeight="100">
                 <ComboBoxItem>Common</ComboBoxItem>
                 <ComboBoxItem>Start</ComboBoxItem>
                 <ComboBoxItem>End</ComboBoxItem>
@@ -37,9 +37,9 @@
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="-" FontSize="20" />
-                                    <TextBlock Text="{Binding Start}"></TextBlock>
+                                    <TextBlock Text="{Binding Start.Name}"></TextBlock>
                                     <TextBlock Text="->" FontSize="20" />
-                                    <TextBlock Text="{Binding End}"></TextBlock>
+                                    <TextBlock Text="{Binding End.Name}"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>

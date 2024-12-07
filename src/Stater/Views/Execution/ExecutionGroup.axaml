@@ -3,13 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Stater.Views.Execution.ExecutionGroup">
+             x:Class="Stater.Views.Execution.ExecutionGroup"
+             xmlns:execution="using:Stater.Views.Execution">
     <DockPanel LastChildFill="True">
-        <Border Background="Beige" Width="200" BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Left">
-            <TextBlock Foreground="Black">Variables</TextBlock>
+        <Border Width="200" DockPanel.Dock="Left">
+            <execution:Variables/>
         </Border>
-        <Border Background="SkyBlue" BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Right">
-            <TextBlock Foreground="Black">Execution Control</TextBlock>
+        <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Right">
+            <execution:ExecutionControl/>
         </Border>
     </DockPanel>
 </UserControl>

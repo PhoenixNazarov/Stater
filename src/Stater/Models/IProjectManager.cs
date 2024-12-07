@@ -12,7 +12,7 @@ public interface IProjectManager
     IObservable<StateMachine> StateMachine { get; }
 
     void CreateProject(string name);
-    Project LoadProject(StreamReader sr);
+    Project? LoadProject(StreamReader sr);
     void SaveProject(StreamWriter sw);
 
     void Undo();
@@ -29,4 +29,8 @@ public interface IProjectManager
     void RemoveTransition(Guid guid);
     Transition? GetTransition(Guid guid);
     void UpdateTransition(Transition transition);
+
+    Variable? CreateVariable();
+    void RemoveVariable(Guid guid);
+    void UpdateVariable(Variable variable);
 }

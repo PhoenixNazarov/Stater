@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Xml;
 using DynamicData;
+using DynamicData.Alias;
 
 namespace Stater.Models.impl;
 
@@ -27,9 +28,9 @@ internal class ProjectManager : IProjectManager
     private readonly ReplaySubject<Transition> _transtion = new();
     public IObservable<Transition> Transition => _transtion;
 
-    public Stack<StateMachine> UndoStack = new(); 
-    public Stack<StateMachine> RedoStack = new(); 
-    
+    private readonly Stack<StateMachine> undoStack = new();
+    private readonly Stack<StateMachine> redoStack = new();
+
     private StateMachine? GetCurrentStateMachine()
     {
         StateMachine? currentStateMachine = null;
@@ -37,7 +38,21 @@ internal class ProjectManager : IProjectManager
         s.Dispose();
         return currentStateMachine;
     }
-
+    
+    private Project? GetCurrentProject()
+    {
+        Project? currentProject = null;
+        var s = _project.Subscribe(x => currentProject = x);
+        s.Dispose();
+        return currentProject;
+    }
+    
+    private List<StateMachine> GetCurrentStateMachines()
+    {
+        var s = _stateMachines.KeyValues.Select(x => x.Value).ToList();
+        return s;
+    }
+    
     public void CreateProject(string name)
     {
         var project = new Project(
@@ -47,40 +62,49 @@ internal class ProjectManager : IProjectManager
         _project.OnNext(project);
     }
 
-    public Project LoadProject(StreamReader sr)
+    public Project? LoadProject(StreamReader sr)
     {
         XmlDocument doc = new XmlDocument();
-        var writer = new System.Xml.Serialization.XmlSerializer(typeof(Project));
+        var writer = new System.Xml.Serialization.XmlSerializer(typeof(ExportProject));
         var project = writer.Deserialize(sr);
-        if (project is not Project project1) throw new ValidationException();
-        _project.OnNext(project1);
-        return project1;
+        if (project is not ExportProject project1) throw new ValidationException();
+        if (project1.Project != null) _project.OnNext(project1.Project);
+        project1.StateMachines?.ForEach(UpdateStateMachine);
+        return project1?.Project;
     }
 
     public void SaveProject(StreamWriter sw)
     {
-        var writer = new System.Xml.Serialization.XmlSerializer(typeof(Project));
-        writer.Serialize(sw, _project);
+        var writer = new System.Xml.Serialization.XmlSerializer(typeof(ExportProject));
+        var exportProject = new ExportProject(
+            GetCurrentProject(),
+            GetCurrentStateMachines()
+            );
+        writer.Serialize(sw, exportProject);
         sw.Close();
     }
 
     public void Undo()
     {
-        var stateMachine = UndoStack.Peek();
-        RedoStack.Push(stateMachine);
-        _stateMachine.OnNext(stateMachine);
+        Console.WriteLine("YES " + undoStack.Count);
+        if (undoStack.Count <= 1) return;
+        var stateMachine = undoStack.Pop();
+        redoStack.Push(stateMachine);
+        _stateMachine.OnNext(undoStack.Peek());
     }
 
     public void Redo()
     {
-        var stateMachine = RedoStack.Peek();
-        UndoStack.Push(stateMachine);
+        if (redoStack.Count <= 0) return;
+        var stateMachine = redoStack.Pop();
+        undoStack.Push(stateMachine);
         _stateMachine.OnNext(stateMachine);
     }
 
     public void UpdateStateMachine(StateMachine newStateMachine)
     {
-        UndoStack.Push(newStateMachine);
+        undoStack.Push(newStateMachine);
+        redoStack.Clear();
         _stateMachines.AddOrUpdate(newStateMachine);
         _stateMachine.OnNext(newStateMachine);
     }
@@ -103,10 +127,10 @@ internal class ProjectManager : IProjectManager
         var currentStateMachine = GetCurrentStateMachine();
         if (currentStateMachine?.Guid == guid) return null;
         var stateMachine = _stateMachines.KeyValues[guid.ToString()];
-        UndoStack.Clear();
-        RedoStack.Clear();
+        undoStack.Clear();
+        redoStack.Clear();
         _stateMachine.OnNext(stateMachine);
-        UndoStack.Push(stateMachine);
+        undoStack.Push(stateMachine);
         return stateMachine;
     }
 
@@ -198,6 +222,42 @@ internal class ProjectManager : IProjectManager
         var newStateMachine = currentStateMachine with
         {
             Transitions = new List<Transition>(transitions) { transition }
+        };
+        UpdateStateMachine(newStateMachine);
+    }
+
+    public Variable? CreateVariable()
+    {
+        var currentStateMachine = GetCurrentStateMachine();
+        if (currentStateMachine == null) return null;
+
+        var variable = new Variable();
+        currentStateMachine.Variables.Add(variable);
+
+        UpdateStateMachine(currentStateMachine);
+        return variable;
+    }
+
+    public void RemoveVariable(Guid guid)
+    {
+        var currentStateMachine = GetCurrentStateMachine();
+        if (currentStateMachine == null) return;
+        var variables = currentStateMachine.Variables.Where(el => el.Guid != guid);
+        var newStateMachine = currentStateMachine with
+        {
+            Variables = variables.ToList()
+        };
+        UpdateStateMachine(newStateMachine);
+    }
+
+    public void UpdateVariable(Variable variable)
+    {
+        var currentStateMachine = GetCurrentStateMachine();
+        if (currentStateMachine == null) return;
+        var variables = currentStateMachine.Variables.Where(el => el.Guid != variable.Guid);
+        var newStateMachine = currentStateMachine with
+        {
+            Variables = new List<Variable>(variables) { variable }
         };
         UpdateStateMachine(newStateMachine);
     }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Windows.Input;
+using Avalonia;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
@@ -25,18 +27,34 @@ public class StateEditorViewModel : ReactiveObject
                 State = x;
                 Name = x.Name;
                 Description = x.Description;
-                Type = x.Type.ToString();
+                TypeIndex = x.Type switch
+                {
+                    StateType.Common => 0,
+                    StateType.Start => 1,
+                    StateType.End => 2,
+                    _ => TypeIndex
+                };
             });
-
+        
         projectManager
             .StateMachine
             .Subscribe(x =>
-                {
-                    AllStates = x.States;
-                    Transitions =
-                        x.Transitions.FindAll(y => State != null && (y.Start == State.Guid || y.End == State.Guid));
-                }
-            );
+            {
+                AllStates = x.States;
+                Transitions = x.Transitions.Select(y =>
+                    {
+                        var startState = x.States.Find(s => s.Guid == y.Start);
+                        var endState = x.States.Find(s => s.Guid == y.End);
+                        return new AssociateTransition(
+                            Transition: y,
+                            StartPoint: new Point(startState.X, startState.Y),
+                            EndPoint: new Point(endState.X, endState.Y),
+                            Start: startState,
+                            End: endState
+                        );
+                    }
+                ).ToList();
+            });
 
         AddTransitionCommand = ReactiveCommand.Create<State>(AddTransition);
         RemoveTransitionCommand = ReactiveCommand.Create<Transition>(RemoveTransition);
@@ -54,10 +72,10 @@ public class StateEditorViewModel : ReactiveObject
 
     [Reactive] public string Name { get; set; }
     [Reactive] public string Description { get; set; }
-    [Reactive] public string Type { get; set; }
+    [Reactive] public int TypeIndex { get; set; }
 
     [Reactive] public List<State> AllStates { get; set; }
-    [Reactive] public List<Transition> Transitions { get; set; }
+    [Reactive] public List<AssociateTransition> Transitions { get; set; }
     
 
     private void AddTransition(State state)
@@ -74,9 +92,15 @@ public class StateEditorViewModel : ReactiveObject
     private void Save()
     {
         if (State == null) return;
-        var tryParse = Enum.TryParse(Type, out StateType type);
-        if (!tryParse) return;
-        var newState = State with { Name = Name, Description = Description, Type = type };
+        var type = TypeIndex switch
+        {
+            2 => StateType.End,
+            1 => StateType.Start,
+            _ => StateType.Common
+        };
+        var state = _projectManager.GetState(State.Guid);
+        if (state == null) return;
+        var newState = state with { Name = Name, Description = Description, Type = type };
         _stateEditor.Update(newState);
     }
 }

@@ -22,7 +22,7 @@ public record State(
 )
 {
     public State() : this(
-        new Guid(),
+        Guid.NewGuid(),
         "State",
         "",
         StateType.Common,
