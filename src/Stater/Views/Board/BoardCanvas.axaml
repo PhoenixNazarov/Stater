@@ -53,8 +53,8 @@
                         <Canvas Height="400" Width="400" Name="TransitionsCanvas" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                <ItemsControl.DataTemplates>
+                    <DataTemplate DataType="{x:Type models:AssociateTransition}">
                         <Canvas>
                             <TextBlock Text="{Binding Name}"
                                        Canvas.Left="{Binding NamePoint.X}"
@@ -80,7 +80,10 @@
                             </Path>
                         </Canvas>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:CircleTransition}">
+                        
+                    </DataTemplate>
+                </ItemsControl.DataTemplates>
             </ItemsControl>
         </Canvas>
     </DockPanel>

@@ -41,7 +41,7 @@ public class BoardCanvasViewModel : ReactiveObject
     private readonly IProjectManager _projectManager;
     private readonly IEditorManager _editorManager;
 
-    [Reactive] public List<AssociateTransition> Transitions { get; set; }
+    [Reactive] public List<DrawArrows> Transitions { get; set; }
     
     [Reactive] public Transition? Transition { get; set; }
     [Reactive] public State? State { get; private set; }

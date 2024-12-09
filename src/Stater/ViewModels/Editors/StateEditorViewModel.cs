@@ -76,7 +76,7 @@ public class StateEditorViewModel : ReactiveObject
     [Reactive] public string Height { get; set; }
 
     [Reactive] public List<State> AllStates { get; set; }
-    [Reactive] public List<AssociateTransition> Transitions { get; set; }
+    [Reactive] public List<DrawArrows> Transitions { get; set; }
     
 
     private void AddTransition(State state)

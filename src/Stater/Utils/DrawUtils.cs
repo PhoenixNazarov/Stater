@@ -76,7 +76,7 @@ public static class DrawUtils
         return p[p.Count / 2];
     }
     
-    public static AssociateTransition GetAssociateTransition(State s, State e, Transition t)
+    public static DrawArrows GetAssociateTransition(State s, State e, Transition t)
     {
         List<Point> linePoints = [];
         switch (t.Type)

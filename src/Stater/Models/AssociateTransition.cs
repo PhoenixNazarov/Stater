@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using Avalonia;
+using Stater.Utils;
 
 namespace Stater.Models;
 
-public record AssociateTransition(
+public record AssociateTransition
+(
     State? Start,
     State? End,
     List<Point> LinePoints,
@@ -11,7 +13,7 @@ public record AssociateTransition(
     Point NamePoint,
     Transition Transition,
     TypeArrow Type
-) {
+) : DrawArrows {
     public Point StartPoint => LinePoints[0];
     public Point EndPoint => LinePoints[^1];
     
