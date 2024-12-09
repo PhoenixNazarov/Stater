@@ -65,6 +65,17 @@ public static class DrawUtils
         return [startPoint, endPoint];
     }
 
+    private static Point GetTransitionNamePoint(List<Point> p)
+    {
+        if (p.Count % 2 == 0)
+        {
+            var right = p[p.Count / 2];
+            var left = p[p.Count / 2 - 1];
+            return new ((right.X + left.X) / 2, (right.Y + left.Y) / 2);
+        }
+        return p[p.Count / 2];
+    }
+    
     public static AssociateTransition GetAssociateTransition(State s, State e, Transition t)
     {
         List<Point> linePoints = [];
@@ -87,6 +98,7 @@ public static class DrawUtils
             Transition: t,
             LinePoints: linePoints,
             ArrowPoints: GetArrowPoints(linePoints[^2], linePoints[^1]),
+            NamePoint: GetTransitionNamePoint(linePoints),
             Start: s,
             End: e,
             Type: t.Type

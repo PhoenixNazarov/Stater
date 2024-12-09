@@ -55,26 +55,30 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Path Stroke="{Binding Color}" StrokeThickness="2"
-                              PointerPressed="Transition_OnPointerPressed"
-                              Name="{Binding Name}">
-                            <Path.Data>
-                                <GeometryGroup>
-                                    <PathGeometry>
-                                        <PathFigure StartPoint="{Binding StartPoint}">
-                                            <PolyLineSegment Points="{Binding LinePoints}" />
-                                        </PathFigure>
-                                    </PathGeometry>
-                                    <PathGeometry>
-                                        <PathFigure StartPoint="{Binding EndArrowPoint}">
-                                            <LineSegment Point="{Binding LeftArrowPoint}" />
-                                            <LineSegment Point="{Binding EndArrowPoint}" />
-                                            <LineSegment Point="{Binding RightArrowPoint}" />
-                                        </PathFigure>
-                                    </PathGeometry>
-                                </GeometryGroup>
-                            </Path.Data>
-                        </Path>
+                        <Canvas>
+                            <TextBlock Text="{Binding Name}"
+                                       Canvas.Left="{Binding NamePoint.X}"
+                                       Canvas.Top="{Binding NamePoint.Y}"/>
+                            <Path Stroke="{Binding Color}" StrokeThickness="2"
+                                  PointerPressed="Transition_OnPointerPressed">
+                                <Path.Data>
+                                    <GeometryGroup>
+                                        <PathGeometry>
+                                            <PathFigure StartPoint="{Binding StartPoint}">
+                                                <PolyLineSegment Points="{Binding LinePoints}" />
+                                            </PathFigure>
+                                        </PathGeometry>
+                                        <PathGeometry>
+                                            <PathFigure StartPoint="{Binding EndArrowPoint}">
+                                                <LineSegment Point="{Binding LeftArrowPoint}" />
+                                                <LineSegment Point="{Binding EndArrowPoint}" />
+                                                <LineSegment Point="{Binding RightArrowPoint}" />
+                                            </PathFigure>
+                                        </PathGeometry>
+                                    </GeometryGroup>
+                                </Path.Data>
+                            </Path>
+                        </Canvas>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
