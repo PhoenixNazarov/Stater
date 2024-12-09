@@ -8,6 +8,9 @@ using System.Reactive.Subjects;
 using System.Xml;
 using DynamicData;
 using DynamicData.Alias;
+using Microsoft.Msagl.Core.Geometry;
+using Microsoft.Msagl.Drawing;
+using Point = Avalonia.Point;
 
 namespace Stater.Models.impl;
 
@@ -27,6 +30,9 @@ internal class ProjectManager : IProjectManager
 
     private readonly ReplaySubject<Transition> _transtion = new();
     public IObservable<Transition> Transition => _transtion;
+    
+    private readonly ReplaySubject<Graph> _graph = new();
+    public IObservable<Graph> Graph => _graph;
 
     private readonly Stack<StateMachine> undoStack = new();
     private readonly Stack<StateMachine> redoStack = new();
@@ -138,13 +144,19 @@ internal class ProjectManager : IProjectManager
     {
         var currentStateMachine = GetCurrentStateMachine();
         if (currentStateMachine == null) return null;
+        float x = 50;
+        float y = 25;
+        float width = 100;
+        float height = 50;
         var state = new State(
             Guid: Guid.NewGuid(),
             Name: "State",
             Description: "",
             Type: StateType.Common,
-            10,
-            10,
+            X: x,
+            Y: y,
+            Width: width,
+            Height: height,
             new List<Event>(),
             new List<Event>()
         );
@@ -180,10 +192,12 @@ internal class ProjectManager : IProjectManager
         if (currentStateMachine == null) return null;
         Transition transition = new(
             Guid: Guid.NewGuid(),
-            Name: "State",
+            Name: "Transition",
             Start: start.Guid,
             End: end.Guid,
-            Condition: null
+            Condition: null,
+            LinePoints: [],
+            Type: TypeArrow.Pifagor
         );
         var newStateMachine = currentStateMachine with
         {

@@ -8,6 +8,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
 using Stater.Models.Editors;
+using Stater.Utils;
 
 namespace Stater.ViewModels.Board;
 
@@ -25,15 +26,9 @@ public class BoardCanvasViewModel : ReactiveObject
                 StateMachine = x;
                 Transitions = x.Transitions.Select(y =>
                     {
-                        var startState = x.States.Find(s => s.Guid == y.Start);
-                        var endState = x.States.Find(s => s.Guid == y.End);
-                        return new AssociateTransition(
-                            Transition: y,
-                            StartPoint: new Point(startState.X, startState.Y),
-                            EndPoint: new Point(endState.X, endState.Y),
-                            Start: startState,
-                            End: endState
-                        );
+                        var startState = x.States.Find(s => s.Guid == y.Start)!;
+                        var endState = x.States.Find(s => s.Guid == y.End)!;
+                        return DrawUtils.GetAssociateTransition(startState, endState, y);
                     }
                 ).ToList();
             });
@@ -47,6 +42,8 @@ public class BoardCanvasViewModel : ReactiveObject
     private readonly IEditorManager _editorManager;
 
     [Reactive] public List<AssociateTransition> Transitions { get; set; }
+    
+    [Reactive] public Transition? Transition { get; set; }
     [Reactive] public State? State { get; private set; }
     [Reactive] public StateMachine StateMachine { get; private set; }
 
@@ -65,6 +62,7 @@ public class BoardCanvasViewModel : ReactiveObject
     private void OnTransitionClicked(Transition transition)
     {
         var selectedTransition = _projectManager.GetTransition(transition.Guid);
+        Transition = selectedTransition ?? null;
         if (selectedTransition != null) _editorManager.DoSelectTransition(selectedTransition);
     }
 
@@ -74,8 +72,9 @@ public class BoardCanvasViewModel : ReactiveObject
         var newState = State with
         {
             X = State.X + coords.X,
-            Y = State.Y + coords.Y
+            Y = State.Y + coords.Y,
         };
+        _editorManager.DoSelectState(newState);
         _projectManager.UpdateState(newState);
     }
 }

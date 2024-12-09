@@ -12,16 +12,29 @@
             <TextBox
                 Watermark="Enter state name"
                 Text="{Binding Name}" />
-            <TextBlock Margin="0 15 0 5">Description:</TextBlock>
-            <TextBox Height="100" AcceptsReturn="True" TextWrapping="Wrap"
-                     Text="{Binding Description}" />
+            <!-- <TextBlock Margin="0 15 0 5">Description:</TextBlock> -->
+            <!-- <TextBox Height="100" AcceptsReturn="True" TextWrapping="Wrap" -->
+            <!--          Text="{Binding Description}" /> -->
             <TextBlock Margin="0 15 0 5">Type:</TextBlock>
             <ComboBox SelectedIndex="{Binding TypeIndex}" MaxDropDownHeight="100">
                 <ComboBoxItem>Common</ComboBoxItem>
                 <ComboBoxItem>Start</ComboBoxItem>
                 <ComboBoxItem>End</ComboBoxItem>
             </ComboBox>
-
+            <StackPanel Orientation="Horizontal">
+                <StackPanel>
+                    <TextBlock Margin="0 5">Width:</TextBlock>
+                    <TextBox
+                        Watermark="Enter state Width"
+                        Text="{Binding Width}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Margin="0 5">Height:</TextBlock>
+                    <TextBox
+                        Watermark="Enter state Height"
+                        Text="{Binding Height}" />
+                </StackPanel>
+            </StackPanel>
             <Button Margin="0 15 0 5 " Command="{Binding SaveCommand}">Save</Button>
 
             <TextBlock Margin="0 15 0 5">Transitions:</TextBlock>

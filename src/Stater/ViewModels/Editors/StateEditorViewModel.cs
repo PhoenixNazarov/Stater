@@ -4,10 +4,12 @@ using System.Linq;
 using System.Reactive;
 using System.Windows.Input;
 using Avalonia;
+using Avalonia.Platform;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
 using Stater.Models.Editors;
+using Stater.Utils;
 
 namespace Stater.ViewModels.Editors;
 
@@ -34,6 +36,8 @@ public class StateEditorViewModel : ReactiveObject
                     StateType.End => 2,
                     _ => TypeIndex
                 };
+                Width = x.Width.ToString();
+                Height = x.Height.ToString();
             });
         
         projectManager
@@ -43,15 +47,9 @@ public class StateEditorViewModel : ReactiveObject
                 AllStates = x.States;
                 Transitions = x.Transitions.Select(y =>
                     {
-                        var startState = x.States.Find(s => s.Guid == y.Start);
-                        var endState = x.States.Find(s => s.Guid == y.End);
-                        return new AssociateTransition(
-                            Transition: y,
-                            StartPoint: new Point(startState.X, startState.Y),
-                            EndPoint: new Point(endState.X, endState.Y),
-                            Start: startState,
-                            End: endState
-                        );
+                        var startState = x.States.Find(s => s.Guid == y.Start)!;
+                        var endState = x.States.Find(s => s.Guid == y.End)!;
+                        return DrawUtils.GetAssociateTransition(startState, endState, y);
                     }
                 ).ToList();
             });
@@ -73,6 +71,9 @@ public class StateEditorViewModel : ReactiveObject
     [Reactive] public string Name { get; set; }
     [Reactive] public string Description { get; set; }
     [Reactive] public int TypeIndex { get; set; }
+    
+    [Reactive] public string Width { get; set; }
+    [Reactive] public string Height { get; set; }
 
     [Reactive] public List<State> AllStates { get; set; }
     [Reactive] public List<AssociateTransition> Transitions { get; set; }
@@ -98,9 +99,13 @@ public class StateEditorViewModel : ReactiveObject
             1 => StateType.Start,
             _ => StateType.Common
         };
+        var tryWidthParse = float.TryParse(Width, out float width);
+        var tryHeightParse = float.TryParse(Height, out float height);
+        if(!tryWidthParse || !tryHeightParse) return;
         var state = _projectManager.GetState(State.Guid);
         if (state == null) return;
-        var newState = state with { Name = Name, Description = Description, Type = type };
+        var newState = state with { Name = Name, Description = Description, Type = type , Width = width, Height = height, X = State.X, Y = State.Y};
         _stateEditor.Update(newState);
     }
+    
 }
