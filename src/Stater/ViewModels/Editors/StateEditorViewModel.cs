@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Windows.Input;
+using System.Xml.Linq;
 using Avalonia;
 using Avalonia.Platform;
 using ReactiveUI;
@@ -49,7 +50,7 @@ public class StateEditorViewModel : ReactiveObject
                     {
                         var startState = x.States.Find(s => s.Guid == y.Start)!;
                         var endState = x.States.Find(s => s.Guid == y.End)!;
-                        return DrawUtils.GetAssociateTransition(startState, endState, y);
+                        return DrawUtils.GetTransition(startState, endState, y);
                     }
                 ).ToList();
             });
@@ -99,12 +100,12 @@ public class StateEditorViewModel : ReactiveObject
             1 => StateType.Start,
             _ => StateType.Common
         };
-        var tryWidthParse = float.TryParse(Width, out float width);
-        var tryHeightParse = float.TryParse(Height, out float height);
+        var tryWidthParse = double.TryParse(Width, out double width);
+        var tryHeightParse = double.TryParse(Height, out double height);
         if(!tryWidthParse || !tryHeightParse) return;
         var state = _projectManager.GetState(State.Guid);
         if (state == null) return;
-        var newState = state with { Name = Name, Description = Description, Type = type , Width = width, Height = height, X = State.X, Y = State.Y};
+        var newState = state with { Name = Name, Description = Description, Type = type , Width = width, Height = height, CenterPoint = new Point(State.X, State.Y)};
         _stateEditor.Update(newState);
     }
     

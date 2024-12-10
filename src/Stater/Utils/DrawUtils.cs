@@ -75,8 +75,34 @@ public static class DrawUtils
         }
         return p[p.Count / 2];
     }
+
+    public static DrawArrows GetTransition(State s, State e, Transition t)
+    {
+        if (s.Guid == e.Guid)
+        {
+            return GetCircleTransition(s, t);
+        }
+        else
+        {
+            return GetAssociateTransition(s, e, t);
+        }
+    }
+
+    private const float Radius = 20;
+    private static DrawArrows GetCircleTransition(State s, Transition t)
+    {
+        return new CircleTransition(
+            Start: s,
+            X: s.X,
+            Y: s.Top + Radius,
+            Radius: Radius,
+            ArrowPoints: [],
+            NamePoint: new Point(s.X, s.Y + 3 * Radius),
+            Name: t.Name
+        );
+    }
     
-    public static DrawArrows GetAssociateTransition(State s, State e, Transition t)
+    private static DrawArrows GetAssociateTransition(State s, State e, Transition t)
     {
         List<Point> linePoints = [];
         switch (t.Type)

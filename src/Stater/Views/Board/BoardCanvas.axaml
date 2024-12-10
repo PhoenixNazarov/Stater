@@ -41,7 +41,7 @@
                                 PointerReleased="State_OnPointerReleased"
                                 TextElement.Foreground="Black"
                                 Background="Bisque">
-                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding Name}"/>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -81,7 +81,16 @@
                         </Canvas>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type models:CircleTransition}">
-                        
+                        <Canvas>
+                            <TextBlock Text="{Binding Name}"
+                                       Canvas.Left="{Binding NamePoint.X}"
+                                       Canvas.Top="{Binding NamePoint.Y}"/>
+                            <Ellipse Width="{Binding Width}" 
+                                     Height="{Binding Height}"
+                                     Stroke="{Binding Color}" StrokeThickness="2"
+                                     Canvas.Left="{Binding Left}"
+                                     Canvas.Top="{Binding Top}"/>
+                        </Canvas>
                     </DataTemplate>
                 </ItemsControl.DataTemplates>
             </ItemsControl>

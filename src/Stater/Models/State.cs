@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Avalonia;
 
 namespace Stater.Models;
 
@@ -15,25 +16,26 @@ public record State(
     string Name,
     string Description,
     StateType Type,
-    float X,
-    float Y,
-    float Width,
-    float Height,
+    Point CenterPoint,
+
+double Width,
+    double Height,
     List<Event> EntryEvents,
     List<Event> ExitEvents
 )
 {
-    public float Left => X - Width / 2;
-    public float Right => X + Width / 2;
-    public float Top => Y + Height / 2;
-    public float Bottom => Y - Height / 2;
+    public double X => CenterPoint.X;
+    public double Y => CenterPoint.Y;
+    public double Left => X - Width / 2;
+    public double Right => X + Width / 2;
+    public double Top => Y + Height / 2;
+    public double Bottom => Y - Height / 2;
     public State() : this(
         Guid.NewGuid(),
         "State",
         "",
         StateType.Common,
-        50,
-        25,
+        new Point(50, 25),
         100,
         50,
         new List<Event>(),

@@ -28,7 +28,7 @@ public class BoardCanvasViewModel : ReactiveObject
                     {
                         var startState = x.States.Find(s => s.Guid == y.Start)!;
                         var endState = x.States.Find(s => s.Guid == y.End)!;
-                        return DrawUtils.GetAssociateTransition(startState, endState, y);
+                        return DrawUtils.GetTransition(startState, endState, y);
                     }
                 ).ToList();
             });
@@ -71,8 +71,7 @@ public class BoardCanvasViewModel : ReactiveObject
         if (State == null) return;
         var newState = State with
         {
-            X = State.X + coords.X,
-            Y = State.Y + coords.Y,
+            CenterPoint = new Point(State.X + coords.X, State.Y + coords.Y),
         };
         _editorManager.DoSelectState(newState);
         _projectManager.UpdateState(newState);
