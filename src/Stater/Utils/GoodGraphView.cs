@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Avalonia;
 using Microsoft.Msagl.Core;
 using Microsoft.Msagl.Core.Geometry.Curves;
@@ -20,10 +21,11 @@ using Point = Microsoft.Msagl.Core.Geometry.Point;
 
 namespace Stater.Utils;
 
-public class GoodGraphView(IProjectManager projectManager)
+public static class GoodGraphView
 {
-    public void ReBuildGraph(StateMachine stateMachine)
+    public static StateMachine? ReBuildGraph(StateMachine? stateMachine)
     {
+        if(stateMachine == null) return stateMachine;
         var graph = new GeometryGraph();
         foreach (var state in stateMachine.States)
         {
@@ -61,17 +63,24 @@ public class GoodGraphView(IProjectManager projectManager)
         
         graph.UpdateBoundingBox();
         graph.Translate(new Point(-graph.Left, -graph.Bottom));
+
+        List<State> newStates = [];
+        List<Transition> newtransitions = [];
         
-        var newStateMachine = new StateMachine();
         foreach(var node in graph.Nodes)
         {
             var newState = (node.UserData as State) with
             {
                 CenterPoint = PointToPoint.ToAvaloniaPoint(node.BoundingBox.Center)
             };
-            newStateMachine.States.Add(newState);
+            newStates.Add(newState);
         }
-        newStateMachine.Transitions.AddRange(stateMachine.Transitions);
-        projectManager.UpdateStateMachine(newStateMachine);
+        newtransitions.AddRange(stateMachine.Transitions);
+        var newStateMashine = stateMachine with
+        {
+            States = newStates,
+            Transitions = newtransitions,
+        };
+        return newStateMashine;
     }
 }

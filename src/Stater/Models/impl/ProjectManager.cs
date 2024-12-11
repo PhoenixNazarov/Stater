@@ -10,6 +10,7 @@ using DynamicData;
 using DynamicData.Alias;
 using Microsoft.Msagl.Core.Geometry;
 using Microsoft.Msagl.Drawing;
+using Stater.Utils;
 using Point = Avalonia.Point;
 
 namespace Stater.Models.impl;
@@ -272,6 +273,12 @@ internal class ProjectManager : IProjectManager
         {
             Variables = new List<Variable>(variables) { variable }
         };
+        UpdateStateMachine(newStateMachine);
+    }
+
+    public void ReBuildGraph()
+    {
+        var newStateMachine = GoodGraphView.ReBuildGraph(GetCurrentStateMachine());
         UpdateStateMachine(newStateMachine);
     }
 }

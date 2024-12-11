@@ -33,4 +33,6 @@ public interface IProjectManager
     Variable? CreateVariable();
     void RemoveVariable(Guid guid);
     void UpdateVariable(Variable variable);
+
+    void ReBuildGraph();
 }

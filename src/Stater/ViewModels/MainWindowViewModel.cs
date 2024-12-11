@@ -38,6 +38,7 @@ public class MainWindowViewModel : ReactiveObject
         NewStateCommand = ReactiveCommand.Create(NewState);
         UndoCommand = ReactiveCommand.Create(Undo);
         RedoCommand = ReactiveCommand.Create(Redo);
+        ReBuildGraphCommand = ReactiveCommand.Create(ReBuildGraph);
     }
 
     private readonly IProjectManager _projectManager;
@@ -70,7 +71,8 @@ public class MainWindowViewModel : ReactiveObject
     public ICommand NewStateCommand { get; }
     public ICommand UndoCommand { get; }
     public ICommand RedoCommand { get; }
-
+    
+    public ICommand ReBuildGraphCommand { get; }
 
     private void OpenProject(StreamReader sr)
     {
@@ -98,6 +100,8 @@ public class MainWindowViewModel : ReactiveObject
         var state = _projectManager.CreateState();
         if (state != null) _editorManager.DoSelectState(state);
     }
+
+    private void ReBuildGraph() => _projectManager.ReBuildGraph();
 
     private void Undo() => _projectManager.Undo();
     private void Redo() => _projectManager.Redo();

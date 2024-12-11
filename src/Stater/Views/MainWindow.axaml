@@ -39,6 +39,7 @@
                 <MenuItem Header="_Project">
                     <MenuItem Header="_New StateMachine" Command="{Binding NewStateMachineCommand}" />
                     <MenuItem Header="_New State" Command="{Binding NewStateCommand}" />
+                    <MenuItem Header="_ReBuildGraph" Command="{Binding ReBuildGraphCommand}"/>
                 </MenuItem>
             </Menu>
         </Border>
