@@ -9,12 +9,14 @@ public record Transition(
     string Name,
     Guid? Start,
     Guid? End,
-    Condition? Condition
+    Condition? Condition,
+    Event? Event
 )
 {
     public Transition() : this(
         Guid.NewGuid(),
         "Transition",
+        null,
         null,
         null,
         null

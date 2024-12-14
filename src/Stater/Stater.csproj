@@ -36,4 +36,9 @@
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\plugins\SLXPArser\SLXPArser.csproj" />
+    </ItemGroup>
 </Project>

@@ -15,6 +15,8 @@ public interface IEditorManager
 {
     IObservable<EditorTypeEnum> EditorType { get; }
 
+    void DoSelectNull();
+    
     void DoSelectStateMachine(StateMachine stateMachine);
     void DoSelectState(State state);
     void DoSelectTransition(Transition transition);

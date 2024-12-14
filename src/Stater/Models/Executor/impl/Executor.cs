@@ -41,6 +41,7 @@ public class Executor(IProjectManager projectManager) : IExecutor
         State? currentState = null;
         var subscribe = _state.Subscribe(s => currentState = s);
         subscribe.Dispose();
+        Console.WriteLine(currentState);
         return currentState;
     }
 
@@ -77,7 +78,7 @@ public class Executor(IProjectManager projectManager) : IExecutor
             _state.OnNext(null);
             _variables.OnNext(null);
         }
-        
+
         WriteLog("State Machine: " + _stateMachine.Name);
 
         var state = GetCurrentState();
@@ -190,6 +191,15 @@ public class Executor(IProjectManager projectManager) : IExecutor
             if (res)
             {
                 WriteLog($"Transition {transition.Name} condition is true", 1);
+                if (transition.Event != null)
+                {
+                    var newVariables = EventLogic.Evaluate(transition.Event, GetCurrentVariables());
+                    foreach (var keyValuePair in newVariables)
+                    {
+                        variables[keyValuePair.Key] = keyValuePair.Value;
+                    }
+                }
+
                 var newState = _stateMachine.States.First(s => s.Guid == transition.End);
                 _state.OnNext(newState);
                 return;
@@ -200,5 +210,10 @@ public class Executor(IProjectManager projectManager) : IExecutor
 
         WriteLog("No transition was suitable", 0, ExecuteLog.ExecuteLogStatusEnum.Warning);
         Stop();
+    }
+
+    public void ClearLog()
+    {
+        _logs.OnNext(new LogContainer(new List<ExecuteLog>()));
     }
 }

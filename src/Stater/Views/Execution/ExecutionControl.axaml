@@ -14,6 +14,7 @@
             <Button Command="{Binding StopCommand}">Stop</Button>
             <Button Command="{Binding ResetCommand}">Reset</Button>
             <Button Command="{Binding StepCommand}">Step</Button>
+            <Button Command="{Binding ClearCommand}">Clear</Button>
         </StackPanel>
         <Border BorderBrush="Black" BorderThickness="1" DockPanel.Dock="Right">
             <ScrollViewer MaxHeight="250">

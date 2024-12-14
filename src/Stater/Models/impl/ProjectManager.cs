@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Xml;
 using DynamicData;
-using DynamicData.Alias;
 
 namespace Stater.Models.impl;
 
@@ -22,37 +20,38 @@ internal class ProjectManager : IProjectManager
     private readonly ReplaySubject<StateMachine> _stateMachine = new();
     public IObservable<StateMachine> StateMachine => _stateMachine;
 
-    private readonly ReplaySubject<State> _state = new();
-    public IObservable<State> State => _state;
+    // private readonly ReplaySubject<State> _state = new();
+    // public IObservable<State> State => _state;
 
-    private readonly ReplaySubject<Transition> _transtion = new();
-    public IObservable<Transition> Transition => _transtion;
+    // private readonly ReplaySubject<Transition> _transtion = new();
+    // public IObservable<Transition> Transition => _transtion;
 
     private readonly Stack<StateMachine> undoStack = new();
     private readonly Stack<StateMachine> redoStack = new();
 
-    private StateMachine? GetCurrentStateMachine()
+    public StateMachine? GetStateMachine()
     {
         StateMachine? currentStateMachine = null;
         var s = _stateMachine.Subscribe(stateMachine => currentStateMachine = stateMachine);
         s.Dispose();
         return currentStateMachine;
     }
-    
-    private Project? GetCurrentProject()
+
+    public Project? GetProject()
     {
         Project? currentProject = null;
         var s = _project.Subscribe(x => currentProject = x);
         s.Dispose();
         return currentProject;
     }
-    
-    private List<StateMachine> GetCurrentStateMachines()
+
+    public List<StateMachine> GetStateMachines()
     {
         var s = _stateMachines.KeyValues.Select(x => x.Value).ToList();
         return s;
     }
-    
+
+
     public void CreateProject(string name)
     {
         var project = new Project(
@@ -77,9 +76,9 @@ internal class ProjectManager : IProjectManager
     {
         var writer = new System.Xml.Serialization.XmlSerializer(typeof(ExportProject));
         var exportProject = new ExportProject(
-            GetCurrentProject(),
-            GetCurrentStateMachines()
-            );
+            GetProject(),
+            GetStateMachines()
+        );
         writer.Serialize(sw, exportProject);
         sw.Close();
     }
@@ -109,6 +108,11 @@ internal class ProjectManager : IProjectManager
         _stateMachine.OnNext(newStateMachine);
     }
 
+    public void RemoveStateMachine(Guid guid)
+    {
+        _stateMachines.Remove(guid.ToString());
+    }
+
     public StateMachine CreateStateMachine()
     {
         var stateMachine = new StateMachine(
@@ -124,7 +128,7 @@ internal class ProjectManager : IProjectManager
 
     public StateMachine? OpenStateMachine(Guid guid)
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         if (currentStateMachine?.Guid == guid) return null;
         var stateMachine = _stateMachines.KeyValues[guid.ToString()];
         undoStack.Clear();
@@ -136,7 +140,7 @@ internal class ProjectManager : IProjectManager
 
     public State? CreateState()
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         if (currentStateMachine == null) return null;
         var state = new State(
             Guid: Guid.NewGuid(),
@@ -156,15 +160,27 @@ internal class ProjectManager : IProjectManager
         return state;
     }
 
+    public void RemoveState(Guid guid)
+    {
+        var currentStateMachine = GetStateMachine();
+        if (currentStateMachine == null) return;
+        var states = currentStateMachine.States.Where(el => el.Guid != guid);
+        var newStateMachine = currentStateMachine with
+        {
+            States = new List<State>(states)
+        };
+        UpdateStateMachine(newStateMachine);
+    }
+
     public State? GetState(Guid guid)
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         return currentStateMachine?.States.FirstOrDefault(e => e.Guid == guid);
     }
 
     public void UpdateState(State state)
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         if (currentStateMachine == null) return;
         var states = currentStateMachine.States.Where(el => el.Guid != state.Guid);
         var newStateMachine = currentStateMachine with
@@ -176,14 +192,15 @@ internal class ProjectManager : IProjectManager
 
     public Transition? CreateTransition(State start, State end)
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         if (currentStateMachine == null) return null;
         Transition transition = new(
             Guid: Guid.NewGuid(),
             Name: "State",
             Start: start.Guid,
             End: end.Guid,
-            Condition: null
+            Condition: null,
+            Event: null
         );
         var newStateMachine = currentStateMachine with
         {
@@ -198,13 +215,13 @@ internal class ProjectManager : IProjectManager
 
     public Transition? GetTransition(Guid guid)
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         return currentStateMachine?.Transitions.FirstOrDefault(e => e.Guid == guid);
     }
 
     public void RemoveTransition(Guid guid)
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         if (currentStateMachine == null) return;
         var transitions = currentStateMachine.Transitions.Where(el => el.Guid != guid);
         var newStateMachine = currentStateMachine with
@@ -216,7 +233,7 @@ internal class ProjectManager : IProjectManager
 
     public void UpdateTransition(Transition transition)
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         if (currentStateMachine == null) return;
         var transitions = currentStateMachine.Transitions.Where(el => el.Guid != transition.Guid);
         var newStateMachine = currentStateMachine with
@@ -228,7 +245,7 @@ internal class ProjectManager : IProjectManager
 
     public Variable? CreateVariable()
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         if (currentStateMachine == null) return null;
 
         var variable = new Variable();
@@ -240,7 +257,7 @@ internal class ProjectManager : IProjectManager
 
     public void RemoveVariable(Guid guid)
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         if (currentStateMachine == null) return;
         var variables = currentStateMachine.Variables.Where(el => el.Guid != guid);
         var newStateMachine = currentStateMachine with
@@ -252,7 +269,7 @@ internal class ProjectManager : IProjectManager
 
     public void UpdateVariable(Variable variable)
     {
-        var currentStateMachine = GetCurrentStateMachine();
+        var currentStateMachine = GetStateMachine();
         if (currentStateMachine == null) return;
         var variables = currentStateMachine.Variables.Where(el => el.Guid != variable.Guid);
         var newStateMachine = currentStateMachine with
@@ -260,5 +277,10 @@ internal class ProjectManager : IProjectManager
             Variables = new List<Variable>(variables) { variable }
         };
         UpdateStateMachine(newStateMachine);
+    }
+
+    public void ChangeStateMachines(List<StateMachine> stateMachines)
+    {
+        stateMachines.ForEach(e => _stateMachines.AddOrUpdate(e));
     }
 }

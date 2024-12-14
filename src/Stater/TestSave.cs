@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using DynamicData;
 using Stater.Models;
 using Stater.Views.Editors;

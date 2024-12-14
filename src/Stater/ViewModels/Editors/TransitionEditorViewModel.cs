@@ -23,17 +23,41 @@ public class TransitionEditorViewModel : ReactiveObject
             .Transition
             .Subscribe(x =>
             {
-                Transition = x;
-                Name = x.Name;
-
-                var condition = x.Condition;
-
-                if (condition is Condition.VariableCondition)
+                try
                 {
-                    var t = (Condition.VariableCondition)condition;
-                    Condition = t.ConditionType.ToString();
-                    Variable = t.VariableGuid.ToString();
-                    Value = t.Value.ToString();
+                    Transition = x;
+                    Name = x.Name;
+
+                    var condition = x.Condition;
+                    Condition = null;
+                    Variable = null;
+                    Value = null;
+
+                    VariableMath = null;
+                    MathType = null;
+                    EventValue = null;
+
+                    if (condition is Condition.VariableCondition)
+                    {
+                        var t = (Condition.VariableCondition)condition;
+                        Condition = t.ConditionType.ToString();
+                        Variable = t.VariableGuid.ToString();
+                        Value = t.Value.ToString();
+                    }
+
+                    var event_ = x.Event;
+
+                    if (event_ is Event.VariableMath)
+                    {
+                        var t = (Event.VariableMath)event_;
+                        VariableMath = t.VariableGuid.ToString();
+                        MathType = t.MathType.ToString();
+                        EventValue = t.Value.ToString();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
                 }
             });
 
@@ -54,23 +78,55 @@ public class TransitionEditorViewModel : ReactiveObject
     [Reactive] public string Condition { get; set; }
     [Reactive] public string Value { get; set; }
 
+
+    [Reactive] public string VariableMath { get; set; }
+    [Reactive] public string MathType { get; set; }
+    [Reactive] public string EventValue { get; set; }
+
     public ICommand SaveCommand { get; }
 
     private void Save()
     {
         if (Transition == null) return;
         Condition? condition = null;
-        var tryParse = Enum.TryParse(Condition, out Condition.VariableCondition.ConditionTypeEnum conditionType);
-        if (!tryParse)
+        Event? @event = null;
+
+        if (Variable != null && Value != null)
         {
+            var type = Condition switch
+            {
+                "<" => Models.Condition.VariableCondition.ConditionTypeEnum.Lt,
+                "<=" => Models.Condition.VariableCondition.ConditionTypeEnum.Le,
+                "==" => Models.Condition.VariableCondition.ConditionTypeEnum.Eq,
+                "!=" => Models.Condition.VariableCondition.ConditionTypeEnum.Ne,
+                ">" => Models.Condition.VariableCondition.ConditionTypeEnum.Gt,
+                _ => Models.Condition.VariableCondition.ConditionTypeEnum.Ge,
+            };
             condition = new Condition.VariableCondition(
                 VariableGuid: Guid.Parse(Variable),
-                ConditionType: conditionType,
+                ConditionType: type,
                 Value: VariableValueBuilder.fromString(Value)
             );
         }
-        
-        var newTransition = Transition with { Name = Name, Condition = condition };
+
+        if (VariableMath != null && EventValue != null)
+        {
+            var type = MathType switch
+            {
+                "+" => Event.VariableMath.MathTypeEnum.Sum,
+                "-" => Event.VariableMath.MathTypeEnum.Sub,
+                "*" => Event.VariableMath.MathTypeEnum.Mul,
+                _ => Event.VariableMath.MathTypeEnum.Div,
+            };
+            @event = new Event.VariableMath(
+                VariableGuid: Guid.Parse(VariableMath),
+                MathType: type,
+                Value: VariableValueBuilder.fromString(EventValue)
+            );
+        }
+
+
+        var newTransition = Transition with { Name = Name, Condition = condition, Event = @event };
         _transitionEditor.Update(newTransition);
     }
 }

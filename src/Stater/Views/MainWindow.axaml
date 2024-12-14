@@ -30,8 +30,8 @@
                     <MenuItem Header="_Exit" />
                 </MenuItem>
                 <MenuItem Header="_Edit">
-                    <MenuItem Header="_Undo" Command="{Binding UndoCommand}" HotKey="{OnPlatform Ctrl+Z, macOS=⌘+z}"/>
-                    <MenuItem Header="_Redo" Command="{Binding RedoCommand}" HotKey="Ctrl+Shift+Z"/>
+                    <MenuItem Header="_Undo" Command="{Binding UndoCommand}" HotKey="{OnPlatform Ctrl+Z, macOS=⌘+z}" />
+                    <MenuItem Header="_Redo" Command="{Binding RedoCommand}" HotKey="Ctrl+Shift+Z" />
                     <!-- <MenuItem Header="_Cut" /> -->
                     <!-- <MenuItem Header="_Copy" /> -->
                     <!-- <MenuItem Header="_Paste" /> -->
@@ -39,6 +39,15 @@
                 <MenuItem Header="_Project">
                     <MenuItem Header="_New StateMachine" Command="{Binding NewStateMachineCommand}" />
                     <MenuItem Header="_New State" Command="{Binding NewStateCommand}" />
+                </MenuItem>
+                <MenuItem Header="_Plugins">
+                    <ItemsControl ItemsSource="{Binding Plugins}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <MenuItem Header="{Binding Name}" Click="MenuItem_OnClick"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </MenuItem>
             </Menu>
         </Border>
@@ -48,7 +57,7 @@
                 DockPanel.Dock="Bottom">
             <execution:ExecutionGroup Height="300" />
         </Border>
-        
+
         <Border BorderBrush="Black"
                 BorderThickness="1"
                 DockPanel.Dock="Left"

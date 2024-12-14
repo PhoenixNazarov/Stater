@@ -1,3 +1,4 @@
+using System;
 using SLXParser.Utils;
 
 namespace SLXParser.Data
@@ -20,7 +21,7 @@ namespace SLXParser.Data
 
     public class Address
     {
-        public int SSID { get; set; }
+        public Guid SSID { get; set; }
         public DoubleDoublePoint Intersection { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Avalonia.Animation;
 using DynamicData;
@@ -15,13 +16,20 @@ public interface IProjectManager
     Project? LoadProject(StreamReader sr);
     void SaveProject(StreamWriter sw);
 
+    Project? GetProject();
+    StateMachine? GetStateMachine();
+    List<StateMachine> GetStateMachines();
+    
     void Undo();
     void Redo();
     
     StateMachine CreateStateMachine();
+    void RemoveStateMachine(Guid guid);
     void UpdateStateMachine(StateMachine newStateMachine);
     StateMachine? OpenStateMachine(Guid guid);
+    
     State? CreateState();
+    void RemoveState(Guid guid);
     State? GetState(Guid guid);
     void UpdateState(State state);
 
@@ -33,4 +41,6 @@ public interface IProjectManager
     Variable? CreateVariable();
     void RemoveVariable(Guid guid);
     void UpdateVariable(Variable variable);
+
+    void ChangeStateMachines(List<StateMachine> stateMachines);
 }

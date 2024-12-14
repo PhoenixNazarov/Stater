@@ -13,6 +13,10 @@ public class EditorManager : IEditorManager
     private ITransitionEditor _transitionEditor;
     private IVariableEditor _variableEditor;
 
+    public void DoSelectNull()
+    {
+        _editorType.OnNext(EditorTypeEnum.Null);
+    }
 
     public EditorManager(
         IStateMachineEditor stateMachineEditor,

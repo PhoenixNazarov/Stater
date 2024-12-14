@@ -13,10 +13,11 @@ namespace Stater.ViewModels.Editors;
 
 public class StateEditorViewModel : ReactiveObject
 {
-    public StateEditorViewModel(IStateEditor stateEditor, IProjectManager projectManager)
+    public StateEditorViewModel(IStateEditor stateEditor, IProjectManager projectManager, IEditorManager editorManager)
     {
         _stateEditor = stateEditor;
         _projectManager = projectManager;
+        _editorManager = editorManager;
 
         SaveCommand = ReactiveCommand.Create(Save);
 
@@ -24,46 +25,64 @@ public class StateEditorViewModel : ReactiveObject
             .State
             .Subscribe(x =>
             {
-                State = x;
-                Name = x.Name;
-                Description = x.Description;
-                TypeIndex = x.Type switch
+                try
                 {
-                    StateType.Common => 0,
-                    StateType.Start => 1,
-                    StateType.End => 2,
-                    _ => TypeIndex
-                };
-            });
-        
-        projectManager
-            .StateMachine
-            .Subscribe(x =>
-            {
-                AllStates = x.States;
-                Transitions = x.Transitions.Select(y =>
+                    State = x;
+                    Name = x.Name;
+                    Description = x.Description;
+                    TypeIndex = x.Type switch
                     {
-                        var startState = x.States.Find(s => s.Guid == y.Start);
-                        var endState = x.States.Find(s => s.Guid == y.End);
-                        return new AssociateTransition(
-                            Transition: y,
-                            StartPoint: new Point(startState.X, startState.Y),
-                            EndPoint: new Point(endState.X, endState.Y),
-                            Start: startState,
-                            End: endState
-                        );
-                    }
-                ).ToList();
+                        StateType.Common => 0,
+                        StateType.Start => 1,
+                        StateType.End => 2,
+                        _ => TypeIndex
+                    };
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             });
+
+        if (State != null)
+            projectManager
+                .StateMachine
+                .Subscribe(x =>
+                {
+                    AllStates = x.States;
+                    Transitions = x.Transitions
+                        .Where(t => t.Start == State?.Guid || t.End == State?.Guid)
+                        .Select(y =>
+                            {
+                                var startState = x.States.Find(s => s.Guid == y.Start);
+                                var endState = x.States.Find(s => s.Guid == y.End);
+                                if (startState != null && endState != null)
+                                    return new AssociateTransition(
+                                        Transition: y,
+                                        StartPoint: new Point(startState.X, startState.Y),
+                                        EndPoint: new Point(endState.X, endState.Y),
+                                        Start: startState,
+                                        End: endState
+                                    );
+                                return null;
+                            }
+                        )
+                        .Where(y => y != null)
+                        .OfType<AssociateTransition>()
+                        .ToList();
+                });
 
         AddTransitionCommand = ReactiveCommand.Create<State>(AddTransition);
         RemoveTransitionCommand = ReactiveCommand.Create<Transition>(RemoveTransition);
+        RemoveCommand = ReactiveCommand.Create(Remove);
     }
 
     private readonly IStateEditor _stateEditor;
     private readonly IProjectManager _projectManager;
+    private readonly IEditorManager _editorManager;
 
     public ICommand SaveCommand { get; }
+    public ICommand RemoveCommand { get; }
 
     public ReactiveCommand<State, Unit> AddTransitionCommand { get; }
     public ReactiveCommand<Transition, Unit> RemoveTransitionCommand { get; }
@@ -76,7 +95,7 @@ public class StateEditorViewModel : ReactiveObject
 
     [Reactive] public List<State> AllStates { get; set; }
     [Reactive] public List<AssociateTransition> Transitions { get; set; }
-    
+
 
     private void AddTransition(State state)
     {
@@ -102,5 +121,12 @@ public class StateEditorViewModel : ReactiveObject
         if (state == null) return;
         var newState = state with { Name = Name, Description = Description, Type = type };
         _stateEditor.Update(newState);
+    }
+
+    private void Remove()
+    {
+        if (State == null) return;
+        _editorManager.DoSelectNull();
+        _projectManager.RemoveState(State.Guid);
     }
 }
