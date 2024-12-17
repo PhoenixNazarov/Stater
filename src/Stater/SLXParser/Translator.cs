@@ -49,7 +49,9 @@ public class Translator
         {
             Guid = slxState.Id,
             Name = slxState.LabelString,
-            Type = StateType.Common
+            Type = StateType.Common,
+            X = slxState.Position.X.X,
+            Y = slxState.Position.X.Y,
         };
 
         var states = new List<State> { state };
