@@ -1,7 +1,10 @@
 using System;
+using System.Xml.Serialization;
 
 namespace Stater.Models;
 
+[XmlInclude(typeof(VariableCondition))]
+[Serializable]
 public abstract record Condition
 {
     public record VariableCondition(
@@ -18,6 +21,10 @@ public abstract record Condition
             Ne, // !=
             Gt, // >
             Ge, // >=
+        }
+
+        public VariableCondition() : this(Guid.Empty, ConditionTypeEnum.Lt, null)
+        {
         }
     }
 }

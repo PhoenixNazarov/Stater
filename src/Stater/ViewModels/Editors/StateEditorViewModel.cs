@@ -43,34 +43,34 @@ public class StateEditorViewModel : ReactiveObject
                     Console.WriteLine(e);
                 }
             });
-
-        if (State != null)
-            projectManager
-                .StateMachine
-                .Subscribe(x =>
-                {
-                    AllStates = x.States;
-                    Transitions = x.Transitions
-                        .Where(t => t.Start == State?.Guid || t.End == State?.Guid)
-                        .Select(y =>
-                            {
-                                var startState = x.States.Find(s => s.Guid == y.Start);
-                                var endState = x.States.Find(s => s.Guid == y.End);
-                                if (startState != null && endState != null)
-                                    return new AssociateTransition(
-                                        Transition: y,
-                                        StartPoint: new Point(startState.X, startState.Y),
-                                        EndPoint: new Point(endState.X, endState.Y),
-                                        Start: startState,
-                                        End: endState
-                                    );
-                                return null;
-                            }
-                        )
-                        .Where(y => y != null)
-                        .OfType<AssociateTransition>()
-                        .ToList();
-                });
+        
+        projectManager
+            .StateMachine
+            .Subscribe(x =>
+            {
+                AllStates = x.States;
+                Transitions = x.Transitions
+                    .Where(t => t.Start == State?.Guid || t.End == State?.Guid)
+                    .Select(y =>
+                        {
+                            var startState = x.States.Find(s => s.Guid == y.Start);
+                            var endState = x.States.Find(s => s.Guid == y.End);
+                            if (startState != null && endState != null)
+                                return new AssociateTransition(
+                                    Transition: y,
+                                    StartPoint: new Point(startState.X, startState.Y),
+                                    EndPoint: new Point(endState.X, endState.Y),
+                                    Start: startState,
+                                    End: endState
+                                );
+                            return null;
+                        }
+                    )
+                    .Where(y => y != null)
+                    .OfType<AssociateTransition>()
+                    .ToList();
+            });
+        
 
         AddTransitionCommand = ReactiveCommand.Create<State>(AddTransition);
         RemoveTransitionCommand = ReactiveCommand.Create<Transition>(RemoveTransition);

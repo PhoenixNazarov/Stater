@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace Stater.Models;
 
@@ -57,10 +58,19 @@ public static class VariableValueBuilder
     }
 }
 
+[XmlInclude(typeof(IntVariable))]
+[XmlInclude(typeof(BoolVariable))]
+[XmlInclude(typeof(FloatVariable))]
+[XmlInclude(typeof(StringVariable))]
+[Serializable]
 public abstract record VariableValue
 {
     public record IntVariable(int Value) : VariableValue
     {
+        public IntVariable() : this(0)
+        {
+        }
+
         public override string ToString() => Value.ToString();
 
         protected override VariableValue Default() => new IntVariable(0);
@@ -104,6 +114,10 @@ public abstract record VariableValue
 
     public record BoolVariable(bool Value) : VariableValue
     {
+        public BoolVariable() : this(false)
+        {
+        }
+        
         public override string ToString() => Value.ToString();
         protected override VariableValue Default() => new BoolVariable(false);
 
@@ -135,6 +149,10 @@ public abstract record VariableValue
 
     public record FloatVariable(float Value) : VariableValue
     {
+        public FloatVariable() : this(0f)
+        {
+        }
+        
         public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
         protected override VariableValue Default() => new FloatVariable(0);
 
@@ -176,6 +194,10 @@ public abstract record VariableValue
 
     public record StringVariable(string Value) : VariableValue
     {
+        public StringVariable() : this("")
+        {
+        }
+        
         public override string ToString() => Value;
         protected override VariableValue Default() => new StringVariable("");
 

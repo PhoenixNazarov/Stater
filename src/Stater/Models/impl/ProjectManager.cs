@@ -59,6 +59,8 @@ internal class ProjectManager : IProjectManager
             Location: null
         );
         _project.OnNext(project);
+        GetStateMachines().ForEach(e => RemoveStateMachine(e.Guid));
+        CreateStateMachine();
     }
 
     public Project? LoadProject(StreamReader sr)

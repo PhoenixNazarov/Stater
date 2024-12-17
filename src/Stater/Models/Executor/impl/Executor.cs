@@ -149,6 +149,13 @@ public class Executor(IProjectManager projectManager) : IExecutor
             return;
         }
 
+        if (state.Type == StateType.End)
+        {
+            WriteLog("State is end", 0, ExecuteLog.ExecuteLogStatusEnum.Info);
+            Stop();
+            return;
+        }
+
         if (_stateMachine == null)
         {
             WriteLog("Step is incorrect: StateMachine is not set", 0, ExecuteLog.ExecuteLogStatusEnum.Error);
@@ -196,6 +203,7 @@ public class Executor(IProjectManager projectManager) : IExecutor
                     var newVariables = EventLogic.Evaluate(transition.Event, GetCurrentVariables());
                     foreach (var keyValuePair in newVariables)
                     {
+                        Console.WriteLine(keyValuePair.Key + " " + keyValuePair.Value);
                         variables[keyValuePair.Key] = keyValuePair.Value;
                     }
                 }

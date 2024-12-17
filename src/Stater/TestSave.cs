@@ -18,14 +18,31 @@ public class TestSave
 
         var stateMachine1 = new StateMachine();
 
-        var state1 = new State();
-        state1 = state1 with
+        var start = new State();
+        start = start with
         {
-            Name = "A",
+            Name = "Start",
             Type = StateType.Start
         };
+        stateMachine1.States.Add(start);
 
-        stateMachine1.States.Add(state1);
+        var end = new State();
+        end = end with
+        {
+            Name = "End",
+            Type = StateType.End
+        };
+
+        var transition = new Transition();
+        transition = transition with
+        {
+            Start = start.Guid,
+            End = end.Guid,
+            Condition = new Condition.VariableCondition()
+        };
+
+        stateMachine1.States.Add(end);
+        stateMachine1.Transitions.Add(transition);
 
         var exportProject = new ExportProject(
             project,

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using Avalonia.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
@@ -34,25 +35,37 @@ public class TransitionEditorViewModel : ReactiveObject
                     Value = null;
 
                     VariableMath = null;
-                    MathType = null;
+                    MathType = 0;
                     EventValue = null;
 
-                    if (condition is Condition.VariableCondition)
+                    if (condition is Condition.VariableCondition variableCondition)
                     {
-                        var t = (Condition.VariableCondition)condition;
-                        Condition = t.ConditionType.ToString();
-                        Variable = t.VariableGuid.ToString();
-                        Value = t.Value.ToString();
+                        Condition = variableCondition.ConditionType switch
+                        {
+                            Models.Condition.VariableCondition.ConditionTypeEnum.Lt => 0,
+                            Models.Condition.VariableCondition.ConditionTypeEnum.Le => 0,
+                            Models.Condition.VariableCondition.ConditionTypeEnum.Ne => 1,
+                            Models.Condition.VariableCondition.ConditionTypeEnum.Gt => 2,
+                            Models.Condition.VariableCondition.ConditionTypeEnum.Ge => 3,
+                            _ => 0,
+                        };
+                        Console.WriteLine(Condition);
+
+                        Variable = variableCondition.VariableGuid.ToString();
+                        Value = variableCondition.Value.ToString();
                     }
 
-                    var event_ = x.Event;
-
-                    if (event_ is Event.VariableMath)
+                    if (x.Event is Event.VariableMath math)
                     {
-                        var t = (Event.VariableMath)event_;
-                        VariableMath = t.VariableGuid.ToString();
-                        MathType = t.MathType.ToString();
-                        EventValue = t.Value.ToString();
+                        VariableMath = math.VariableGuid.ToString();
+                        MathType = math.MathType switch
+                        {
+                            Event.VariableMath.MathTypeEnum.Div => 0,
+                            Event.VariableMath.MathTypeEnum.Sub => 1,
+                            Event.VariableMath.MathTypeEnum.Sum => 2,
+                            _ => 3,
+                        };
+                        EventValue = math.Value.ToString();
                     }
                 }
                 catch (Exception e)
@@ -75,12 +88,14 @@ public class TransitionEditorViewModel : ReactiveObject
 
     [Reactive] public List<string> Variables { get; set; }
     [Reactive] public string Variable { get; set; }
-    [Reactive] public string Condition { get; set; }
+
+    [Reactive] public int? Condition { get; set; }
+
     [Reactive] public string Value { get; set; }
 
 
     [Reactive] public string VariableMath { get; set; }
-    [Reactive] public string MathType { get; set; }
+    [Reactive] public int MathType { get; set; }
     [Reactive] public string EventValue { get; set; }
 
     public ICommand SaveCommand { get; }
@@ -93,13 +108,15 @@ public class TransitionEditorViewModel : ReactiveObject
 
         if (Variable != null && Value != null)
         {
+            Console.WriteLine(Condition);
             var type = Condition switch
             {
-                "<" => Models.Condition.VariableCondition.ConditionTypeEnum.Lt,
-                "<=" => Models.Condition.VariableCondition.ConditionTypeEnum.Le,
-                "==" => Models.Condition.VariableCondition.ConditionTypeEnum.Eq,
-                "!=" => Models.Condition.VariableCondition.ConditionTypeEnum.Ne,
-                ">" => Models.Condition.VariableCondition.ConditionTypeEnum.Gt,
+                4 => Models.Condition.VariableCondition.ConditionTypeEnum.Lt,
+                5 => Models.Condition.VariableCondition.ConditionTypeEnum.Le,
+                0 => Models.Condition.VariableCondition.ConditionTypeEnum.Eq,
+                1 => Models.Condition.VariableCondition.ConditionTypeEnum.Ne,
+                2 => Models.Condition.VariableCondition.ConditionTypeEnum.Gt,
+                3 => Models.Condition.VariableCondition.ConditionTypeEnum.Ge,
                 _ => Models.Condition.VariableCondition.ConditionTypeEnum.Ge,
             };
             condition = new Condition.VariableCondition(
@@ -113,9 +130,9 @@ public class TransitionEditorViewModel : ReactiveObject
         {
             var type = MathType switch
             {
-                "+" => Event.VariableMath.MathTypeEnum.Sum,
-                "-" => Event.VariableMath.MathTypeEnum.Sub,
-                "*" => Event.VariableMath.MathTypeEnum.Mul,
+                0 => Event.VariableMath.MathTypeEnum.Sum,
+                1 => Event.VariableMath.MathTypeEnum.Sub,
+                2 => Event.VariableMath.MathTypeEnum.Mul,
                 _ => Event.VariableMath.MathTypeEnum.Div,
             };
             @event = new Event.VariableMath(
