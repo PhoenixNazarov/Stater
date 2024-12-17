@@ -48,11 +48,12 @@ public class MainWindowViewModel : ReactiveObject
 
     private StateMachine _stateMachine;
 
-    public StateMachine StateMachine
+    public StateMachine? StateMachine
     {
         get => _stateMachine;
         set
         {
+            if (value == null) return;
             this.RaiseAndSetIfChanged(ref _stateMachine, value);
             var openStateMachine = _projectManager.OpenStateMachine(value.Guid);
             if (openStateMachine != null)

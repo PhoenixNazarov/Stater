@@ -65,7 +65,7 @@ public static class DrawUtils
         return [startPoint, endPoint];
     }
 
-    private static Point GetTransitionNamePoint(List<Point> p)
+    public static Point GetTransitionNamePoint(List<Point> p)
     {
         if (p.Count % 2 == 0)
         {
@@ -96,38 +96,35 @@ public static class DrawUtils
             X: s.X,
             Y: s.Top + Radius,
             Radius: Radius,
-            ArrowPoints: [],
-            NamePoint: new Point(s.X, s.Y + 3 * Radius),
-            Name: t.Name
+            Transition: t,
+            ArrowPoints: GetArrowPoints(t.LinePoints[^2], t.LinePoints[^1])
         );
     }
-    
-    private static DrawArrows GetAssociateTransition(State s, State e, Transition t)
+
+    public static List<Point> GeneratePath(State s, State e, TypeArrow t)
     {
-        List<Point> linePoints = [];
-        switch (t.Type)
+        switch (t)
         {
             case TypeArrow.Pifagor:
             {
-                linePoints = GeneratePifagorPath(s, e);
-                break;
+                return GeneratePifagorPath(s, e);
             }
             case TypeArrow.Manhattan:
             {
-                linePoints = GenerateManhattanPath(s, e);
-                break;
+                return GenerateManhattanPath(s, e);
             }
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+    
+    private static DrawArrows GetAssociateTransition(State s, State e, Transition t)
+    {
         return new AssociateTransition(
             Transition: t,
-            LinePoints: linePoints,
-            ArrowPoints: GetArrowPoints(linePoints[^2], linePoints[^1]),
-            NamePoint: GetTransitionNamePoint(linePoints),
             Start: s,
             End: e,
-            Type: t.Type
+            ArrowPoints: GetArrowPoints(t.LinePoints[^2], t.LinePoints[^1])
         );
     }
 
@@ -143,7 +140,7 @@ public static class DrawUtils
     private const double LengthArrow = 20;
     private const double AngleArrow = Math.PI / 6;
     
-    private static List<Point> GetArrowPoints(Point p1, Point p2)
+    public static List<Point> GetArrowPoints(Point p1, Point p2)
     {
         var angle = Math.Atan2(p2.Y - p1.Y , NotZeroDivisor(p2.X - p1.X));
         var leftAngle = angle + AngleArrow;

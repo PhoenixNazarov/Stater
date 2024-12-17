@@ -73,7 +73,27 @@ public class BoardCanvasViewModel : ReactiveObject
         {
             CenterPoint = new Point(State.X + coords.X, State.Y + coords.Y),
         };
+        var startUpdate = StateMachine.Transitions.FindAll(t => t.Start == newState.Guid);
+        UpdateTransitionStart(coords, startUpdate);
+        var endUpdate = StateMachine.Transitions.FindAll(t => t.End == newState.Guid);
+        UpdateTransitionEnd(coords, endUpdate);
         _editorManager.DoSelectState(newState);
         _projectManager.UpdateState(newState);
+    }
+
+    private void UpdateTransitionStart(Vector2 coords, List<Transition> transitions)
+    {
+        foreach (var transition in transitions)
+        {
+            transition.LinePoints[0] += new Point(coords.X, coords.Y);
+        }
+    }
+    
+    private void UpdateTransitionEnd(Vector2 coords, List<Transition> transitions)
+    {
+        foreach (var transition in transitions)
+        {
+            transition.LinePoints[^1] += new Point(coords.X, coords.Y);
+        }
     }
 }

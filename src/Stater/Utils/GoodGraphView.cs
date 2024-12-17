@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Avalonia;
+using Avalonia.Media;
 using Microsoft.Msagl.Core;
 using Microsoft.Msagl.Core.Geometry.Curves;
 using Microsoft.Msagl.Core.Layout;
@@ -16,6 +17,7 @@ using Microsoft.Msagl.Routing;
 using Stater.Models;
 using Stater.Views.Editors;
 using Edge = Microsoft.Msagl.Core.Layout.Edge;
+using LineSegment = Microsoft.Msagl.Core.Geometry.Curves.LineSegment;
 using Node = Microsoft.Msagl.Core.Layout.Node;
 using Point = Microsoft.Msagl.Core.Geometry.Point;
 
@@ -25,14 +27,14 @@ public static class GoodGraphView
 {
     public static StateMachine? ReBuildGraph(StateMachine? stateMachine)
     {
-        if(stateMachine == null) return stateMachine;
+        if (stateMachine == null) return stateMachine;
         var graph = new GeometryGraph();
         foreach (var state in stateMachine.States)
         {
             var nd = new Node(
                 CurveFactory.CreateRectangle(
-                    state.Width, 
-                    state.Height, 
+                    state.Width,
+                    state.Height,
                     new Point(0, 0)),
                 state);
             graph.Nodes.Add(nd);
@@ -60,14 +62,14 @@ public static class GoodGraphView
         };
         var laySet = new RankingLayoutSettings() { EdgeRoutingSettings = routSet };
         LayoutHelpers.CalculateLayout(graph, laySet, null);
-        
+
         graph.UpdateBoundingBox();
         graph.Translate(new Point(-graph.Left, -graph.Bottom));
 
         List<State> newStates = [];
-        List<Transition> newtransitions = [];
-        
-        foreach(var node in graph.Nodes)
+        List<Transition> newTransitions = [];
+
+        foreach (var node in graph.Nodes)
         {
             var newState = (node.UserData as State) with
             {
@@ -75,12 +77,75 @@ public static class GoodGraphView
             };
             newStates.Add(newState);
         }
-        newtransitions.AddRange(stateMachine.Transitions);
-        var newStateMashine = stateMachine with
+
+        foreach (var edge in graph.Edges)
+        {
+            var newLinePoints = new List<Avalonia.Point>();
+            DownloadPoints(newLinePoints, edge);
+            var newTransition = (edge.UserData as Transition) with
+            {
+                LinePoints = newLinePoints
+            };
+            newTransitions.Add(newTransition);
+        }
+
+        var newStateMachine = stateMachine with
         {
             States = newStates,
-            Transitions = newtransitions,
+            Transitions = newTransitions,
         };
-        return newStateMashine;
+        return newStateMachine;
+    }
+
+    private static void DownloadPoints(List<Avalonia.Point> linePoints, Edge edge)
+    {
+        if (edge.Curve is LineSegment lineSegment)
+        {
+            linePoints.Add(PointToPoint.ToAvaloniaPoint(lineSegment.Start));
+            linePoints.Add(PointToPoint.ToAvaloniaPoint(lineSegment.End));
+        }
+        else if (edge.Curve is Curve curve)
+        {
+            foreach (var segment in curve.Segments)
+            {
+                // When curve contains a line segment
+                if (segment is LineSegment line)
+                {
+                    if (linePoints.Count == 0)
+                        linePoints.Add(PointToPoint.ToAvaloniaPoint(line.Start));
+                    linePoints.Add(PointToPoint.ToAvaloniaPoint(line.End));
+                }
+                // When curve contains a cubic bezier segment
+                else if (segment is CubicBezierSegment bezier)
+                {
+                    linePoints.Add(
+                        PointToPoint.ToAvaloniaPoint(new Point(bezier.B(0).X, bezier.B(0).Y)));
+                    linePoints.Add(
+                        PointToPoint.ToAvaloniaPoint(new Point(bezier.B(1).X, bezier.B(1).Y)));
+                    linePoints.Add(
+                        PointToPoint.ToAvaloniaPoint(new Point(bezier.B(2).X, bezier.B(2).Y)));
+                    linePoints.Add(
+                        PointToPoint.ToAvaloniaPoint(new Point(bezier.B(3).X, bezier.B(3).Y)));
+                }
+
+                // When curve contains an arc
+                else if (segment is Ellipse ellipse)
+                {
+                    var interval = (ellipse.ParEnd - ellipse.ParStart) / 5.0;
+                    for (var i = ellipse.ParStart;
+                         i < ellipse.ParEnd;
+                         i += interval)
+                    {
+                        var p = ellipse.Center
+                                + (Math.Cos(i) * ellipse.AxisA)
+                                + (Math.Sin(i) * ellipse.AxisB);
+                        linePoints.Add(PointToPoint.ToAvaloniaPoint(new Point(p.X, p.Y)));
+                    }
+                }
+                else
+                {
+                }
+            }
+        }
     }
 }

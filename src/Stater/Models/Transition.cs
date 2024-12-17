@@ -13,8 +13,10 @@ public record Transition(
     Guid? Start,
     Guid? End, 
     TypeArrow Type,
-    List<Point>? LinePoints,
-    Condition? Condition
+    List<Point> LinePoints,
+    Condition? Condition,
+    // Point NamePoint,
+    string Color
 )
 {
     public Transition() : this(
@@ -23,9 +25,18 @@ public record Transition(
         null,
         null,
         TypeArrow.Pifagor,
+        [],
         null,
-        null
+        // new Point(0, 0),
+        "Black"
     )
     {
     }
+    
+    public Point? StartPoint => LinePoints?[0];
+    
+    public Point? EndPoint => LinePoints?[^1];
+
+    public Point? EndArrowPoint => EndPoint;
+    public Point? StartArrowPoint => LinePoints?[^2];
 }

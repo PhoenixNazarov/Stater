@@ -190,14 +190,17 @@ internal class ProjectManager : IProjectManager
     {
         var currentStateMachine = GetCurrentStateMachine();
         if (currentStateMachine == null) return null;
+        var linePoints = DrawUtils.GeneratePath(start, end, TypeArrow.Pifagor);
         Transition transition = new(
             Guid: Guid.NewGuid(),
             Name: "Transition",
             Start: start.Guid,
             End: end.Guid,
             Condition: null,
-            LinePoints: [],
-            Type: TypeArrow.Pifagor
+            LinePoints: linePoints,
+            Type: TypeArrow.Pifagor,
+            // NamePoint: DrawUtils.GetTransitionNamePoint(linePoints),
+            Color: "Black"
         );
         var newStateMachine = currentStateMachine with
         {
