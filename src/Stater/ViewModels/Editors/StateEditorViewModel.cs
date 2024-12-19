@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reactive;
 using System.Windows.Input;
@@ -40,8 +41,8 @@ public class StateEditorViewModel : ReactiveObject
                         StateType.End => 2,
                         _ => TypeIndex
                     };
-                    Width = x.Width.ToString();
-                    Height = x.Height.ToString();
+                    Width = x.Width.ToString(CultureInfo.InvariantCulture);
+                    Height = x.Height.ToString(CultureInfo.InvariantCulture);
                 }
                 catch (Exception e)
                 {

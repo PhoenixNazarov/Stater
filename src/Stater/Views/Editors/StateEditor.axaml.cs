@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Splat;
 using Stater.Models;
 using Stater.Models.Editors;
+using Stater.Utils;
 using Stater.ViewModels.Editors;
 
 namespace Stater.Views.Editors;
@@ -27,7 +28,7 @@ public partial class StateEditor : UserControl
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
         var button = (Button)sender;
-        var transition = (AssociateTransition)button.DataContext;
+        var transition = (DrawArrows)button.DataContext;
         var context = (StateEditorViewModel)DataContext;
         context?.RemoveTransitionCommand.Execute(transition.Transition).Subscribe();
     }

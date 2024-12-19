@@ -5,13 +5,13 @@ using Stater.Utils;
 namespace Stater.Models;
 
 public record class CircleTransition(
-    State? Start,
+    State Start,
     double X,
     double Y,
     double Radius,
     Transition Transition,
     List<Point> ArrowPoints
-) : DrawArrows
+) : DrawArrows(Start, Start, Transition)
 {
     public double Diameter => Radius * 2;
     

@@ -3,9 +3,11 @@ using Stater.Models;
 
 namespace Stater.Utils;
 
-public abstract record DrawArrows
+public abstract record DrawArrows(
+    State Start,
+    State End,
+    Transition Transition
+)
 {
-    public State? Start { get; set; }
-    public State? End { get; set; }
-
+    
 }

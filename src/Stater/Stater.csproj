@@ -40,9 +40,9 @@
     </ItemGroup>
 
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\plugins\SLXPArser\SLXPArser.csproj" />
-    </ItemGroup>
+<!--    <ItemGroup>-->
+<!--        <ProjectReference Include="..\..\plugins\SLXPArser\SLXPArser.csproj" />-->
+<!--    </ItemGroup>-->
 
 
     <ItemGroup>

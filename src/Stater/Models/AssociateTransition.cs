@@ -5,11 +5,11 @@ using Stater.Utils;
 namespace Stater.Models;
 
 public record AssociateTransition(
-    State? Start,
-    State? End,
+    State Start,
+    State End,
     Transition Transition,
     List<Point> ArrowPoints
-) : DrawArrows
+) : DrawArrows(Start, End, Transition)
 {
     public Point StartPoint => Transition.LinePoints[0];
     public Point EndPoint => Transition.LinePoints[^1];

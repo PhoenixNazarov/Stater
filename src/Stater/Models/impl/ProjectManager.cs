@@ -7,7 +7,6 @@ using System.Reactive.Subjects;
 using System.Xml;
 using DynamicData;
 
-using Microsoft.Msagl.Drawing;
 using Stater.Utils;
 using Point = Avalonia.Point;
 
@@ -28,12 +27,8 @@ internal class ProjectManager : IProjectManager
     // private readonly ReplaySubject<State> _state = new();
     // public IObservable<State> State => _state;
 
-    private readonly ReplaySubject<Transition> _transtion = new();
-    public IObservable<Transition> Transition => _transtion;
-
-    private readonly ReplaySubject<Graph> _graph = new();
-
-    public IObservable<Graph> Graph => _graph;
+    // private readonly ReplaySubject<Transition> _transtion = new();
+    // public IObservable<Transition> Transition => _transtion;
 
     private readonly Stack<StateMachine> undoStack = new();
     private readonly Stack<StateMachine> redoStack = new();
