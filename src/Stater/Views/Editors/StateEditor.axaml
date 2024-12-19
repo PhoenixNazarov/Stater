@@ -6,39 +6,37 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Stater.Views.Editors.StateEditor"
              x:DataType="vm:StateEditorViewModel">
-    <ScrollViewer>
-        <StackPanel>
-            <TextBlock Margin="0 5">Name:</TextBlock>
-            <TextBox
-                Watermark="Enter state name"
-                Text="{Binding Name}" />
-            <!-- <TextBlock Margin="0 15 0 5">Description:</TextBlock> -->
-            <!-- <TextBox Height="100" AcceptsReturn="True" TextWrapping="Wrap" -->
-            <!--          Text="{Binding Description}" /> -->
-            <TextBlock Margin="0 15 0 5">Type:</TextBlock>
-            <ComboBox SelectedIndex="{Binding TypeIndex}" MaxDropDownHeight="100">
-                <ComboBoxItem>Common</ComboBoxItem>
-                <ComboBoxItem>Start</ComboBoxItem>
-                <ComboBoxItem>End</ComboBoxItem>
-            </ComboBox>
-            <StackPanel Orientation="Horizontal">
-                <StackPanel>
-                    <TextBlock Margin="0 5">Width:</TextBlock>
-                    <TextBox
-                        Watermark="Enter state Width"
-                        Text="{Binding Width}" />
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock Margin="0 5">Height:</TextBlock>
-                    <TextBox
-                        Watermark="Enter state Height"
-                        Text="{Binding Height}" />
+    <TabControl Margin="5">
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock FontSize="16" Padding="0" Margin="0" VerticalAlignment="Center">Data</TextBlock>
+            </TabItem.Header>
+            <StackPanel>
+                <TextBlock Margin="0 5">Name:</TextBlock>
+                <TextBox
+                    Watermark="Enter state name"
+                    Text="{Binding Name}" />
+                <TextBlock Margin="0 15 0 5">Description:</TextBlock>
+                <TextBox Height="50" AcceptsReturn="True" TextWrapping="Wrap"
+                         Text="{Binding Description}" />
+                <TextBlock Margin="0 15 0 5">Type:</TextBlock>
+                <ComboBox SelectedIndex="{Binding TypeIndex}" MaxDropDownHeight="100">
+                    <ComboBoxItem>Common</ComboBoxItem>
+                    <ComboBoxItem>Start</ComboBoxItem>
+                    <ComboBoxItem>End</ComboBoxItem>
+                </ComboBox>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="0 15 0 5 " Command="{Binding SaveCommand}">Save</Button>
+                    <Button Margin="0 15 0 5 " Command="{Binding RemoveCommand}">Remove</Button>
                 </StackPanel>
             </StackPanel>
-            <Button Margin="0 15 0 5 " Command="{Binding SaveCommand}">Save</Button>
-
-            <TextBlock Margin="0 15 0 5">Transitions:</TextBlock>
-            <ScrollViewer MaxHeight="300">
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock FontSize="16" Padding="0" Margin="0" VerticalAlignment="Center">Transitions</TextBlock>
+            </TabItem.Header>
+            <ScrollViewer MaxHeight="500">
                 <ItemsControl ItemsSource="{Binding Transitions}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -53,15 +51,20 @@
                                     <TextBlock Text="{Binding Start.Name}"></TextBlock>
                                     <TextBlock Text="->" FontSize="20" />
                                     <TextBlock Text="{Binding End.Name}"></TextBlock>
+                                    <Button Click="Button_OnClick">-</Button>
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
+        </TabItem>
 
-            <TextBlock Margin="0 15 0 5">Include:</TextBlock>
-            <ScrollViewer Height="300">
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock FontSize="16" Padding="0" Margin="0" VerticalAlignment="Center">Add transition</TextBlock>
+            </TabItem.Header>
+            <ScrollViewer MaxHeight="500">
                 <ItemsControl ItemsSource="{Binding AllStates}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -72,7 +75,7 @@
                         <DataTemplate>
                             <Button
                                 Command="{Binding $parent[ItemsControl].((vm:StateEditorViewModel)DataContext).AddTransitionCommand}"
-                                CommandParameter="{Binding }" Width="100">
+                                CommandParameter="{Binding }" Width="200">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="+" />
                                     <TextBlock Text="{Binding Name}" />
@@ -82,6 +85,6 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-        </StackPanel>
-    </ScrollViewer>
+        </TabItem>
+    </TabControl>
 </UserControl>

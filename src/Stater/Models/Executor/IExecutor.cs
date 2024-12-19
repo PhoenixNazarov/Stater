@@ -19,4 +19,6 @@ public interface IExecutor
     void Stop();
     void Reset();
     void Step();
+
+    void ClearLog();
 }

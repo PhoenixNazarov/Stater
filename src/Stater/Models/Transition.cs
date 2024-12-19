@@ -15,6 +15,7 @@ public record Transition(
     TypeArrow Type,
     List<Point> LinePoints,
     Condition? Condition,
+    Event? Event,
     // Point NamePoint,
     string Color
 )
@@ -28,6 +29,7 @@ public record Transition(
         [],
         null,
         // new Point(0, 0),
+        null,
         "Black"
     )
     {

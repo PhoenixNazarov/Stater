@@ -1,7 +1,10 @@
 using System;
+using System.Xml.Serialization;
 
 namespace Stater.Models;
 
+[XmlInclude(typeof(VariableMath))]
+[Serializable]
 public abstract record Event
 {
     public record VariableMath(
@@ -16,6 +19,10 @@ public abstract record Event
             Sub, // -
             Mul, // *
             Div, // /
+        }
+
+        public VariableMath() : this(Guid.Empty, MathTypeEnum.Sum, null)
+        {
         }
     }
 }

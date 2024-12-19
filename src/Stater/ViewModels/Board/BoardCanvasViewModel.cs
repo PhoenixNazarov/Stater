@@ -25,12 +25,14 @@ public class BoardCanvasViewModel : ReactiveObject
             {
                 StateMachine = x;
                 Transitions = x.Transitions.Select(y =>
-                    {
-                        var startState = x.States.Find(s => s.Guid == y.Start)!;
-                        var endState = x.States.Find(s => s.Guid == y.End)!;
-                        return DrawUtils.GetTransition(startState, endState, y);
-                    }
-                ).ToList();
+                        {
+                            var startState = x.States.Find(s => s.Guid == y.Start)!;
+                            var endState = x.States.Find(s => s.Guid == y.End)!;
+                            return DrawUtils.GetTransition(startState, endState, y);
+                        }
+                    ).Where(y => y != null)
+                    .OfType<DrawArrows>()
+                    .ToList();
             });
 
         StateClickCommand = ReactiveCommand.Create<State>(OnStateClicked);
@@ -42,16 +44,16 @@ public class BoardCanvasViewModel : ReactiveObject
     private readonly IEditorManager _editorManager;
 
     [Reactive] public List<DrawArrows> Transitions { get; set; }
-    
+
     [Reactive] public Transition? Transition { get; set; }
     [Reactive] public State? State { get; private set; }
     [Reactive] public StateMachine StateMachine { get; private set; }
 
     public ReactiveCommand<State, Unit> StateClickCommand { get; }
     public ReactiveCommand<Vector2, Unit> UpdateStateCoordsCommand { get; }
-    
+
     public ReactiveCommand<Transition, Unit> TransitionClickCommand { get; }
-    
+
     private void OnStateClicked(State state)
     {
         var selectedState = _projectManager.GetState(state.Guid);
@@ -88,7 +90,7 @@ public class BoardCanvasViewModel : ReactiveObject
             transition.LinePoints[0] += new Point(coords.X, coords.Y);
         }
     }
-    
+
     private void UpdateTransitionEnd(Vector2 coords, List<Transition> transitions)
     {
         foreach (var transition in transitions)

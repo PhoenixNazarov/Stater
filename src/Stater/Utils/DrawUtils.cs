@@ -76,8 +76,9 @@ public static class DrawUtils
         return p[p.Count / 2];
     }
 
-    public static DrawArrows GetTransition(State s, State e, Transition t)
+    public static DrawArrows? GetTransition(State? s, State? e, Transition t)
     {
+        if(s == null || e == null) return null;
         if (s.Guid == e.Guid)
         {
             return GetCircleTransition(s, t);

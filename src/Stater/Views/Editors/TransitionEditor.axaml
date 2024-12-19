@@ -21,10 +21,11 @@
                   ItemsSource="{Binding Variables}"
                   SelectedItem="{Binding Variable}" />
 
+
         <TextBlock Margin="0 5">Condition:</TextBlock>
-        <ComboBox SelectedIndex="0" MaxDropDownHeight="100" SelectedItem="{Binding Condition}">
+        <ComboBox MaxDropDownHeight="100" SelectedIndex="{Binding Condition}">
             <!-- <ComboBoxItem><</ComboBoxItem> -->
-            <!-- <ComboBoxItem> <= </ComboBoxItem> -->
+            <!-- <ComboBoxItem><=</ComboBoxItem> -->
             <ComboBoxItem>==</ComboBoxItem>
             <ComboBoxItem>!=</ComboBoxItem>
             <ComboBoxItem>></ComboBoxItem>
@@ -34,6 +35,23 @@
         <TextBlock Margin="0 5">Value:</TextBlock>
         <TextBox
             Watermark="0" Text="{Binding Value}" />
+
+        <TextBlock Margin="0 5">Event:</TextBlock>
+        <ComboBox SelectedIndex="0" MaxDropDownHeight="100">
+            <ComboBoxItem>VariableMath</ComboBoxItem>
+        </ComboBox>
+        <ComboBox SelectedIndex="0" MaxDropDownHeight="100"
+                  ItemsSource="{Binding Variables}"
+                  SelectedItem="{Binding VariableMath}" />
+        <ComboBox MaxDropDownHeight="100" SelectedIndex="{Binding MathType}">
+            <ComboBoxItem>+</ComboBoxItem>
+            <ComboBoxItem>-</ComboBoxItem>
+            <ComboBoxItem>*</ComboBoxItem>
+            <ComboBoxItem>/</ComboBoxItem>
+        </ComboBox>
+        <TextBox
+            Watermark="Enter variable start value" Text="{Binding EventValue}" />
+        
         <Button Margin="0 15 0 5 " Command="{Binding SaveCommand}">Save</Button>
     </StackPanel>
 </UserControl>

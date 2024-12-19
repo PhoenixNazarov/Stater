@@ -18,6 +18,7 @@ public class ExecutionControlViewModel : ReactiveObject
         StopCommand = ReactiveCommand.Create(Stop);
         StepCommand = ReactiveCommand.Create(Step);
         ResetCommand = ReactiveCommand.Create(Reset);
+        ClearCommand = ReactiveCommand.Create(Clear);
 
         _executor.Logs.Subscribe(x => { Logs = x.Logs.ToList(); });
     }
@@ -28,27 +29,14 @@ public class ExecutionControlViewModel : ReactiveObject
     public ICommand StopCommand { get; }
     public ICommand StepCommand { get; }
     public ICommand ResetCommand { get; }
+    public ICommand ClearCommand { get; }
 
     [Reactive] public string StepTime { get; set; }
     [Reactive] public List<ExecuteLog> Logs { get; set; }
 
-    private void Start()
-    {
-        _executor.Start(int.Parse(StepTime));
-    }
-
-    private void Stop()
-    {
-        _executor.Stop();
-    }
-
-    private void Step()
-    {
-        _executor.Step();
-    }
-
-    private void Reset()
-    {
-        _executor.Reset();
-    }
+    private void Start() => _executor.Start(int.Parse(StepTime));
+    private void Stop() => _executor.Stop();
+    private void Step() => _executor.Step();
+    private void Reset() => _executor.Reset();
+    private void Clear() => _executor.ClearLog();
 }

@@ -6,6 +6,14 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <OutputPath>../../Stater/lib/</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath>../../Stater/lib/</OutputPath>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\..\Stater\Stater.csproj" />
     </ItemGroup>
