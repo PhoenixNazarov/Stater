@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Xml;
 using DynamicData;
@@ -23,13 +24,16 @@ internal class ProjectManager : IProjectManager
     private readonly ReplaySubject<StateMachine> _stateMachine = new();
 
     public IObservable<StateMachine> StateMachine => _stateMachine;
+    
+    private readonly ReplaySubject<bool> _isVisibleFindLine = new();
+    public IObservable<bool> IsVisibleFindLine => _isVisibleFindLine;
 
     // private readonly ReplaySubject<State> _state = new();
     // public IObservable<State> State => _state;
 
     // private readonly ReplaySubject<Transition> _transtion = new();
     // public IObservable<Transition> Transition => _transtion;
-
+    
     private readonly Stack<StateMachine> undoStack = new();
     private readonly Stack<StateMachine> redoStack = new();
 
@@ -305,5 +309,20 @@ internal class ProjectManager : IProjectManager
     public void ChangeStateMachines(List<StateMachine> stateMachines)
     {
         stateMachines.ForEach(e => _stateMachines.AddOrUpdate(e));
+    }
+
+    public StateMachine? GetStateMachineByGuid(Guid guid)
+    {
+        return GetStateMachines().FirstOrDefault(e => e.Guid == guid);
+    }
+
+    public void ChangeVisibleLineFindToFalse()
+    {
+        _isVisibleFindLine.OnNext(false);
+    }
+
+    public void ChangeVisibleLineFindToTrue()
+    {
+        _isVisibleFindLine.OnNext(true);
     }
 }

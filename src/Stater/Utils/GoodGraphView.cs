@@ -25,6 +25,10 @@ namespace Stater.Utils;
 
 public static class GoodGraphView
 {
+    private class HelperStateClass(Transition t);
+
+    private class HelperTransitionClass(State s, State e, bool first);
+
     public static StateMachine? ReBuildGraph(StateMachine? stateMachine)
     {
         if (stateMachine == null) return stateMachine;
@@ -44,13 +48,42 @@ public static class GoodGraphView
         {
             var startNode = stateMachine.States.Find(el => el.Guid == transition.Start);
             var endNode = stateMachine.States.Find(el => el.Guid == transition.End);
+            if (startNode == null || endNode == null) continue;
+            var helpState = new HelperStateClass(transition);
+            var helpTr1 = new HelperTransitionClass(startNode, endNode, true);
+            var helpTr2 = new HelperTransitionClass(endNode, startNode, false);
+            var nd = new Node(
+                CurveFactory.CreateRectangle(
+                    transition.Name.Length,
+                    1,
+                    new Point(0, 0)),
+                helpState);
+            graph.Nodes.Add(nd);
+            // graph.Edges.Add(
+            //     new Edge(
+            //         graph.FindNodeByUserData(startNode),
+            //         graph.FindNodeByUserData(endNode))
+            //     {
+            //         Weight = 1,
+            //         UserData = transition
+            //     });
             graph.Edges.Add(
                 new Edge(
                     graph.FindNodeByUserData(startNode),
-                    graph.FindNodeByUserData(endNode))
+                    nd
+                )
                 {
                     Weight = 1,
-                    UserData = transition
+                    UserData = helpTr1
+                });
+            graph.Edges.Add(
+                new Edge(
+                    nd,
+                    graph.FindNodeByUserData(endNode)
+                )
+                {
+                    Weight = 1,
+                    UserData = helpTr2
                 });
         }
 
@@ -71,11 +104,18 @@ public static class GoodGraphView
 
         foreach (var node in graph.Nodes)
         {
-            var newState = (node.UserData as State) with
+            
+            if(node.UserData is State prevState)
             {
-                CenterPoint = PointToPoint.ToAvaloniaPoint(node.BoundingBox.Center)
-            };
-            newStates.Add(newState);
+                var newState = prevState with
+                {
+                    CenterPoint = PointToPoint.ToAvaloniaPoint(node.BoundingBox.Center)
+                };
+                newStates.Add(newState);
+            } else if (node.UserData is HelperStateClass helpClass)
+            {
+                
+            }
         }
 
         foreach (var edge in graph.Edges)

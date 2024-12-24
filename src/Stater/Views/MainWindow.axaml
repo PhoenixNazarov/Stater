@@ -39,13 +39,17 @@
                 <MenuItem Header="_Project">
                     <MenuItem Header="_New StateMachine" Command="{Binding NewStateMachineCommand}" />
                     <MenuItem Header="_New State" Command="{Binding NewStateCommand}" />
-                    <MenuItem Header="_ReBuildGraph" Command="{Binding ReBuildGraphCommand}"/>
+                    <MenuItem Header="_ReBuildGraph" Command="{Binding ReBuildGraphCommand}" />
+                    <MenuItem Header="_ShowFind" IsVisible="{Binding !IsVisibleFindLine}"
+                              Command="{Binding ShowFindCommand}" />
+                    <MenuItem Header="_HideFind" IsVisible="{Binding IsVisibleFindLine}"
+                              Command="{Binding HideFindCommand}" />
                 </MenuItem>
                 <MenuItem Header="_Plugins">
                     <ItemsControl ItemsSource="{Binding Plugins}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <MenuItem Header="{Binding Name}" Click="MenuItem_OnClick"/>
+                                <MenuItem Header="{Binding Name}" Click="MenuItem_OnClick" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

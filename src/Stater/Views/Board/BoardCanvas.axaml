@@ -6,15 +6,25 @@
              x:Class="Stater.Views.Board.BoardCanvas"
              xmlns:vm="using:Stater.ViewModels.Board"
              x:DataType="vm:BoardCanvasViewModel"
-             xmlns:models="clr-namespace:Stater.Models">
+             xmlns:models="clr-namespace:Stater.Models"
+             xmlns:findLine="clr-namespace:Stater.Views.FindLine">
     <DockPanel HorizontalAlignment="Stretch" Name="TheCanvasPanel" Background="White"
                PointerWheelChanged="InputElement_OnPointerWheelChanged"
                PointerPressed="InputElement_OnPointerPressed"
                PointerMoved="InputElement_OnPointerMoved"
                PointerReleased="InputElement_OnPointerReleased">
-        <TextBlock Background="Black" Text="{Binding StateMachine.Name}" DockPanel.Dock="Top" />
-        <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}" DockPanel.Dock="Top" />
-        <TextBlock Background="Black" Text="{Binding StateMachine.Transitions.Count}" DockPanel.Dock="Top" />
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="450,*">
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Background="Black" Text="{Binding StateMachine.Name}"/>
+                <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}"/>
+                <TextBlock Background="Black" Text="{Binding StateMachine.Transitions.Count}"/>
+            </StackPanel>
+            
+            <findLine:FindLine Grid.Column="1" IsVisible="{Binding IsVisibleFindLine}" Background="Gray"/>
+            <TextBlock Background="Black" Grid.Column="1" IsVisible="{Binding !IsVisibleFindLine}"/>
+        </Grid>
+        
 
         <Canvas Height="400" Width="400" Name="TheCanvas">
             <ItemsControl ItemsSource="{Binding StateMachine.States}">

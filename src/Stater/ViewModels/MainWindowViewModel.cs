@@ -38,6 +38,10 @@ public class MainWindowViewModel : ReactiveObject
             .StateMachine
             .Subscribe(x => { StateMachine = x; });
 
+        projectManager
+            .IsVisibleFindLine
+            .Subscribe(x => IsVisibleFindLine = x);
+
         NewCommand = ReactiveCommand.Create(NewProject);
         OpenCommand = ReactiveCommand.Create<StreamReader>(OpenProject);
         SaveCommand = ReactiveCommand.Create<StreamWriter>(SaveProject);
@@ -47,12 +51,16 @@ public class MainWindowViewModel : ReactiveObject
         RedoCommand = ReactiveCommand.Create(Redo);
         ReBuildGraphCommand = ReactiveCommand.Create(ReBuildGraph);
         PluginButtinCommand = ReactiveCommand.Create<PathPluginDto>(StartButtonFilePlugin);
+        ShowFindCommand = ReactiveCommand.Create(ShowFind);
+        HideFindCommand = ReactiveCommand.Create(HideFind);
     }
 
     private readonly IProjectManager _projectManager;
     private readonly IEditorManager _editorManager;
 
     [Reactive] public Project Project { get; private set; }
+
+    [Reactive] public bool IsVisibleFindLine { get; private set; }
 
     public List<IPlugin> Plugins =>
         new()
@@ -89,6 +97,9 @@ public class MainWindowViewModel : ReactiveObject
     public ICommand RedoCommand { get; }
     
     public ICommand ReBuildGraphCommand { get; }
+    
+    public ICommand ShowFindCommand { get; }
+    public ICommand HideFindCommand { get; }
 
     private void OpenProject(StreamReader sr)
     {
@@ -133,5 +144,15 @@ public class MainWindowViewModel : ReactiveObject
         var res = pathPluginDto.Plugin.Start(input, pathPluginDto.Path);
 
         _projectManager.ChangeStateMachines(res.ChangedStateMachines);
+    }
+
+    private void ShowFind()
+    {
+        _projectManager.ChangeVisibleLineFindToTrue();
+    }
+
+    private void HideFind()
+    {
+        _projectManager.ChangeVisibleLineFindToFalse();
     }
 }

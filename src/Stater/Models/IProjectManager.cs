@@ -11,6 +11,7 @@ public interface IProjectManager
     IObservable<Project> Project { get; }
     IObservable<IChangeSet<StateMachine, string>> StateMachines { get; }
     IObservable<StateMachine> StateMachine { get; }
+    IObservable<bool> IsVisibleFindLine { get; } 
 
     void CreateProject(string name);
     Project? LoadProject(StreamReader sr);
@@ -44,4 +45,10 @@ public interface IProjectManager
 
     void ReBuildGraph();
     void ChangeStateMachines(List<StateMachine> stateMachines);
+    
+    StateMachine? GetStateMachineByGuid(Guid guid);
+
+    public void ChangeVisibleLineFindToFalse();
+
+    public void ChangeVisibleLineFindToTrue();
 }

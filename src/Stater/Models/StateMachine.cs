@@ -25,4 +25,19 @@ public record StateMachine(
     {
         get { return States.Find(x => x.Type == StateType.Start); }
     }
+
+    public State? GetStateByGuid(Guid guid)
+    {
+        return States.Find(x => x.Guid == guid);
+    }
+
+    public Transition? GetTransitionByGuid(Guid guid)
+    {
+        return Transitions.Find(x => x.Guid == guid);
+    }
+
+    public Variable? GetVariableByGuid(Guid guid)
+    {
+        return Variables.Find(x => x.Guid == guid);
+    }
 }
