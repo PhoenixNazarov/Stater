@@ -17,11 +17,11 @@ public record State(
     string Description,
     StateType Type,
     Point CenterPoint,
-
-double Width,
+    double Width,
     double Height,
     List<Event> EntryEvents,
-    List<Event> ExitEvents
+    List<Event> ExitEvents,
+    List<bool> IsReachableList
 )
 {
     public double X => CenterPoint.X;
@@ -30,6 +30,18 @@ double Width,
     public double Right => X + Width / 2;
     public double Top => Y + Height / 2;
     public double Bottom => Y - Height / 2;
+
+    public bool IsReachable => IsReachableList[0];
+    public string Color
+    {
+        get
+        {
+            if(Type == StateType.Start) return "green";
+            if(IsReachable) return "black";
+            return "red";
+        }
+    }
+
     public State() : this(
         Guid.NewGuid(),
         "State",
@@ -39,7 +51,8 @@ double Width,
         100,
         50,
         new List<Event>(),
-        new List<Event>()
+        new List<Event>(),
+        [false]
     )
     {
     }

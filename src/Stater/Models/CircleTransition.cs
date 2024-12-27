@@ -33,7 +33,14 @@ public record class CircleTransition(
     public Point RightArrowPoint => ArrowPoints[1];
     public Point EndArrowPoint => EndPoint;
     
-    public string Color => Transition.Color;
+    public string Color
+    {
+        get
+        {
+            if (End.IsReachable) return "black";
+            return "red";
+        }
+    }
     
     // public Point NamePoint => Transition.NamePoint;
 

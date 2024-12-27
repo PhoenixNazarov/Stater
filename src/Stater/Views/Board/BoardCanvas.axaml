@@ -43,7 +43,7 @@
                 </ItemsControl.ItemContainerTheme>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="Black"
+                        <Border BorderBrush="{Binding Color}"
                                 BorderThickness="3"
                                 Padding="10"
                                 PointerPressed="State_OnPointerPressed"

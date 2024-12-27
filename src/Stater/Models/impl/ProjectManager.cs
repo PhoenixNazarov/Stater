@@ -165,7 +165,8 @@ internal class ProjectManager : IProjectManager
             Width: width,
             Height: height,
             new List<Event>(),
-            new List<Event>()
+            new List<Event>(),
+            [false]
         );
         var newStateMachine = currentStateMachine with
         {
@@ -219,7 +220,6 @@ internal class ProjectManager : IProjectManager
             LinePoints: linePoints,
             Type: TypeArrow.Pifagor,
             // NamePoint: DrawUtils.GetTransitionNamePoint(linePoints),
-            Color: "Black",
             Event: null
         );
         var newStateMachine = currentStateMachine with
@@ -324,5 +324,12 @@ internal class ProjectManager : IProjectManager
     public void ChangeVisibleLineFindToTrue()
     {
         _isVisibleFindLine.OnNext(true);
+    }
+
+    public void SimpleAnalyzeGraph()
+    {
+        var newStateMachine = AnalyzeGraph.Analyze(GetStateMachine());
+        if(newStateMachine == null) return;
+        UpdateStateMachine(newStateMachine);
     }
 }

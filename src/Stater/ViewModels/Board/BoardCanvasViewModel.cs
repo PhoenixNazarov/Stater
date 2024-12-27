@@ -19,6 +19,8 @@ public class BoardCanvasViewModel : ReactiveObject
         _projectManager = projectManager;
         _editorManager = editorManager;
 
+        IsVisibleFindLine = true;
+        
         projectManager
             .StateMachine
             .Subscribe(x =>

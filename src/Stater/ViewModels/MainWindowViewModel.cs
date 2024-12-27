@@ -50,6 +50,7 @@ public class MainWindowViewModel : ReactiveObject
         UndoCommand = ReactiveCommand.Create(Undo);
         RedoCommand = ReactiveCommand.Create(Redo);
         ReBuildGraphCommand = ReactiveCommand.Create(ReBuildGraph);
+        SimpleAnalyzeGraphCommand = ReactiveCommand.Create(SimpleAnalyzeGraph);
         PluginButtinCommand = ReactiveCommand.Create<PathPluginDto>(StartButtonFilePlugin);
         ShowFindCommand = ReactiveCommand.Create(ShowFind);
         HideFindCommand = ReactiveCommand.Create(HideFind);
@@ -100,6 +101,8 @@ public class MainWindowViewModel : ReactiveObject
     
     public ICommand ShowFindCommand { get; }
     public ICommand HideFindCommand { get; }
+    
+    public ICommand SimpleAnalyzeGraphCommand { get; }
 
     private void OpenProject(StreamReader sr)
     {
@@ -154,5 +157,10 @@ public class MainWindowViewModel : ReactiveObject
     private void HideFind()
     {
         _projectManager.ChangeVisibleLineFindToFalse();
+    }
+
+    private void SimpleAnalyzeGraph()
+    {
+        _projectManager.SimpleAnalyzeGraph();
     }
 }

@@ -20,7 +20,14 @@ public record AssociateTransition(
     // public Point NamePoint => Transition.NamePoint;
     public Point NamePoint => DrawUtils.GetTransitionNamePoint(Transition.LinePoints);
     public string Name => Transition.Name;
-    public string Color => Transition.Color;
-    
+    public string Color
+    {
+        get
+        {
+            if (End.IsReachable) return "black";
+            return "red";
+        }
+    }
+
     public List<Point>? LinePoints => Transition.LinePoints;
 }

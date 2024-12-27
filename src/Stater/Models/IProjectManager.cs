@@ -51,4 +51,6 @@ public interface IProjectManager
     public void ChangeVisibleLineFindToFalse();
 
     public void ChangeVisibleLineFindToTrue();
+
+    public void SimpleAnalyzeGraph();
 }
