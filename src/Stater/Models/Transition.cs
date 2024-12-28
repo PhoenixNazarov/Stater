@@ -15,8 +15,8 @@ public record Transition(
     TypeArrow Type,
     List<Point> LinePoints,
     Condition? Condition,
-    Event? Event
-    // Point NamePoint,
+    Event? Event,
+    Point NamePoint
 )
 {
     public Transition() : this(
@@ -27,8 +27,8 @@ public record Transition(
         TypeArrow.Pifagor,
         [],
         null,
-        // new Point(0, 0),
-        null
+        null,
+        new Point(0, 0)
     )
     {
     }

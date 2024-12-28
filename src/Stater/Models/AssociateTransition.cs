@@ -17,8 +17,8 @@ public record AssociateTransition(
     public Point RightArrowPoint => ArrowPoints[1];
     public Point EndArrowPoint => EndPoint;
     
-    // public Point NamePoint => Transition.NamePoint;
-    public Point NamePoint => DrawUtils.GetTransitionNamePoint(Transition.LinePoints);
+    public Point NamePoint => Transition.NamePoint;
+    // public Point NamePoint => DrawUtils.GetTransitionNamePoint(Transition.LinePoints);
     public string Name => Transition.Name;
     public string Color
     {

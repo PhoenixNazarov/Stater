@@ -25,9 +25,16 @@ namespace Stater.Utils;
 
 public static class GoodGraphView
 {
-    private class HelperStateClass(Transition t);
+    public class HelperStateClass(Transition t)
+    {
+        public Transition Transition = t;
+    };
 
-    private class HelperTransitionClass(State s, State e, bool first);
+    public class HelperTransitionClass(Transition t, bool first)
+    {
+        public Transition Transition = t;
+        public bool IsFirst = first;
+    };
 
     public static StateMachine? ReBuildGraph(StateMachine? stateMachine)
     {
@@ -49,42 +56,48 @@ public static class GoodGraphView
             var startNode = stateMachine.States.Find(el => el.Guid == transition.Start);
             var endNode = stateMachine.States.Find(el => el.Guid == transition.End);
             if (startNode == null || endNode == null) continue;
-            var helpState = new HelperStateClass(transition);
-            var helpTr1 = new HelperTransitionClass(startNode, endNode, true);
-            var helpTr2 = new HelperTransitionClass(endNode, startNode, false);
-            var nd = new Node(
-                CurveFactory.CreateRectangle(
-                    transition.Name.Length,
-                    1,
-                    new Point(0, 0)),
-                helpState);
-            graph.Nodes.Add(nd);
-            // graph.Edges.Add(
-            //     new Edge(
-            //         graph.FindNodeByUserData(startNode),
-            //         graph.FindNodeByUserData(endNode))
-            //     {
-            //         Weight = 1,
-            //         UserData = transition
-            //     });
+            // var helpState = new HelperStateClass(transition);
+            // var helpTr1 = new HelperTransitionClass(transition, true);
+            // var helpTr2 = new HelperTransitionClass(transition, false);
+            // var nd = new Node(
+            //     CurveFactory.CreateRectangle(
+            //         transition.Name.Length,
+            //         1,
+            //         new Point(0, 0)),
+            //     helpState);
+            // graph.Nodes.Add(nd);
             graph.Edges.Add(
                 new Edge(
                     graph.FindNodeByUserData(startNode),
-                    nd
-                )
+                    graph.FindNodeByUserData(endNode),
+                    transition.Name.Length,
+                    2.0,
+                    1.0)
                 {
                     Weight = 1,
-                    UserData = helpTr1
+                    UserData = transition
                 });
-            graph.Edges.Add(
-                new Edge(
-                    nd,
-                    graph.FindNodeByUserData(endNode)
-                )
-                {
-                    Weight = 1,
-                    UserData = helpTr2
-                });
+            // graph.Edges.Add(
+            //     new Edge(
+            //         graph.FindNodeByUserData(startNode),
+            //         graph.FindNodeByUserData(helpState),
+            //         transition.Name.Length,
+            //         1.0,
+            //         1
+            //     )
+            //     {
+            //         Weight = 1,
+            //         UserData = helpTr1
+            //     });
+            // graph.Edges.Add(
+            //     new Edge(
+            //         graph.FindNodeByUserData(helpState),
+            //         graph.FindNodeByUserData(endNode)
+            //     )
+            //     {
+            //         Weight = 1,
+            //         UserData = helpTr2
+            //     });
         }
 
         var mode = EdgeRoutingMode.Spline;
@@ -101,33 +114,64 @@ public static class GoodGraphView
 
         List<State> newStates = [];
         List<Transition> newTransitions = [];
-
+        // var namePoints = new Dictionary<Guid, Avalonia.Point>();
+        // var firstHalfPoints = new Dictionary<Guid, List<Avalonia.Point>>();
+        // var secondHalfPoints = new Dictionary<Guid, List<Avalonia.Point>>();
         foreach (var node in graph.Nodes)
         {
-            
-            if(node.UserData is State prevState)
+            if (node.UserData is State prevState)
             {
                 var newState = prevState with
                 {
                     CenterPoint = PointToPoint.ToAvaloniaPoint(node.BoundingBox.Center)
                 };
                 newStates.Add(newState);
-            } else if (node.UserData is HelperStateClass helpClass)
-            {
-                
             }
+            // else if (node.UserData is HelperStateClass helpClass)
+            // {
+            //     namePoints[helpClass.Transition.Guid] = PointToPoint.ToAvaloniaPoint(node.BoundingBox.Center);
+            // }
         }
 
         foreach (var edge in graph.Edges)
         {
             var newLinePoints = new List<Avalonia.Point>();
             DownloadPoints(newLinePoints, edge);
-            var newTransition = (edge.UserData as Transition) with
+            // if (edge.UserData is HelperTransitionClass helperTransitionClass)
+            // {
+            //     if (helperTransitionClass.IsFirst)
+            //     {
+            //         firstHalfPoints.Add(helperTransitionClass.Transition.Guid, newLinePoints);
+            //     }
+            //     else
+            //     {
+            //         secondHalfPoints.Add(helperTransitionClass.Transition.Guid, newLinePoints);
+            //     }
+            // }
+            if (edge.UserData is Transition transition)
             {
-                LinePoints = newLinePoints
-            };
-            newTransitions.Add(newTransition);
+                var newTransition = transition with
+                {
+                    LinePoints = newLinePoints
+                };
+                newTransitions.Add(newTransition);
+            }
         }
+
+        // foreach (var key in namePoints.Keys)
+        // {
+        //     var namePoint = namePoints[key];
+        //     var firstHalfPoint = firstHalfPoints[key];
+        //     var secondHalfPoint = secondHalfPoints[key];
+        //     var linePoints = UnionPoints(firstHalfPoint, namePoint, secondHalfPoint);
+        //     var transition = stateMachine.Transitions.Find(el => el.Guid == key)!;
+        //     var newTransition = transition with
+        //     {
+        //         LinePoints = linePoints,
+        //         NamePoint = namePoint
+        //     };
+        //     newTransitions.Add(newTransition);
+        // }
 
         var newStateMachine = stateMachine with
         {
@@ -135,6 +179,15 @@ public static class GoodGraphView
             Transitions = newTransitions,
         };
         return newStateMachine;
+    }
+
+    private static List<Avalonia.Point> UnionPoints(List<Avalonia.Point> first, Avalonia.Point namePoint,
+        List<Avalonia.Point> second)
+    {
+        first.Add(namePoint);
+        first.AddRange(second);
+
+        return first;
     }
 
     private static void DownloadPoints(List<Avalonia.Point> linePoints, Edge edge)

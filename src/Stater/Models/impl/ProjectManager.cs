@@ -219,8 +219,8 @@ internal class ProjectManager : IProjectManager
             Condition: null,
             LinePoints: linePoints,
             Type: TypeArrow.Pifagor,
-            // NamePoint: DrawUtils.GetTransitionNamePoint(linePoints),
-            Event: null
+            Event: null,
+            NamePoint: DrawUtils.GetTransitionNamePoint(linePoints)
         );
         var newStateMachine = currentStateMachine with
         {

@@ -38,8 +38,8 @@ public static class DrawUtils
                 endPoint = p2;
             }
         }
-
-        return [startPoint, endPoint];
+        var centerPoint = (endPoint + startPoint) / 2;
+        return [startPoint, centerPoint, endPoint];
     }
 
     private static List<Point> GenerateManhattanPath(State start, State end)
