@@ -27,6 +27,6 @@ public interface IEditorManager
     void DoSelectSubstringTransition(Transition transition, int startIndex, int endIndex);
     void DoSelectVariable(Variable variable);
     void DoSelectSubstringVariable(Variable variable, int startIndex, int endIndex);
-    void DoLoadSearch(List<SearchConteiner> conteiners);
+    void DoLoadSearch(List<SearchContainer> containers);
     void DoUnLoadSearch();
 }

@@ -83,9 +83,9 @@ public class EditorManager : IEditorManager
         _editorType.OnNext(EditorTypeEnum.Variable);
     }
 
-    public void DoLoadSearch(List<SearchConteiner> conteiners)
+    public void DoLoadSearch(List<SearchContainer> containers)
     {
-        _stateEditor.LoadPosition(conteiners.Where(el => el.EditorType == EditorTypeEnum.State).ToList());
+        _stateEditor.LoadPosition(containers.Where(el => el.EditorType == EditorTypeEnum.State).ToList());
     }
 
     public void DoUnLoadSearch()

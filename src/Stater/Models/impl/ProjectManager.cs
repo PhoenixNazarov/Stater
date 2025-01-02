@@ -7,7 +7,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Xml;
 using DynamicData;
-
 using Stater.Utils;
 using Point = Avalonia.Point;
 
@@ -24,7 +23,7 @@ internal class ProjectManager : IProjectManager
     private readonly ReplaySubject<StateMachine> _stateMachine = new();
 
     public IObservable<StateMachine> StateMachine => _stateMachine;
-    
+
     private readonly ReplaySubject<bool> _isVisibleFindLine = new();
     public IObservable<bool> IsVisibleFindLine => _isVisibleFindLine;
 
@@ -33,7 +32,7 @@ internal class ProjectManager : IProjectManager
 
     // private readonly ReplaySubject<Transition> _transtion = new();
     // public IObservable<Transition> Transition => _transtion;
-    
+
     private readonly Stack<StateMachine> undoStack = new();
     private readonly Stack<StateMachine> redoStack = new();
 
@@ -206,6 +205,16 @@ internal class ProjectManager : IProjectManager
         UpdateStateMachine(newStateMachine);
     }
 
+    public void UpdateStateInStateMachine(State state, StateMachine stateMachine)
+    {
+        var states = stateMachine.States.Where(el => el.Guid != state.Guid);
+        var newStateMachine = stateMachine with
+        {
+            States = new List<State>(states) { state }
+        };
+        UpdateStateMachine(newStateMachine);
+    }
+
     public Transition? CreateTransition(State start, State end)
     {
         var currentStateMachine = GetStateMachine();
@@ -263,6 +272,16 @@ internal class ProjectManager : IProjectManager
         UpdateStateMachine(newStateMachine);
     }
 
+    public void UpdateTransitionInStateMachine(Transition transition, StateMachine stateMachine)
+    {
+        var transitions = stateMachine.Transitions.Where(el => el.Guid != transition.Guid);
+        var newStateMachine = stateMachine with
+        {
+            Transitions = new List<Transition>(transitions) { transition }
+        };
+        UpdateStateMachine(newStateMachine);
+    }
+
     public Variable? CreateVariable()
     {
         var currentStateMachine = GetStateMachine();
@@ -293,6 +312,16 @@ internal class ProjectManager : IProjectManager
         if (currentStateMachine == null) return;
         var variables = currentStateMachine.Variables.Where(el => el.Guid != variable.Guid);
         var newStateMachine = currentStateMachine with
+        {
+            Variables = new List<Variable>(variables) { variable }
+        };
+        UpdateStateMachine(newStateMachine);
+    }
+
+    public void UpdateVariableInStateMachine(Variable variable, StateMachine stateMachine)
+    {
+        var variables = stateMachine.Variables.Where(el => el.Guid != variable.Guid);
+        var newStateMachine = stateMachine with
         {
             Variables = new List<Variable>(variables) { variable }
         };
@@ -330,7 +359,7 @@ internal class ProjectManager : IProjectManager
     public void SimpleAnalyzeGraph()
     {
         var newStateMachine = AnalyzeGraph.Analyze(GetStateMachine());
-        if(newStateMachine == null) return;
+        if (newStateMachine == null) return;
         UpdateStateMachine(newStateMachine);
     }
 }

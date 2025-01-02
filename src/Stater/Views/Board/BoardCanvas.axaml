@@ -22,8 +22,7 @@
                 <TextBlock Background="Black" Text="{Binding StateMachine.Transitions.Count}"/>
             </StackPanel>
             
-            <findLine:FindLine Grid.Column="1" IsVisible="{Binding IsVisibleFindLine}" Background="Gray"/>
-            <TextBlock Background="Black" Grid.Column="1" IsVisible="{Binding !IsVisibleFindLine}"/>
+            <findLine:FindLine Grid.Column="1"/>
         </Grid>
         
 

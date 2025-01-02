@@ -3,7 +3,7 @@ using Stater.Models.Editors;
 
 namespace Stater.Models.FindLine;
 
-public class SearchConteiner
+public class SearchContainer
 {
     public EditorTypeEnum EditorType;
     public int StartPos;

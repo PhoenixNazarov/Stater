@@ -19,6 +19,6 @@ public interface IStateEditor
     IObservable<int> EndSelectedPosDescription { get; }
     
     void DoSelectSubstring(State state, int startPos, int endPos, bool isDescription);
-    void LoadPosition(List<SearchConteiner> conteiners);
+    void LoadPosition(List<SearchContainer> containers);
     void UnLoadPosition();
 }

@@ -18,9 +18,7 @@ public class BoardCanvasViewModel : ReactiveObject
     {
         _projectManager = projectManager;
         _editorManager = editorManager;
-
-        IsVisibleFindLine = false;
-
+        
         Height = 400;
         Width = 800;
         
@@ -39,10 +37,6 @@ public class BoardCanvasViewModel : ReactiveObject
                     .OfType<DrawArrows>()
                     .ToList();
             });
-
-        projectManager
-            .IsVisibleFindLine
-            .Subscribe(x => IsVisibleFindLine = x);
 
         StateClickCommand = ReactiveCommand.Create<State>(OnStateClicked);
         UpdateStateCoordsCommand = ReactiveCommand.Create<Vector2>(UpdateStateCoords);
@@ -66,9 +60,6 @@ public class BoardCanvasViewModel : ReactiveObject
     public ReactiveCommand<Vector2, Unit> UpdateStateCoordsCommand { get; }
 
     public ReactiveCommand<Transition, Unit> TransitionClickCommand { get; }
-
-    [Reactive] public bool IsVisibleFindLine { get; private set; }
-
     private void OnStateClicked(State state)
     {
         var selectedState = _projectManager.GetState(state.Guid);

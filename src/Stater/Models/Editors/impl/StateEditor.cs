@@ -47,18 +47,18 @@ public class StateEditor(IProjectManager projectManager): IStateEditor
         _state.OnNext(state);
     }
 
-    public void LoadPosition(List<SearchConteiner> conteiners)
+    public void LoadPosition(List<SearchContainer> containers)
     {
-        foreach (var conteiner in conteiners)
+        foreach (var container in containers)
         {
-            if (!conteiner.IsDescription)
+            if (!container.IsDescription)
             {
-                _stateGuidToPosName[conteiner.Guid] = new KeyValuePair<int, int>(conteiner.StartPos, conteiner.EndPos);
+                _stateGuidToPosName[container.Guid] = new KeyValuePair<int, int>(container.StartPos, container.EndPos);
             }
 
-            if (conteiner.IsDescription)
+            if (container.IsDescription)
             {
-                _stateGuidToPosDescription[conteiner.Guid] = new KeyValuePair<int, int>(conteiner.StartPos, conteiner.EndPos);
+                _stateGuidToPosDescription[container.Guid] = new KeyValuePair<int, int>(container.StartPos, container.EndPos);
             }
         }
     }
