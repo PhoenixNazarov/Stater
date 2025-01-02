@@ -7,7 +7,8 @@
              xmlns:vm="using:Stater.ViewModels.Board"
              x:DataType="vm:BoardCanvasViewModel"
              xmlns:models="clr-namespace:Stater.Models"
-             xmlns:findLine="clr-namespace:Stater.Views.FindLine">
+             xmlns:findLine="clr-namespace:Stater.Views.FindLine"
+             >
     <DockPanel HorizontalAlignment="Stretch" Name="TheCanvasPanel" Background="White"
                PointerWheelChanged="InputElement_OnPointerWheelChanged"
                PointerPressed="InputElement_OnPointerPressed"
@@ -26,11 +27,11 @@
         </Grid>
         
 
-        <Canvas Height="400" Width="400" Name="TheCanvas">
+        <Canvas Height="{Binding Height}" Width="{Binding Width}" Name="TheCanvas">
             <ItemsControl ItemsSource="{Binding StateMachine.States}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas Height="400" Width="400" Name="StatesCanvas" />
+                        <Canvas Height="{Binding Height}" Width="{Binding Width}" Name="StatesCanvas" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerTheme>
@@ -60,7 +61,7 @@
             <ItemsControl ItemsSource="{Binding Transitions}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas Height="400" Width="400" Name="TransitionsCanvas" />
+                        <Canvas Height="{Binding Height}" Width="{Binding Width}" Name="TransitionsCanvas" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.DataTemplates>

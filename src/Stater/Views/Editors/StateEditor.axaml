@@ -15,10 +15,15 @@
                 <TextBlock Margin="0 5">Name:</TextBlock>
                 <TextBox
                     Watermark="Enter state name"
-                    Text="{Binding Name}" />
+                    Text="{Binding Name}" 
+                    SelectionStart="{Binding StartSelectedPosName}"
+                    SelectionEnd="{Binding EndSelectedPosName}"
+                    />
                 <TextBlock Margin="0 15 0 5">Description:</TextBlock>
                 <TextBox Height="50" AcceptsReturn="True" TextWrapping="Wrap"
-                         Text="{Binding Description}" />
+                         Text="{Binding Description}"
+                         SelectionEnd="{Binding EndSelectedPosDescription}"
+                         SelectionStart="{Binding StartSelectedPosDescription}"/>
                 <TextBlock Margin="0 15 0 5">Type:</TextBlock>
                 <ComboBox SelectedIndex="{Binding TypeIndex}" MaxDropDownHeight="100">
                     <ComboBoxItem>Common</ComboBoxItem>

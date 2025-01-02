@@ -20,6 +20,22 @@ public class TransitionEditorViewModel : ReactiveObject
 
         SaveCommand = ReactiveCommand.Create(Save);
 
+        StartSelectedPosName = 0;
+        EndSelectedPosName = 0;
+        
+        
+        _transitionEditor
+            .StartSelectedPosName
+            .Subscribe(x =>
+            {
+                StartSelectedPosName = x;
+            });
+        _transitionEditor
+            .EndSelectedPosName
+            .Subscribe(x =>
+            {
+                EndSelectedPosName = x;
+            });
         _transitionEditor
             .Transition
             .Subscribe(x =>
@@ -92,6 +108,12 @@ public class TransitionEditorViewModel : ReactiveObject
     [Reactive] public int? Condition { get; set; }
 
     [Reactive] public string Value { get; set; }
+    
+    [Reactive]
+    public int StartSelectedPosName { get; set; }
+    
+    [Reactive]
+    public int EndSelectedPosName { get; set; }
 
 
     [Reactive] public string VariableMath { get; set; }

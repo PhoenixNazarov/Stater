@@ -8,27 +8,28 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
 using Stater.Models.Editors;
+using Stater.Models.FindLine;
 using Stater.Utils;
 
 namespace Stater.ViewModels.FindLine;
 
 public class FindLineViewModel : ReactiveObject
 {
-    private class SearchConteiner
-    {
-        public EditorTypeEnum EditorType;
-        public int StartPos;
-        public int EndPos;
-        public Guid Guid { get; set; }
-        public Guid StateMachineGuid;
-    }
-
     public FindLineViewModel(IProjectManager projectManager, IEditorManager editorManager)
     {
         _projectManager = projectManager;
+        AllPos = 0;
+        SearchPos = 0;
         _projectManager
             .IsVisibleFindLine
-            .Subscribe(x => IsVisible = x);
+            .Subscribe(x =>
+            {
+                IsVisible = x;
+                if (!x)
+                {
+                    _editorManager.DoUnLoadSearch();
+                }
+            });
         _editorManager = editorManager;
         IsVisible = true;
         SearchCommand = ReactiveCommand.Create(Search);
@@ -47,6 +48,9 @@ public class FindLineViewModel : ReactiveObject
 
     private List<SearchConteiner> _searchConteiners = [];
 
+    [Reactive] public int AllPos { get; set; }
+    [Reactive] public int SearchPos { get; set; }
+
     private int pos;
 
     public ICommand SearchCommand { get; set; }
@@ -55,18 +59,28 @@ public class FindLineViewModel : ReactiveObject
 
     private void Search()
     {
-        if (string.IsNullOrEmpty(SearchText) || SearchText == PriviousSearchText) return;
+        if (string.IsNullOrEmpty(SearchText)) return;
         PriviousSearchText = SearchText;
         _searchConteiners = [];
         foreach (var stateMachine in _projectManager.GetStateMachines())
         {
             AddConteiners(stateMachine);
         }
-
+        if(_searchConteiners.Count == 0) return;
+        pos = 0;
+        SearchPos = 1;
+        AllPos = _searchConteiners.Count;
+        LoadConteiners();
         ShowCurConteiner();
     }
 
-    private void AddOneInConteiner(EditorTypeEnum editorType, Guid stateMachineGuid, Guid guid, List<List<int>> pairs)
+    private void LoadConteiners()
+    {
+        _editorManager.DoLoadSearch(_searchConteiners);
+    }
+
+    private void AddOneInConteiner(EditorTypeEnum editorType, Guid stateMachineGuid, Guid guid, List<List<int>> pairs,
+        bool isDescription = false)
     {
         foreach (var pair in pairs)
         {
@@ -76,11 +90,12 @@ public class FindLineViewModel : ReactiveObject
                 StartPos = pair[0],
                 EndPos = pair[1],
                 Guid = guid,
+                IsDescription = isDescription,
                 StateMachineGuid = stateMachineGuid
             });
         }
     }
-    
+
     private void AddConteiners(StateMachine stateMachine)
     {
         var stateMachinePairs = FindUtils.FindAllSubstings(stateMachine.Name, PriviousSearchText);
@@ -90,7 +105,7 @@ public class FindLineViewModel : ReactiveObject
             var statePair = FindUtils.FindAllSubstings(state.Name, PriviousSearchText);
             AddOneInConteiner(EditorTypeEnum.State, stateMachine.Guid, state.Guid, statePair);
             statePair = FindUtils.FindAllSubstings(state.Description, PriviousSearchText);
-            AddOneInConteiner(EditorTypeEnum.State, stateMachine.Guid, state.Guid, statePair);
+            AddOneInConteiner(EditorTypeEnum.State, stateMachine.Guid, state.Guid, statePair, true);
         }
 
         foreach (var transition in stateMachine.Transitions)
@@ -111,6 +126,7 @@ public class FindLineViewModel : ReactiveObject
         if (_searchConteiners.Count == 0) return;
         if (pos >= _searchConteiners.Count - 1) pos = 0;
         else pos += 1;
+        SearchPos = pos + 1;
         ShowCurConteiner();
     }
 
@@ -119,6 +135,7 @@ public class FindLineViewModel : ReactiveObject
         if (_searchConteiners.Count == 0) return;
         if (pos <= 0) pos = _searchConteiners.Count - 1;
         else pos -= 1;
+        SearchPos = pos + 1;
         ShowCurConteiner();
     }
 
@@ -137,7 +154,8 @@ public class FindLineViewModel : ReactiveObject
             {
                 var stateMachine = _projectManager.GetStateMachineByGuid(curConteiner.StateMachineGuid);
                 if (stateMachine == null) return;
-                _editorManager.DoSelectStateMachine(stateMachine);
+                _editorManager
+                    .DoSelectSubstringStateMachine(stateMachine, curConteiner.StartPos, curConteiner.EndPos);
                 break;
             }
             case EditorTypeEnum.State:
@@ -145,7 +163,9 @@ public class FindLineViewModel : ReactiveObject
                 var state = _projectManager.GetStateMachineByGuid(curConteiner.StateMachineGuid)?
                     .GetStateByGuid(curConteiner.Guid);
                 if (state == null) return;
-                _editorManager.DoSelectState(state);
+                _editorManager
+                    .DoSelectSubstringState(state, curConteiner.StartPos, curConteiner.EndPos,
+                    curConteiner.IsDescription);
                 break;
             }
             case EditorTypeEnum.Variable:
@@ -153,7 +173,7 @@ public class FindLineViewModel : ReactiveObject
                 var variable = _projectManager.GetStateMachineByGuid(curConteiner.StateMachineGuid)?
                     .GetVariableByGuid(curConteiner.Guid);
                 if (variable == null) return;
-                _editorManager.DoSelectVariable(variable);
+                _editorManager.DoSelectSubstringVariable(variable, curConteiner.StartPos, curConteiner.EndPos);
                 break;
             }
             case EditorTypeEnum.Transition:
@@ -161,7 +181,7 @@ public class FindLineViewModel : ReactiveObject
                 var transition = _projectManager.GetStateMachineByGuid(curConteiner.StateMachineGuid)?
                     .GetTransitionByGuid(curConteiner.Guid);
                 if (transition == null) return;
-                _editorManager.DoSelectTransition(transition);
+                _editorManager.DoSelectSubstringTransition(transition, curConteiner.StartPos, curConteiner.EndPos);
                 break;
             }
             case EditorTypeEnum.Null:

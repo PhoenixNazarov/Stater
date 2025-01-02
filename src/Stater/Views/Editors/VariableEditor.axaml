@@ -9,7 +9,9 @@
     <StackPanel>
         <TextBlock Margin="0 5">Name:</TextBlock>
         <TextBox
-            Watermark="Enter variable name" Text="{Binding Name}" />
+            Watermark="Enter variable name" Text="{Binding Name}" 
+            SelectionStart="{Binding StartSelectedPosName}"
+            SelectionEnd="{Binding EndSelectedPosName}"/>
 
         <TextBlock Margin="0 5">Start value:</TextBlock>
         <TextBox

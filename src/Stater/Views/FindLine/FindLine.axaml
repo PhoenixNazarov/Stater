@@ -13,11 +13,19 @@
                  Height="25"
                  Width="200"
                  Background="White"
-                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
         <StackPanel Grid.Column="1" Orientation="Horizontal">
-            <Button Background = "White" Command="{Binding SearchCommand}">Search</Button>
-            <Button Background = "White" Command="{Binding NextCommand}">\/</Button>
-            <Button Background = "White" Command="{Binding PrevCommand}">/\</Button>
+            <Button Background="White" Command="{Binding SearchCommand}">Search</Button>
+            <Button Background="White" Command="{Binding NextCommand}">\/</Button>
+            <Button Background="White" Command="{Binding PrevCommand}">/\</Button>
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}/{1}">
+                        <Binding Path="SearchPos" />
+                        <Binding Path="AllPos"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

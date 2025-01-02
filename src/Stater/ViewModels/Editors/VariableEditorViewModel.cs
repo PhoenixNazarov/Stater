@@ -13,7 +13,23 @@ public class VariableEditorViewModel : ReactiveObject
     {
         _variableEditor = variableEditor;
         Console.WriteLine(variableEditor);
-
+        
+        StartSelectedPosName = 0;
+        EndSelectedPosName = 0;
+        
+        
+        _variableEditor
+            .StartSelectedPosName
+            .Subscribe(x =>
+            {
+                StartSelectedPosName = x;
+            });
+        _variableEditor
+            .EndSelectedPosName
+            .Subscribe(x =>
+            {
+                EndSelectedPosName = x;
+            });
         _variableEditor
             .Variable
             .Subscribe(x =>
@@ -48,6 +64,11 @@ public class VariableEditorViewModel : ReactiveObject
         _variableEditor.Update(variable);
     }
 
+    [Reactive]
+    public int StartSelectedPosName { get; set; }
+    
+    [Reactive]
+    public int EndSelectedPosName { get; set; }
     [Reactive] private Variable? Variable { get; set; }
 
     [Reactive] public string Name { get; set; }

@@ -9,7 +9,9 @@
     <StackPanel>
         <TextBlock Margin="0 5">Name:</TextBlock>
         <TextBox
-            Watermark="Enter state name" Text="{Binding Name}" />
+            Watermark="Enter state name" Text="{Binding Name}"
+            SelectionStart="{Binding StartSelectedPosName}"
+            SelectionEnd="{Binding EndSelectedPosName}"/>
 
         <TextBlock Margin="0 5">Condition:</TextBlock>
         <ComboBox SelectedIndex="0" MaxDropDownHeight="100">

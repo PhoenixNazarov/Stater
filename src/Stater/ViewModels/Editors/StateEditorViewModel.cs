@@ -24,7 +24,31 @@ public class StateEditorViewModel : ReactiveObject
         _editorManager = editorManager;
 
         SaveCommand = ReactiveCommand.Create(Save);
-
+        StartSelectedPosName = 0;
+        EndSelectedPosName = 0;
+        StartSelectedPosDescription = 0;
+        EndSelectedPosDescription = 0;
+        
+        
+        _stateEditor
+            .StartSelectedPosName
+            .Subscribe(x =>
+            {
+                StartSelectedPosName = x;
+            });
+        _stateEditor
+            .EndSelectedPosName
+            .Subscribe(x =>
+            {
+                EndSelectedPosName = x;
+            });
+        _stateEditor
+            .StartSelectedPosDescription
+            .Subscribe(x => StartSelectedPosDescription = x);
+        _stateEditor
+            .EndSelectedPosDescription
+            .Subscribe(x => EndSelectedPosDescription = x);
+        
         _stateEditor
             .State
             .Subscribe(x =>
@@ -96,6 +120,18 @@ public class StateEditorViewModel : ReactiveObject
 
     [Reactive]
     public List<DrawArrows> Transitions { get; set; }
+    
+    [Reactive]
+    public int StartSelectedPosName { get; set; }
+    
+    [Reactive]
+    public int EndSelectedPosName { get; set; }
+    
+    [Reactive]
+    public int StartSelectedPosDescription { get; set; }
+    
+    [Reactive]
+    public int EndSelectedPosDescription { get; set; }
     
 
     private void AddTransition(State state)

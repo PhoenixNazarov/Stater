@@ -20,6 +20,9 @@ public class BoardCanvasViewModel : ReactiveObject
         _editorManager = editorManager;
 
         IsVisibleFindLine = false;
+
+        Height = 400;
+        Width = 800;
         
         projectManager
             .StateMachine
@@ -50,6 +53,10 @@ public class BoardCanvasViewModel : ReactiveObject
     private readonly IEditorManager _editorManager;
 
     [Reactive] public List<DrawArrows> Transitions { get; set; }
+    
+    [Reactive] public int Width { get; set; }
+    
+    [Reactive] public int Height { get; set; }
 
     [Reactive] public Transition? Transition { get; set; }
     [Reactive] public State? State { get; private set; }

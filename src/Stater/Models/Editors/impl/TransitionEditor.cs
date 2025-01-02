@@ -12,6 +12,8 @@ public class TransitionEditor(
     
     public void DoSelect(Transition transition)
     {
+        _startSelectedPosName.OnNext(0);
+        _endSelectedPosName.OnNext(0);
         _transition.OnNext(transition);
     }
 
@@ -19,4 +21,17 @@ public class TransitionEditor(
     {
         projectManager.UpdateTransition(transition);
     }
+    
+    public void DoSelectSubstring(Transition transition, int startPos, int endPos)
+    {
+        _startSelectedPosName.OnNext(startPos);
+        _endSelectedPosName.OnNext(endPos);
+        _transition.OnNext(transition);
+    }
+    
+    private readonly ReplaySubject<int> _startSelectedPosName = new();
+    private readonly ReplaySubject<int> _endSelectedPosName = new();
+
+    public IObservable<int> StartSelectedPosName => _startSelectedPosName;
+    public IObservable<int> EndSelectedPosName => _endSelectedPosName;
 }

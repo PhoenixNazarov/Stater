@@ -301,7 +301,8 @@ internal class ProjectManager : IProjectManager
 
     public void ReBuildGraph()
     {
-        var newStateMachine = GoodGraphView.ReBuildGraph(GetStateMachine());
+        var reBuild = new GoodGraphView();
+        var newStateMachine = reBuild.ReBuildGraph(GetStateMachine());
         if (newStateMachine == null) return;
         UpdateStateMachine(newStateMachine);
     }

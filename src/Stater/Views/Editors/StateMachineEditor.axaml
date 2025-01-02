@@ -10,6 +10,8 @@
         <TextBlock Margin="0 5">Name:</TextBlock>
         <TextBox
             Text="{Binding Name}"
+            SelectionStart="{Binding StartSelectedPosName}"
+            SelectionEnd="{Binding EndSelectedPosName}"
             Watermark="Enter state machine name" />
         <Button Command="{Binding SaveCommand}">Save</Button>
     </StackPanel>

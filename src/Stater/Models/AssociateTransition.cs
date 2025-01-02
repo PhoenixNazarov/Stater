@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Avalonia;
 using Stater.Utils;
-
 namespace Stater.Models;
 
 public record AssociateTransition(

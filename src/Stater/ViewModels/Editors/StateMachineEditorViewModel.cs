@@ -14,7 +14,22 @@ public class StateMachineEditorViewModel : ReactiveObject
         _stateMachineEditor = stateMachineEditor;
 
         SaveCommand = ReactiveCommand.Create(Save);
-
+        StartSelectedPosName = 0;
+        EndSelectedPosName = 0;
+        
+        
+        _stateMachineEditor
+            .StartSelectedPosName
+            .Subscribe(x =>
+            {
+                StartSelectedPosName = x;
+            });
+        _stateMachineEditor
+            .EndSelectedPosName
+            .Subscribe(x =>
+            {
+                EndSelectedPosName = x;
+            });
         stateMachineEditor
             .StateMachine
             .Subscribe(x =>
@@ -31,6 +46,11 @@ public class StateMachineEditorViewModel : ReactiveObject
 
     [Reactive] private StateMachine? StateMachine { get; set; }
     [Reactive] public string Name { get; set; }
+    [Reactive]
+    public int StartSelectedPosName { get; set; }
+    
+    [Reactive]
+    public int EndSelectedPosName { get; set; }
 
     private void Save()
     {
