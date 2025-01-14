@@ -26,6 +26,9 @@ internal class ProjectManager : IProjectManager
 
     private readonly ReplaySubject<bool> _isVisibleFindLine = new();
     public IObservable<bool> IsVisibleFindLine => _isVisibleFindLine;
+    
+    private readonly ReplaySubject<bool> _isAnalyze = new();
+    public IObservable<bool> IsAnalyze => _isAnalyze;
 
     // private readonly ReplaySubject<State> _state = new();
     // public IObservable<State> State => _state;
@@ -163,9 +166,10 @@ internal class ProjectManager : IProjectManager
             CenterPoint: new Point(x, y),
             Width: width,
             Height: height,
-            new List<Event>(),
-            new List<Event>(),
-            [false]
+            IsAnalyze: false,
+            EntryEvents: [],
+            ExitEvents: [],
+            IsReachableList:[false]
         );
         var newStateMachine = currentStateMachine with
         {
@@ -354,6 +358,22 @@ internal class ProjectManager : IProjectManager
     public void ChangeVisibleLineFindToTrue()
     {
         _isVisibleFindLine.OnNext(true);
+    }
+    
+    public void ChangeAnalyzeToFalse()
+    {
+        _isAnalyze.OnNext(false);
+        var sm = GetStateMachine();
+        if(sm == null) return;
+        _stateMachine.OnNext(sm);
+    }
+
+    public void ChangeAnalyzeToTrue()
+    {
+        _isAnalyze.OnNext(true);
+        var sm = GetStateMachine();
+        if(sm == null) return;
+        _stateMachine.OnNext(sm);
     }
 
     public void SimpleAnalyzeGraph()

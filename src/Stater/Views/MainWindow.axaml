@@ -44,7 +44,11 @@
                               Command="{Binding ShowFindCommand}" />
                     <MenuItem Header="_HideFind" IsVisible="{Binding IsVisibleFindLine}"
                               Command="{Binding HideFindCommand}" />
-                    <MenuItem Header="_AnalyzeGraph" Command="{Binding SimpleAnalyzeGraphCommand}"/>
+                    <!-- <MenuItem Header="_AnalyzeGraph" Command="{Binding SimpleAnalyzeGraphCommand}"/> -->
+                    <MenuItem Header="_AnalyzeGraph Off" IsVisible="{Binding !IsAnalyze}"
+                              Command="{Binding ActiveAnalyzeCommand}" />
+                    <MenuItem Header="_AnalyzeGraph On" IsVisible="{Binding IsAnalyze}"
+                              Command="{Binding DisableAnalyzeCommand}" />
                 </MenuItem>
                 <MenuItem Header="_Plugins">
                     <ItemsControl ItemsSource="{Binding Plugins}">

@@ -83,7 +83,7 @@ public class StateEditorViewModel : ReactiveObject
                         {
                             var startState = x.States.Find(s => s.Guid == y.Start)!;
                             var endState = x.States.Find(s => s.Guid == y.End)!;
-                            return DrawUtils.GetTransition(startState, endState, y);
+                            return DrawUtils.GetTransition(startState, endState, y, false);
                         }
                     ).Where(y => y != null)
                     .OfType<DrawArrows>()

@@ -41,6 +41,10 @@ public class MainWindowViewModel : ReactiveObject
         projectManager
             .IsVisibleFindLine
             .Subscribe(x => IsVisibleFindLine = x);
+        
+        projectManager
+            .IsAnalyze
+            .Subscribe(x => IsAnalyze = x);
 
         NewCommand = ReactiveCommand.Create(NewProject);
         OpenCommand = ReactiveCommand.Create<StreamReader>(OpenProject);
@@ -50,10 +54,12 @@ public class MainWindowViewModel : ReactiveObject
         UndoCommand = ReactiveCommand.Create(Undo);
         RedoCommand = ReactiveCommand.Create(Redo);
         ReBuildGraphCommand = ReactiveCommand.Create(ReBuildGraph);
-        SimpleAnalyzeGraphCommand = ReactiveCommand.Create(SimpleAnalyzeGraph);
+        // SimpleAnalyzeGraphCommand = ReactiveCommand.Create(SimpleAnalyzeGraph);
         PluginButtinCommand = ReactiveCommand.Create<PathPluginDto>(StartButtonFilePlugin);
         ShowFindCommand = ReactiveCommand.Create(ShowFind);
         HideFindCommand = ReactiveCommand.Create(HideFind);
+        ActiveAnalyzeCommand = ReactiveCommand.Create(ActiveAnalyze);
+        DisableAnalyzeCommand = ReactiveCommand.Create(DisableAnalyze);
     }
 
     private readonly IProjectManager _projectManager;
@@ -62,6 +68,7 @@ public class MainWindowViewModel : ReactiveObject
     [Reactive] public Project Project { get; private set; }
 
     [Reactive] public bool IsVisibleFindLine { get; private set; }
+    [Reactive] public bool IsAnalyze { get; private set; }
 
     public List<IPlugin> Plugins =>
         new()
@@ -102,7 +109,10 @@ public class MainWindowViewModel : ReactiveObject
     public ICommand ShowFindCommand { get; }
     public ICommand HideFindCommand { get; }
     
-    public ICommand SimpleAnalyzeGraphCommand { get; }
+    public ICommand ActiveAnalyzeCommand { get; }
+    public ICommand DisableAnalyzeCommand { get; }
+    
+    // public ICommand SimpleAnalyzeGraphCommand { get; }
 
     private void OpenProject(StreamReader sr)
     {
@@ -158,9 +168,19 @@ public class MainWindowViewModel : ReactiveObject
     {
         _projectManager.ChangeVisibleLineFindToFalse();
     }
-
-    private void SimpleAnalyzeGraph()
+    
+    private void ActiveAnalyze()
     {
-        _projectManager.SimpleAnalyzeGraph();
+        _projectManager.ChangeAnalyzeToTrue();
     }
+
+    private void DisableAnalyze()
+    {
+        _projectManager.ChangeAnalyzeToFalse();
+    }
+
+    // private void SimpleAnalyzeGraph()
+    // {
+    //     _projectManager.SimpleAnalyzeGraph();
+    // }
 }

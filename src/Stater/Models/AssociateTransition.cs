@@ -7,7 +7,9 @@ public record AssociateTransition(
     State Start,
     State End,
     Transition Transition,
-    List<Point> ArrowPoints
+    List<Point> ArrowPoints,
+    List<Point> BizieLinePoints,
+    bool IsAnalyze
 ) : DrawArrows(Start, End, Transition)
 {
     public Point StartPoint => Transition.LinePoints[0];
@@ -17,14 +19,16 @@ public record AssociateTransition(
     public Point EndArrowPoint => EndPoint;
     
     public Point NamePoint => Transition.NamePoint;
-    // public Point NamePoint => DrawUtils.GetTransitionNamePoint(Transition.LinePoints);
+    
+    public double Left => NamePoint.X - Name.Length * 5;
+    public double Top => NamePoint.Y + 10;
     public string Name => Transition.Name;
     public string Color
     {
         get
         {
-            if (End.IsReachable) return "black";
-            return "red";
+            if (!IsAnalyze) return "black";
+            return End.IsReachable ? "green" : "red";
         }
     }
 

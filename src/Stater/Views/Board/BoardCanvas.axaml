@@ -8,6 +8,8 @@
              x:DataType="vm:BoardCanvasViewModel"
              xmlns:models="clr-namespace:Stater.Models"
              xmlns:findLine="clr-namespace:Stater.Views.FindLine"
+             xmlns:figures="clr-namespace:Stater.Models.Draw"
+             x:Name="RootWindow"
              >
     <DockPanel HorizontalAlignment="Stretch" Name="TheCanvasPanel" Background="White"
                PointerWheelChanged="InputElement_OnPointerWheelChanged"
@@ -44,14 +46,16 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border BorderBrush="{Binding Color}"
-                                BorderThickness="3"
+                                BorderThickness="1"
                                 Padding="10"
                                 PointerPressed="State_OnPointerPressed"
                                 PointerMoved="State_OnPointerMoved"
                                 PointerReleased="State_OnPointerReleased"
                                 TextElement.Foreground="Black"
                                 Background="Bisque">
-                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding Name}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -67,15 +71,16 @@
                     <DataTemplate DataType="{x:Type models:AssociateTransition}">
                         <Canvas>
                             <TextBlock Text="{Binding Name}"
-                                       Canvas.Left="{Binding NamePoint.X}"
-                                       Canvas.Top="{Binding NamePoint.Y}"/>
+                                       Canvas.Left="{Binding Left}"
+                                       Canvas.Top="{Binding Top}"/>
                             <Path Stroke="{Binding Color}" StrokeThickness="2"
                                   PointerPressed="Transition_OnPointerPressed">
                                 <Path.Data>
                                     <GeometryGroup>
                                         <PathGeometry>
-                                            <PathFigure StartPoint="{Binding StartPoint}">
-                                                <PolyLineSegment Points="{Binding LinePoints}" />
+                                            <PathFigure IsClosed="False" StartPoint="{Binding StartPoint}">
+                                                <PolyLineSegment Points="{Binding LinePoints}"/>
+                                                <!-- <PolyLineSegment Points="{Binding LinePoints}" /> -->
                                             </PathFigure>
                                         </PathGeometry>
                                         <PathGeometry>
@@ -100,6 +105,42 @@
                                      Stroke="{Binding Color}" StrokeThickness="2"
                                      Canvas.Left="{Binding Left}"
                                      Canvas.Top="{Binding Top}"/>
+                        </Canvas>
+                    </DataTemplate>
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding StartPointsFigure}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Height="{Binding Height}" Width="{Binding Width}" Name="CirclesCanvas" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.DataTemplates>
+                    <DataTemplate DataType="{x:Type figures:CircleFigure}">
+                        <Canvas>
+                            <Ellipse Width="{Binding Width}" Height="{Binding Height}" 
+                                     Fill="{Binding Color}" Stroke="{Binding Color}" 
+                                     StrokeThickness="2"
+                                     Canvas.Left="{Binding Left}" 
+                                     Canvas.Top="{Binding Top}" />
+                        </Canvas>
+                    </DataTemplate>
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding EndPointsFigure}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Height="{Binding Height}" Width="{Binding Width}" Name="SquaresCanvas" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.DataTemplates>
+                    <DataTemplate DataType="{x:Type figures:SquareFigure}">
+                        <Canvas>
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" 
+                                     Fill="{Binding Color}" Stroke="{Binding Color}" 
+                                     StrokeThickness="2"
+                                     Canvas.Left="{Binding Left}" 
+                                     Canvas.Top="{Binding Top}" />
                         </Canvas>
                     </DataTemplate>
                 </ItemsControl.DataTemplates>

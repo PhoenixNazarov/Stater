@@ -12,6 +12,7 @@ public interface IProjectManager
     IObservable<IChangeSet<StateMachine, string>> StateMachines { get; }
     IObservable<StateMachine> StateMachine { get; }
     IObservable<bool> IsVisibleFindLine { get; }
+    IObservable<bool> IsAnalyze { get; }
 
     void CreateProject(string name);
     Project? LoadProject(StreamReader sr);
@@ -54,6 +55,9 @@ public interface IProjectManager
     public void ChangeVisibleLineFindToFalse();
 
     public void ChangeVisibleLineFindToTrue();
+
+    public void ChangeAnalyzeToFalse();
+    public void ChangeAnalyzeToTrue();
 
     public void SimpleAnalyzeGraph();
 }

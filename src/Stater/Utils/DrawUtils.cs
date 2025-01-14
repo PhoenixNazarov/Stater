@@ -73,7 +73,7 @@ public static class DrawUtils
         return new ((right.X + left.X) / 2, (right.Y + left.Y) / 2);
     }
 
-    public static DrawArrows? GetTransition(State? s, State? e, Transition t)
+    public static DrawArrows? GetTransition(State? s, State? e, Transition t, bool isAnalyze)
     {
         if(s == null || e == null) return null;
         if (s.Guid == e.Guid)
@@ -82,7 +82,7 @@ public static class DrawUtils
         }
         else
         {
-            return GetAssociateTransition(s, e, t);
+            return GetAssociateTransition(s, e, t, isAnalyze);
         }
     }
 
@@ -116,16 +116,46 @@ public static class DrawUtils
         }
     }
     
-    private static AssociateTransition GetAssociateTransition(State s, State e, Transition t)
+    private static AssociateTransition GetAssociateTransition(State s, State e, Transition t, bool isAnalyze)
     {
         return new AssociateTransition(
             Start: s,
             End: e,
             Transition: t,
-            ArrowPoints: GetArrowPoints(t.LinePoints[^2], t.LinePoints[^1])
+            ArrowPoints: GetArrowPoints(t.LinePoints[^2], t.LinePoints[^1]),
+            BizieLinePoints: GetBezierPoints(t.LinePoints),
+            IsAnalyze: isAnalyze
         );
     }
 
+    private const int SegmentsPerPoint = 2;
+    
+    private static List<Point> GetBezierPoints(List<Point> points)
+    {
+        var result = new List<Point>();
+        for (var i = 0; i < points.Count - 1; i++)
+        {
+            var p0 = i > 0 ? points[i - 1] : points[i];
+            var p1 = points[i];
+            var p2 = points[i + 1];
+            var p3 = i < points.Count - 2 ? points[i + 2] : p2;
+
+            for (var j = 0; j < SegmentsPerPoint; j++)
+            {
+                var t = j / (double)SegmentsPerPoint;
+                var t2 = t * t;
+                var t3 = t2 * t;
+
+                var newPoint = 0.5 * (2 * p1 + (-p0 + p2) * t +
+                                      (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+                                      (-p0 + 3 * p1 + 3 * p2 + p3) * t3);
+
+                result.Add(newPoint);
+            }
+        }
+        return result;
+    }
+    
     private const double Eps = 1e-9;
 
     private static double NotZeroDivisor(double b)

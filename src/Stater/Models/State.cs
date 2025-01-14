@@ -19,6 +19,7 @@ public record State(
     Point CenterPoint,
     double Width,
     double Height,
+    bool IsAnalyze,
     List<Event> EntryEvents,
     List<Event> ExitEvents,
     List<bool> IsReachableList
@@ -36,9 +37,8 @@ public record State(
     {
         get
         {
-            if(Type == StateType.Start) return "green";
-            if(IsReachable) return "black";
-            return "red";
+            if(!IsAnalyze) return "black";
+            return IsReachable ? "green" : "red";
         }
     }
 
@@ -50,6 +50,7 @@ public record State(
         new Point(50, 25),
         100,
         50,
+        false,
         new List<Event>(),
         new List<Event>(),
         [false]

@@ -9,15 +9,14 @@ public static class AnalyzeGraph
 {
     public static StateMachine? Analyze(StateMachine? stateMachine)
     {
-        if(stateMachine == null) return null;
-        List<State> states = stateMachine.States.Select(y =>
-        {
-            return y with { IsReachableList = [false] };
-        }).ToList();
-        var start = states.Find(x => x.Type == StateType.Start);        
-        if (start == null) return stateMachine;
+        if (stateMachine == null) return null;
+        List<State> states = stateMachine.States
+            .Select(y => y with { IsReachableList = [false], IsAnalyze = true })
+            .ToList();
+        var start = states.Find(x => x.Type == StateType.Start);
+        if (start == null) return stateMachine with { States = states };
         Dfs(start, stateMachine, states);
-        return stateMachine with{States = states};
+        return stateMachine with { States = states };
     }
 
     private static void Dfs(State curState, StateMachine stateMachine, List<State> states)
