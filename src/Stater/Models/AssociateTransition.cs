@@ -8,7 +8,7 @@ public record AssociateTransition(
     State End,
     Transition Transition,
     List<Point> ArrowPoints,
-    List<Point> BizieLinePoints,
+    List<Point> DrawLinePoints,
     bool IsAnalyze
 ) : DrawArrows(Start, End, Transition)
 {

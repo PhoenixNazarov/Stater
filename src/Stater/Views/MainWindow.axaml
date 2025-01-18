@@ -17,7 +17,6 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel />a
     </Design.DataContext>
-
     <DockPanel Background="#383838">
         <Border BorderBrush="Black"
                 BorderThickness="1"
@@ -58,6 +57,12 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                </MenuItem>
+                <MenuItem Header="_Control View">
+                    <MenuItem Header="_Up" Command="{Binding UpCommand}" HotKey="W"/>
+                    <MenuItem Header="_Down" Command="{Binding DownCommand}" HotKey="S"/>
+                    <MenuItem Header="_Left" Command="{Binding LeftCommand}" HotKey="A"/>
+                    <MenuItem Header="_Right" Command="{Binding RightCommand}" HotKey="D"/>
                 </MenuItem>
             </Menu>
         </Border>

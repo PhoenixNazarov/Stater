@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Stater.Models;
+// using NumSharp;
+using MathNet.Numerics.Interpolation;
 
 namespace Stater.Utils;
 
@@ -23,6 +26,16 @@ public static class DrawUtils
 
     private static List<Point> GeneratePifagorPath(State start, State end)
     {
+        if (start.Guid == end.Guid)
+        {
+            return
+            [
+                new Point(start.CenterPoint.X, start.Top), new Point(start.CenterPoint.X + 30, start.Top + 30),
+                new Point(start.CenterPoint.X, start.Top + 60), new Point(start.CenterPoint.X - 30, start.Top + 30),
+                new Point(start.CenterPoint.X, start.Top)
+            ];
+        }
+
         var startPoints = GeneratePoints(start);
         var endPoints = GeneratePoints(end);
         var startPoint = startPoints[0];
@@ -38,6 +51,7 @@ public static class DrawUtils
                 endPoint = p2;
             }
         }
+
         var centerPoint = (endPoint + startPoint) / 2;
         return [startPoint, centerPoint, endPoint];
     }
@@ -61,7 +75,7 @@ public static class DrawUtils
         }
 
         var startP = new Point(startPoint.X, startPoint.Y);
-        
+
         return [startPoint, endPoint];
     }
 
@@ -70,92 +84,64 @@ public static class DrawUtils
         if (p.Count % 2 != 0) return p[p.Count / 2];
         var right = p[p.Count / 2];
         var left = p[p.Count / 2 - 1];
-        return new ((right.X + left.X) / 2, (right.Y + left.Y) / 2);
+        return new Point((right.X + left.X) / 2, (right.Y + left.Y) / 2);
+    }
+
+    public static Point GetNearestPoint(double x, double y, Point a1, Point a2)
+    {
+        var k = (a2.Y - a1.Y) / (a2.X - a1.X);
+        var b = (a1.Y * a2.X - a1.X * a2.Y) /
+                (a2.X - a1.X);
+        var xPoint = new Point(x, k * x + b);
+        var yPoint = new Point((y - b) / k, y);
+        return PifagoreDistatnce(xPoint, a1) > PifagoreDistatnce(yPoint, a1) ? yPoint : xPoint;
     }
 
     public static DrawArrows? GetTransition(State? s, State? e, Transition t, bool isAnalyze)
     {
-        if(s == null || e == null) return null;
-        if (s.Guid == e.Guid)
-        {
-            return GetCircleTransition(s, t);
-        }
-        else
-        {
-            return GetAssociateTransition(s, e, t, isAnalyze);
-        }
-    }
-
-    private const float Radius = 20;
-    private static DrawArrows GetCircleTransition(State s, Transition t)
-    {
-        return new CircleTransition(
-            Start: s,
-            X: s.X,
-            Y: s.Top + Radius,
-            Radius: Radius,
-            Transition: t,
-            ArrowPoints: GetArrowPoints(t.LinePoints[^2], t.LinePoints[^1])
-        );
+        if (s == null || e == null) return null;
+        return GetAssociateTransition(s, e, t, isAnalyze);
     }
 
     public static List<Point> GeneratePath(State s, State e, TypeArrow t)
     {
-        switch (t)
+        return t switch
         {
-            case TypeArrow.Pifagor:
-            {
-                return GeneratePifagorPath(s, e);
-            }
-            case TypeArrow.Manhattan:
-            {
-                return GenerateManhattanPath(s, e);
-            }
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+            TypeArrow.Pifagor => GeneratePifagorPath(s, e),
+            TypeArrow.Manhattan => GenerateManhattanPath(s, e),
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
-    
+
     private static AssociateTransition GetAssociateTransition(State s, State e, Transition t, bool isAnalyze)
     {
+        var drawLinePoints = GenerateCubicPoints(t.LinePoints);
         return new AssociateTransition(
             Start: s,
             End: e,
             Transition: t,
-            ArrowPoints: GetArrowPoints(t.LinePoints[^2], t.LinePoints[^1]),
-            BizieLinePoints: GetBezierPoints(t.LinePoints),
+            ArrowPoints: GetArrowPoints(drawLinePoints[^2], drawLinePoints[^1]),
+            DrawLinePoints: drawLinePoints,
             IsAnalyze: isAnalyze
         );
     }
 
-    private const int SegmentsPerPoint = 2;
-    
-    private static List<Point> GetBezierPoints(List<Point> points)
+    private static List<Point> GenerateCubicPoints(List<Point> points)
     {
-        var result = new List<Point>();
-        for (var i = 0; i < points.Count - 1; i++)
-        {
-            var p0 = i > 0 ? points[i - 1] : points[i];
-            var p1 = points[i];
-            var p2 = points[i + 1];
-            var p3 = i < points.Count - 2 ? points[i + 2] : p2;
+        var x = points.Select(p => p.X).ToArray();
+        var y = points.Select(p => p.Y).ToArray();
+        var t = Enumerable.Range(0, points.Count).Select(i => (double)i).ToArray();
 
-            for (var j = 0; j < SegmentsPerPoint; j++)
-            {
-                var t = j / (double)SegmentsPerPoint;
-                var t2 = t * t;
-                var t3 = t2 * t;
+        var xSpline = MathNet.Numerics.Interpolate.Polynomial(t, x);
+        var ySpline = MathNet.Numerics.Interpolate.Polynomial(t, y);
 
-                var newPoint = 0.5 * (2 * p1 + (-p0 + p2) * t +
-                                      (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
-                                      (-p0 + 3 * p1 + 3 * p2 + p3) * t3);
-
-                result.Add(newPoint);
-            }
-        }
-        return result;
+        int n = 100;
+        var newT = Enumerable.Range(0, n).Select(i => t.Min() + (t.Max() - t.Min()) * i / (n - 1)).ToList();
+        var newX = newT.Select(ti => xSpline.Interpolate(ti)).ToList();
+        var newY = newT.Select(ti => ySpline.Interpolate(ti)).ToList();
+        return newX.Zip(newY, (xp, yp) => new Point(xp, yp)).ToList();
     }
-    
+
     private const double Eps = 1e-9;
 
     private static double NotZeroDivisor(double b)
@@ -164,16 +150,16 @@ public static class DrawUtils
         var bSign = Math.Sign(b);
         return bSign * (bAbs + Eps);
     }
-    
+
     private const double LengthArrow = 20;
     private const double AngleArrow = Math.PI / 6;
-    
+
     public static List<Point> GetArrowPoints(Point p1, Point p2)
     {
-        var angle = Math.Atan2(p2.Y - p1.Y , NotZeroDivisor(p2.X - p1.X));
+        var angle = Math.Atan2(p2.Y - p1.Y, NotZeroDivisor(p2.X - p1.X));
         var leftAngle = angle + AngleArrow;
         var rightAngle = angle - AngleArrow;
-        
+
         var leftP = new Point(p2.X - LengthArrow * Math.Cos(leftAngle), p2.Y - LengthArrow * Math.Sin(leftAngle));
         var rightP = new Point(p2.X - LengthArrow * Math.Cos(rightAngle), p2.Y - LengthArrow * Math.Sin(rightAngle));
         return [leftP, rightP];

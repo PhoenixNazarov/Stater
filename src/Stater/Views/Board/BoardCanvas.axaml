@@ -69,42 +69,31 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.DataTemplates>
                     <DataTemplate DataType="{x:Type models:AssociateTransition}">
-                        <Canvas>
+                        <Canvas PointerPressed="Transition_OnPointerPressed">
                             <TextBlock Text="{Binding Name}"
                                        Canvas.Left="{Binding Left}"
                                        Canvas.Top="{Binding Top}"/>
-                            <Path Stroke="{Binding Color}" StrokeThickness="2"
-                                  PointerPressed="Transition_OnPointerPressed">
+                            <Path Stroke="{Binding Color}" StrokeThickness="2">
                                 <Path.Data>
                                     <GeometryGroup>
                                         <PathGeometry>
                                             <PathFigure IsClosed="False" StartPoint="{Binding StartPoint}">
-                                                <PolyLineSegment Points="{Binding LinePoints}"/>
-                                                <!-- <PolyLineSegment Points="{Binding LinePoints}" /> -->
+                                                <PolyLineSegment Points="{Binding DrawLinePoints}"/>
                                             </PathFigure>
                                         </PathGeometry>
                                         <PathGeometry>
-                                            <PathFigure StartPoint="{Binding EndArrowPoint}">
-                                                <LineSegment Point="{Binding LeftArrowPoint}" />
-                                                <LineSegment Point="{Binding EndArrowPoint}" />
-                                                <LineSegment Point="{Binding RightArrowPoint}" />
+                                            <PathFigure StartPoint="{Binding EndPoint}">
+                                                <LineSegment Point="{Binding LeftArrowPoint}"></LineSegment>
+                                            </PathFigure>
+                                        </PathGeometry>
+                                        <PathGeometry>
+                                            <PathFigure StartPoint="{Binding EndPoint}">
+                                                <LineSegment Point="{Binding RightArrowPoint}"></LineSegment>
                                             </PathFigure>
                                         </PathGeometry>
                                     </GeometryGroup>
                                 </Path.Data>
                             </Path>
-                        </Canvas>
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type models:CircleTransition}">
-                        <Canvas>
-                            <TextBlock Text="{Binding Name}"
-                                       Canvas.Left="{Binding NamePoint.X}"
-                                       Canvas.Top="{Binding NamePoint.Y}"/>
-                            <Ellipse Width="{Binding Width}" 
-                                     Height="{Binding Height}"
-                                     Stroke="{Binding Color}" StrokeThickness="2"
-                                     Canvas.Left="{Binding Left}"
-                                     Canvas.Top="{Binding Top}"/>
                         </Canvas>
                     </DataTemplate>
                 </ItemsControl.DataTemplates>
@@ -139,6 +128,27 @@
                             <Rectangle Width="{Binding Width}" Height="{Binding Height}" 
                                      Fill="{Binding Color}" Stroke="{Binding Color}" 
                                      StrokeThickness="2"
+                                     Canvas.Left="{Binding Left}" 
+                                     Canvas.Top="{Binding Top}" />
+                        </Canvas>
+                    </DataTemplate>
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding LinePointsFigure}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Height="{Binding Height}" Width="{Binding Width}" Name="TransitionPointsCanvas" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.DataTemplates>
+                    <DataTemplate DataType="{x:Type figures:CircleFigure}">
+                        <Canvas>
+                            <Ellipse Width="{Binding Width}" Height="{Binding Height}" 
+                                     Fill="{Binding Color}" Stroke="{Binding Color}" 
+                                     StrokeThickness="2"
+                                     PointerPressed="Point_OnPointerPressed"
+                                     PointerMoved="Point_OnPointerMoved"
+                                     PointerReleased="Point_OnPointerReleased"
                                      Canvas.Left="{Binding Left}" 
                                      Canvas.Top="{Binding Top}" />
                         </Canvas>

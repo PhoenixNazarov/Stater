@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Avalonia;
 using Avalonia.Animation;
 using DynamicData;
 
@@ -60,4 +61,6 @@ public interface IProjectManager
     public void ChangeAnalyzeToTrue();
 
     public void SimpleAnalyzeGraph();
+
+    public void ShiftStateMachine(Point shift);
 }

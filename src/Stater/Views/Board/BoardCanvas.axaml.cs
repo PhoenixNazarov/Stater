@@ -7,7 +7,9 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Splat;
 using Stater.Models;
+using Stater.Models.Draw;
 using Stater.Models.Editors;
+using Stater.Utils;
 using Stater.ViewModels.Board;
 
 namespace Stater.Views.Board;
@@ -39,6 +41,8 @@ public partial class BoardCanvas : UserControl
     private double stateY;
     private double _stateY;
     private bool statePressed;
+
+    private bool pointPressed;
 
     private const int GridLineRangeX = 40;
     private const int GridLineRangeY = 40;
@@ -119,7 +123,7 @@ public partial class BoardCanvas : UserControl
 
     private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (statePressed) return;
+        if (statePressed || pointPressed) return;
         pressed = true;
         var point = e.GetCurrentPoint(TheCanvasPanel);
         _x = point.Position.X;
@@ -180,11 +184,48 @@ public partial class BoardCanvas : UserControl
         var context = (BoardCanvasViewModel)DataContext;
         context?.UpdateStateCoordsCommand.Execute(new Vector2((float)stateX, (float)stateY)).Subscribe();
     }
+    
+    private void Point_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        var rectangle = (Control)sender;
+        if (rectangle?.DataContext is not CircleFigure figure) return;
+        var context = (BoardCanvasViewModel)DataContext;
+        context?.PointClickCommand.Execute(figure).Subscribe();
+        pointPressed = true;
+
+        var canvas = TheCanvasPanel;
+        var point = e.GetCurrentPoint(canvas);
+        stateX = 0;
+        stateY = 0;
+        _stateX = point.Position.X;
+        _stateY = point.Position.Y;
+    }
+    
+    private void Point_OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (!pointPressed || sender == null) return;
+        var rectangle = (Control)sender!;
+        var canvas = TheCanvasPanel;
+        var point = e.GetCurrentPoint(canvas);
+        var positionX = point.Position.X;
+        var positionY = point.Position.Y;
+        stateX = (positionX - _stateX) * StateTranslateXFactor / scale;
+        stateY = (positionY - _stateY) * StateTranslateYFactor / scale;
+        rectangle.RenderTransform =
+            new MatrixTransform(Matrix.CreateTranslation(stateX, stateY));
+    }
+    
+    private void Point_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        pointPressed = false;
+        var context = (BoardCanvasViewModel)DataContext;
+        context?.UpdatePointCoordsCommand.Execute(new Vector2((float)stateX, (float)stateY)).Subscribe();
+    }
 
     private void Transition_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         var rectangle = (Control)sender;
-        if (rectangle?.DataContext is not AssociateTransition transition) return;
+        if (rectangle?.DataContext is not DrawArrows transition) return;
         var context = (BoardCanvasViewModel)DataContext;
         context?.TransitionClickCommand.Execute(transition.Transition).Subscribe();
     }

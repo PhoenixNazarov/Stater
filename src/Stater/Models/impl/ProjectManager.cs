@@ -382,4 +382,37 @@ internal class ProjectManager : IProjectManager
         if (newStateMachine == null) return;
         UpdateStateMachine(newStateMachine);
     }
+
+    public void ShiftStateMachine(Point shift)
+    {
+        var stateMachine = GetStateMachine();
+        if(stateMachine == null) return;
+        var states = new List<State>();
+        var transitions = new List<Transition>();
+        foreach (var state in stateMachine.States)
+        {
+            var newState = state with
+            {
+                CenterPoint = state.CenterPoint + shift,
+            };
+            states.Add(newState);
+        }
+
+        foreach (var transition in stateMachine.Transitions)
+        {
+            var newTransition = transition with
+            {
+                LinePoints = transition.LinePoints.Select(y => y + shift).ToList(),
+                NamePoint = transition.NamePoint + shift,
+            };
+            transitions.Add(newTransition);
+        }
+
+        var newStateMachine = stateMachine with
+        {
+            States = states,
+            Transitions = transitions
+        };
+        UpdateStateMachine(newStateMachine);
+    }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Reactive;
 using System.Windows.Input;
+using Avalonia;
 using DynamicData;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
@@ -60,6 +61,10 @@ public class MainWindowViewModel : ReactiveObject
         HideFindCommand = ReactiveCommand.Create(HideFind);
         ActiveAnalyzeCommand = ReactiveCommand.Create(ActiveAnalyze);
         DisableAnalyzeCommand = ReactiveCommand.Create(DisableAnalyze);
+        UpCommand = ReactiveCommand.Create(Up);
+        DownCommand = ReactiveCommand.Create(Down);
+        LeftCommand = ReactiveCommand.Create(Left);
+        RightCommand = ReactiveCommand.Create(Right);
     }
 
     private readonly IProjectManager _projectManager;
@@ -111,6 +116,11 @@ public class MainWindowViewModel : ReactiveObject
     
     public ICommand ActiveAnalyzeCommand { get; }
     public ICommand DisableAnalyzeCommand { get; }
+    
+    public ICommand UpCommand { get; }
+    public ICommand DownCommand { get; }
+    public ICommand LeftCommand { get; }
+    public ICommand RightCommand { get; }
     
     // public ICommand SimpleAnalyzeGraphCommand { get; }
 
@@ -177,6 +187,28 @@ public class MainWindowViewModel : ReactiveObject
     private void DisableAnalyze()
     {
         _projectManager.ChangeAnalyzeToFalse();
+    }
+
+    private const double ConstShift = 50.0;
+
+    private void Up()
+    {
+        _projectManager.ShiftStateMachine(new Point(0, -ConstShift));
+    }
+
+    private void Down()
+    {
+        _projectManager.ShiftStateMachine(new Point(0, ConstShift));
+    }
+
+    private void Right()
+    {
+        _projectManager.ShiftStateMachine(new Point(-ConstShift, 0));
+    }
+
+    private void Left()
+    {
+        _projectManager.ShiftStateMachine(new Point(ConstShift, 0));
     }
 
     // private void SimpleAnalyzeGraph()
