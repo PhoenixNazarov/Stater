@@ -22,6 +22,14 @@
                 <TextBlock Background="Black" Text="{Binding StateMachine.Name}"/>
                 <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}"/>
                 <TextBlock Background="Black" Text="{Binding StateMachine.Transitions.Count}"/>
+                <TextBlock IsVisible="{Binding IsAnalyze}" Margin="5 5 5 5">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{} Reachable end states {0}/{1}">
+                            <Binding Path="ReachableEndStates" />
+                            <Binding Path="AllEndStates" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
             </StackPanel>
             
             <findLine:FindLine Grid.Column="1"/>

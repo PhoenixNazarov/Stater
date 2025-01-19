@@ -27,7 +27,13 @@ public class BoardCanvasViewModel : ReactiveObject
             .StateMachine
             .Subscribe(x =>
             {
-                StateMachine = isAnalyze ? AnalyzeGraph.Analyze(x)! : x;
+                StateMachine = IsAnalyze ? AnalyzeGraph.Analyze(x)! : x;
+                if (IsAnalyze)
+                {
+                    AllEndStates = StateMachine.States.Count(state => state.Type == StateType.End);
+                    ReachableEndStates = StateMachine.States.Count(state => state.IsReachable);
+                    UnReachableEndStates = AllEndStates - ReachableEndStates;
+                }
                 StartPointsFigure = StateMachine.States
                     .Where(y => y.Type == StateType.Start)
                     .Select(y => new CircleFigure(
@@ -41,9 +47,9 @@ public class BoardCanvasViewModel : ReactiveObject
                     .ToList();
                 Transitions = StateMachine.Transitions.Select(y =>
                         {
-                            var startState = x.States.Find(s => s.Guid == y.Start)!;
-                            var endState = x.States.Find(s => s.Guid == y.End)!;
-                            return DrawUtils.GetTransition(startState, endState, y, isAnalyze);
+                            var startState = StateMachine.States.Find(s => s.Guid == y.Start)!;
+                            var endState = StateMachine.States.Find(s => s.Guid == y.End)!;
+                            return DrawUtils.GetTransition(startState, endState, y, IsAnalyze);
                         }
                     ).Where(y => y != null)
                     .OfType<DrawArrows>()
@@ -57,7 +63,7 @@ public class BoardCanvasViewModel : ReactiveObject
             });
         _projectManager
             .IsAnalyze
-            .Subscribe(x => isAnalyze = x);
+            .Subscribe(x => IsAnalyze = x);
 
         StateClickCommand = ReactiveCommand.Create<State>(OnStateClicked);
         UpdateStateCoordsCommand = ReactiveCommand.Create<Vector2>(UpdateStateCoords);
@@ -72,7 +78,7 @@ public class BoardCanvasViewModel : ReactiveObject
 
     [Reactive] public List<DrawArrows> Transitions { get; set; }
 
-    private bool isAnalyze;
+    [Reactive] public bool IsAnalyze { get; set; }
     [Reactive] public int Width { get; set; }
 
     [Reactive] public int Height { get; set; }
@@ -81,6 +87,10 @@ public class BoardCanvasViewModel : ReactiveObject
     [Reactive] public List<CircleFigure> StartPointsFigure { get; set; }
     [Reactive] public List<CircleFigure> LinePointsFigure { get; set; }
     [Reactive] public List<SquareFigure> EndPointsFigure { get; set; }
+
+    [Reactive] public int ReachableEndStates { get; set; } = 0;
+    [Reactive] public int UnReachableEndStates { get; set; } = 0;
+    [Reactive] public int AllEndStates { get; set; } = 0;
 
     [Reactive] public Transition? Transition { get; set; }
     [Reactive] public State? State { get; private set; }
