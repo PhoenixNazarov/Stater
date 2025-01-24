@@ -203,12 +203,12 @@ public class MainWindowViewModel : ReactiveObject
 
     private void Right()
     {
-        _projectManager.ShiftStateMachine(new Point(-ConstShift, 0));
+        _projectManager.ShiftStateMachine(new Point(ConstShift, 0));
     }
 
     private void Left()
     {
-        _projectManager.ShiftStateMachine(new Point(ConstShift, 0));
+        _projectManager.ShiftStateMachine(new Point(-ConstShift, 0));
     }
 
     // private void SimpleAnalyzeGraph()

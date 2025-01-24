@@ -20,7 +20,7 @@ public class BoardCanvasViewModel : ReactiveObject
         _projectManager = projectManager;
         _editorManager = editorManager;
 
-        Height = 400;
+        Height = 380;
         Width = 800;
 
         projectManager

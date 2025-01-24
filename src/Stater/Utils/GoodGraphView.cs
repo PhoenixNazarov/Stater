@@ -55,7 +55,9 @@ public class GoodGraphView
                     new MPoint(0, 0)),
                 transition.Guid);
             graph.Nodes.Add(nd);
-
+            var source = graph.FindNodeByUserData(transition.Start);
+            var target = graph.FindNodeByUserData(transition.End);
+            if(source == null || target == null) continue;
             graph.Edges.Add(
                 new Edge(
                     graph.FindNodeByUserData(transition.Start),
@@ -108,21 +110,19 @@ public class GoodGraphView
         var secondHalf = new Dictionary<Guid, List<APoint>>();
         foreach (var node in graph.Nodes)
         {
-            if (node.UserData is Guid guid)
+            if (node.UserData is not Guid guid) continue;
+            var prevState = stateMachine.States.Find(el => el.Guid == guid);
+            if (prevState != null)
             {
-                var prevState = stateMachine.States.Find(el => el.Guid == guid);
-                if (prevState != null)
+                var newState = prevState with
                 {
-                    var newState = prevState with
-                    {
-                        CenterPoint = PointToPoint.ToAvaloniaPoint(node.BoundingBox.Center)
-                    };
-                    newStates.Add(newState);
-                }
-                else
-                {
-                    namePoints[guid] = PointToPoint.ToAvaloniaPoint(node.BoundingBox.Center);
-                }
+                    CenterPoint = PointToPoint.ToAvaloniaPoint(node.BoundingBox.Center)
+                };
+                newStates.Add(newState);
+            }
+            else
+            {
+                namePoints[guid] = PointToPoint.ToAvaloniaPoint(node.BoundingBox.Center);
             }
         }
 
@@ -155,17 +155,12 @@ public class GoodGraphView
 
     private List<APoint> MergePoints(List<APoint> firstHalf, APoint namePoint, List<APoint> secondHalf)
     {
-        var points = new List<APoint>();
-        for (int i = 0; i < firstHalf.Count - 1; i++)
-        {
-            points.Add(firstHalf[i]);
-        }
-
-        points.Add(namePoint);
-        for (int i = 1; i < secondHalf.Count; i++)
-        {
-            points.Add(secondHalf[i]);
-        }
+        List<APoint> points =
+        [
+            firstHalf[0],
+            namePoint,
+            secondHalf[^1],
+        ];
 
         return points;
     }

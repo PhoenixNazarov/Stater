@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Stater.Models;
-// using NumSharp;
 using MathNet.Numerics.Interpolation;
 
 namespace Stater.Utils;
@@ -30,9 +29,8 @@ public static class DrawUtils
         {
             return
             [
-                new Point(start.CenterPoint.X, start.Top), new Point(start.CenterPoint.X + 30, start.Top + 30),
-                new Point(start.CenterPoint.X, start.Top + 60), new Point(start.CenterPoint.X - 30, start.Top + 30),
-                new Point(start.CenterPoint.X, start.Top)
+                new Point(start.CenterPoint.X - 30, start.Top), new Point(start.CenterPoint.X, start.Top + 30),
+                new Point(start.CenterPoint.X + 30, start.Top)
             ];
         }
 

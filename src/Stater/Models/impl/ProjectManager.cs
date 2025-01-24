@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Xml;
+using Avalonia.Animation;
 using DynamicData;
 using Stater.Utils;
 using Point = Avalonia.Point;
@@ -183,10 +184,12 @@ internal class ProjectManager : IProjectManager
     {
         var currentStateMachine = GetStateMachine();
         if (currentStateMachine == null) return;
-        var states = currentStateMachine.States.Where(el => el.Guid != guid);
+        var states = currentStateMachine.States.Where(el => el.Guid != guid).ToList();
+        var transitions = currentStateMachine.Transitions.Where(t => t.Start != guid && t.End != guid).ToList();
         var newStateMachine = currentStateMachine with
         {
-            States = new List<State>(states)
+            States = states,
+            Transitions = transitions
         };
         UpdateStateMachine(newStateMachine);
     }

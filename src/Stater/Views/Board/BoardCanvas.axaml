@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
              x:Class="Stater.Views.Board.BoardCanvas"
              xmlns:vm="using:Stater.ViewModels.Board"
              x:DataType="vm:BoardCanvasViewModel"
@@ -19,10 +19,11 @@
         <Grid DockPanel.Dock="Top" ColumnDefinitions="450,*">
 
             <StackPanel Grid.Column="0">
-                <TextBlock Background="Black" Text="{Binding StateMachine.Name}"/>
-                <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}"/>
-                <TextBlock Background="Black" Text="{Binding StateMachine.Transitions.Count}"/>
-                <TextBlock IsVisible="{Binding IsAnalyze}" Margin="5 5 5 5">
+                <TextBlock Background="Gray" Text="{Binding StateMachine.Name}"/>
+                <TextBlock Background="Gray" Text="{Binding StateMachine.States.Count}"/>
+                <TextBlock Background="Gray" Text="{Binding StateMachine.Transitions.Count}"/>
+                <TextBlock Background="Gray"
+                    IsVisible="{Binding IsAnalyze}">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{} Reachable end states {0}/{1}">
                             <Binding Path="ReachableEndStates" />
@@ -30,6 +31,9 @@
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
+                <TextBlock Background="Gray"
+                    IsVisible="{Binding !IsAnalyze}"
+                    Text="Analyze Off"/>
             </StackPanel>
             
             <findLine:FindLine Grid.Column="1"/>

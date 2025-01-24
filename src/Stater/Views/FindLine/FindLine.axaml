@@ -53,7 +53,7 @@
             </StackPanel>
         </Grid>
         <Grid IsVisible="{Binding !IsVisible}">
-            <TextBlock Background="Black" />
+            <TextBlock Background="Gray" />
         </Grid>
     </Grid>
 </UserControl>
