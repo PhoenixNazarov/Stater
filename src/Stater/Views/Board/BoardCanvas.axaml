@@ -82,9 +82,6 @@
                 <ItemsControl.DataTemplates>
                     <DataTemplate DataType="{x:Type models:AssociateTransition}">
                         <Canvas PointerPressed="Transition_OnPointerPressed">
-                            <TextBlock Text="{Binding Name}"
-                                       Canvas.Left="{Binding Left}"
-                                       Canvas.Top="{Binding Top}"/>
                             <Path Stroke="{Binding Color}" StrokeThickness="2">
                                 <Path.Data>
                                     <GeometryGroup>
@@ -106,6 +103,12 @@
                                     </GeometryGroup>
                                 </Path.Data>
                             </Path>
+                            <AdornerLayer>
+                                <TextBlock Text="{Binding Name}"
+                                           Canvas.Left="{Binding Left}"
+                                           Canvas.Top="{Binding Top}"
+                                           Background="White"/>
+                            </AdornerLayer>
                         </Canvas>
                     </DataTemplate>
                 </ItemsControl.DataTemplates>

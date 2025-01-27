@@ -77,17 +77,17 @@ public class GoodGraphView
                 });
         }
 
-        var mode = EdgeRoutingMode.Spline;
+        var mode = EdgeRoutingMode.RectilinearToCenter;
         var bundSet = new BundlingSettings()
         {
-            EdgeSeparation = 20,
+            EdgeSeparation = 2000,
         };
         var routSet = new EdgeRoutingSettings
         {
             BundlingSettings = bundSet,
             EdgeRoutingMode = mode,
-            Padding = 20,
-            EdgeSeparationRectilinear = 20
+            Padding = 2000,
+            EdgeSeparationRectilinear = 2000
         };
         var laySet = new MdsLayoutSettings() { EdgeRoutingSettings = routSet, NodeSeparation = 50.0 };
         try
