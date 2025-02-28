@@ -31,7 +31,7 @@ public class BoardCanvasViewModel : ReactiveObject
                 if (IsAnalyze)
                 {
                     AllEndStates = StateMachine.States.Count(state => state.Type == StateType.End);
-                    ReachableEndStates = StateMachine.States.Count(state => state.IsReachable);
+                    ReachableEndStates = StateMachine.States.Count(state => state is { IsReachable: true, Type: StateType.End });
                     UnReachableEndStates = AllEndStates - ReachableEndStates;
                 }
                 StartPointsFigure = StateMachine.States
