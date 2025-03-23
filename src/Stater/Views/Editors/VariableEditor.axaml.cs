@@ -1,6 +1,4 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Splat;
 using Stater.Models.Editors;
 using Stater.ViewModels.Editors;

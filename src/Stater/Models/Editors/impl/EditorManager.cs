@@ -1,5 +1,6 @@
 using System;
 using System.Reactive.Subjects;
+using Stater.Domain.Models;
 
 namespace Stater.Models.Editors.impl;
 

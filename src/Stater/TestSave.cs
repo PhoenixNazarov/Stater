@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using DynamicData;
+using Stater.Domain.Models;
 using Stater.Models;
-using Stater.Views.Editors;
 
 namespace Stater;
 
 public class TestSave
 {
-    public static void main()
+    public static void main2()
     {
         var writer = new System.Xml.Serialization.XmlSerializer(typeof(ExportProject));
 

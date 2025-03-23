@@ -8,7 +8,7 @@ using DynamicData;
 using ReactiveUI.Fody.Helpers;
 using Stater.Models;
 using ReactiveUI;
-using SLXParser;
+using Stater.Domain.Models;
 using Stater.Models.Editors;
 using Stater.Plugin;
 
@@ -56,7 +56,7 @@ public class MainWindowViewModel : ReactiveObject
     public List<IPlugin> Plugins =>
         new()
         {
-            new SLXPPlugin()
+            new SLXPlugin()
         };
 
     private StateMachine _stateMachine;

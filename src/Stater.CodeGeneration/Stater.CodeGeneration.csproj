@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\Stater.Domain\Stater.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Templates\Kotlin\builderContext.scriban" />
+      <EmbeddedResource Include="Templates\Kotlin\builderState.scriban" />
+      <EmbeddedResource Include="Templates\Kotlin\builderStateContext.scriban" />
+      <EmbeddedResource Include="Templates\Kotlin\class.scriban" />
+      <EmbeddedResource Include="Templates\Kotlin\classContext.scriban" />
+      <EmbeddedResource Include="Templates\Kotlin\classState.scriban" />
+      <EmbeddedResource Include="Templates\Kotlin\classStateContext.scriban" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Scriban" Version="6.0.0" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+</Project>

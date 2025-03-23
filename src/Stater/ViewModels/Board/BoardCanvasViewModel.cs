@@ -6,6 +6,7 @@ using System.Reactive;
 using Avalonia;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Stater.Domain.Models;
 using Stater.Models;
 using Stater.Models.Editors;
 

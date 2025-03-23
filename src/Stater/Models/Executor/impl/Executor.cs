@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
-using DynamicData;
+using Stater.Domain.Logic;
+using Stater.Domain.Models;
 
 namespace Stater.Models.Executor.impl;
 

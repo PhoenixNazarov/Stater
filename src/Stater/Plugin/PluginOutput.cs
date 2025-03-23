@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Stater.Models;
+using Stater.Domain.Models;
 
 namespace Stater.Plugin;
 

@@ -6,15 +6,13 @@
              x:Class="Stater.Views.Board.BoardCanvas"
              xmlns:vm="using:Stater.ViewModels.Board"
              x:DataType="vm:BoardCanvasViewModel"
-             xmlns:models="clr-namespace:Stater.Models">
+             xmlns:models="clr-namespace:Stater.Domain.Models;assembly=Stater.Domain">
     <DockPanel HorizontalAlignment="Stretch" Name="TheCanvasPanel" Background="White"
                PointerWheelChanged="InputElement_OnPointerWheelChanged"
                PointerPressed="InputElement_OnPointerPressed"
                PointerMoved="InputElement_OnPointerMoved"
                PointerReleased="InputElement_OnPointerReleased">
         <TextBlock Background="Black" Text="{Binding StateMachine.Name}" DockPanel.Dock="Top" />
-        <TextBlock Background="Black" Text="{Binding StateMachine.States.Count}" DockPanel.Dock="Top" />
-        <TextBlock Background="Black" Text="{Binding StateMachine.Transitions.Count}" DockPanel.Dock="Top" />
 
         <Canvas Height="400" Width="400" Name="TheCanvas">
             <ItemsControl ItemsSource="{Binding StateMachine.States}">

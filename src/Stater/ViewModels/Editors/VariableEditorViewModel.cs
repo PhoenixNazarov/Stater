@@ -2,7 +2,7 @@ using System;
 using System.Windows.Input;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Stater.Models;
+using Stater.Domain.Models;
 using Stater.Models.Editors;
 
 namespace Stater.ViewModels.Editors;

@@ -5,7 +5,14 @@
 	
 	<s:Boolean x:Key="/Default/Environment/UnitTesting/MsTestProvider/UseTestRunConfigFromMetadataFile/@EntryValue">False</s:Boolean>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/AnalysisEnabled/@EntryValue">SOLUTION</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1a2a5868_002Da3b2_002D44fd_002Db429_002D73e8fb590a38/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ConvertToKotlin_ShouldGenerateValidCode" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::879047E1-76DD-4892-AF8F-8EC562514AD7::net8.0::Stater.CodeGeneration.Tests.LanguageAdapter.Kotlin.KotlinAdapterDoorTests.ClazGenerate&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/Housekeeping/SolutionSettingsUpgraded/IsUpgraded/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=9F0DC2767891492E8D39D154A950E71C/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=9F0DC2767891492E8D39D154A950E71C/Name/@EntryValue">TestArrayW1</s:String>
-	<s:String x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=9F0DC2767891492E8D39D154A950E71C/XmlSerializedElements/@EntryValue">&lt;Session&gt;&lt;Elements /&gt;&lt;/Session&gt;</s:String></wpf:ResourceDictionary>
+	<s:String x:Key="/Default/Housekeeping/UnitTestingMru/UnitTestSessionPersistentData/=9F0DC2767891492E8D39D154A950E71C/XmlSerializedElements/@EntryValue">&lt;Session&gt;&lt;Elements /&gt;&lt;/Session&gt;</s:String>
+	
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean></wpf:ResourceDictionary>

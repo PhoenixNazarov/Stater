@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Reactive.Linq;
 using System.Windows.Input;
-using Avalonia.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Stater.Domain.Models;
 using Stater.Models;
 using Stater.Models.Editors;
 
@@ -42,11 +40,11 @@ public class TransitionEditorViewModel : ReactiveObject
                     {
                         Condition = variableCondition.ConditionType switch
                         {
-                            Models.Condition.VariableCondition.ConditionTypeEnum.Lt => 0,
-                            Models.Condition.VariableCondition.ConditionTypeEnum.Le => 0,
-                            Models.Condition.VariableCondition.ConditionTypeEnum.Ne => 1,
-                            Models.Condition.VariableCondition.ConditionTypeEnum.Gt => 2,
-                            Models.Condition.VariableCondition.ConditionTypeEnum.Ge => 3,
+                            Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Lt => 0,
+                            Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Le => 0,
+                            Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Ne => 1,
+                            Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Gt => 2,
+                            Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Ge => 3,
                             _ => 0,
                         };
                         Console.WriteLine(Condition);
@@ -111,13 +109,13 @@ public class TransitionEditorViewModel : ReactiveObject
             Console.WriteLine(Condition);
             var type = Condition switch
             {
-                4 => Models.Condition.VariableCondition.ConditionTypeEnum.Lt,
-                5 => Models.Condition.VariableCondition.ConditionTypeEnum.Le,
-                0 => Models.Condition.VariableCondition.ConditionTypeEnum.Eq,
-                1 => Models.Condition.VariableCondition.ConditionTypeEnum.Ne,
-                2 => Models.Condition.VariableCondition.ConditionTypeEnum.Gt,
-                3 => Models.Condition.VariableCondition.ConditionTypeEnum.Ge,
-                _ => Models.Condition.VariableCondition.ConditionTypeEnum.Ge,
+                4 => Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Lt,
+                5 => Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Le,
+                0 => Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Eq,
+                1 => Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Ne,
+                2 => Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Gt,
+                3 => Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Ge,
+                _ => Domain.Models.Condition.VariableCondition.ConditionTypeEnum.Ge,
             };
             condition = new Condition.VariableCondition(
                 VariableGuid: Guid.Parse(Variable),

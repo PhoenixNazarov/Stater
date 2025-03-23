@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DynamicData;
-using DynamicData.Binding;
+using Stater.Domain.Models;
 
 namespace Stater.Models.Executor;
 

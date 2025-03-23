@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Avalonia.Animation;
 using DynamicData;
+using Stater.Domain.Models;
 
 namespace Stater.Models;
 
@@ -25,7 +25,7 @@ public interface IProjectManager
     
     StateMachine CreateStateMachine();
     void RemoveStateMachine(Guid guid);
-    void UpdateStateMachine(StateMachine newStateMachine);
+    void UpdateStateMachine(Domain.Models.StateMachine newStateMachine);
     StateMachine? OpenStateMachine(Guid guid);
     
     State? CreateState();
