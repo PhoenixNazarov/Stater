@@ -9,62 +9,16 @@ public class KotlinAdapter : ILanguageAdapter
 {
     public string Generate(StateMachine stateMachine, GenerationSettings settings)
     {
-        switch (settings.Mode)
-        {
-            case Mode.Claz when settings is { GenerateContext: true, GenerateStates: true }:
-                return GenerateClassStateContext(stateMachine, settings.GenerateInterface);
-            case Mode.Claz when settings.GenerateStates:
-                return GenerateClassState(stateMachine, settings.GenerateInterface);
-            case Mode.Claz when settings.GenerateContext:
-                return GenerateClassState(stateMachine, settings.GenerateInterface);
-            case Mode.Claz:
-                return GenerateClass(stateMachine, settings.GenerateInterface);
-            case Mode.Builder:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(settings));
-        }
-
-        return "";
+        return RenderTemplate("kotlin", stateMachine, settings);
     }
 
-    private static string GenerateClass(StateMachine stateMachine, bool generateInterface)
+    private static string RenderTemplate(string templateName, StateMachine stateMachine, GenerationSettings settings)
     {
-        var templateContent = TemplateLoader.LoadTemplate("Kotlin.class");
+        var templateContent = TemplateLoader.LoadTemplate(templateName);
         var template = Template.Parse(templateContent);
         return template.Render(new
         {
-            fsm = stateMachine, generateInterface
-        });
-    }
-
-    private static string GenerateClassContext(StateMachine stateMachine, bool generateInterface)
-    {
-        var templateContent = TemplateLoader.LoadTemplate("Kotlin.classContext");
-        var template = Template.Parse(templateContent);
-        return template.Render(new
-        {
-            fsm = stateMachine, generateInterface
-        });
-    }
-
-    private static string GenerateClassState(StateMachine stateMachine, bool generateInterface)
-    {
-        var templateContent = TemplateLoader.LoadTemplate("Kotlin.classState");
-        var template = Template.Parse(templateContent);
-        return template.Render(new
-        {
-            fsm = stateMachine, generateInterface
-        });
-    }
-
-    private static string GenerateClassStateContext(StateMachine stateMachine, bool generateInterface)
-    {
-        var templateContent = TemplateLoader.LoadTemplate("Kotlin.classStateContext");
-        var template = Template.Parse(templateContent);
-        return template.Render(new
-        {
-            fsm = stateMachine, generateInterface
+            fsm = stateMachine, settings
         });
     }
 }

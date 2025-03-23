@@ -1,0 +1,54 @@
+{{- if settings.generate_states -}}
+enum class States {
+    {{- for item in fsm.states }}
+    {{ item.name }}{{- if !for.last }}{{ "," }}{{- end }}
+    {{- end }}
+}
+
+{{ end }}
+{{- func state(name) -}}
+{{- if settings.generate_states -}}
+States.{{ name }}
+{{- else -}}
+"{{ name }}"
+{{- end -}}
+{{- end -}}
+{{- if settings.generate_context -}}
+data class {{ fsm.name }}FSMContext(
+    var degreeOfOpening: Int = 100,
+) : Context
+
+{{ end -}}
+{{- if !settings.generate_states; state_generic = "String"; else; state_generic = "States"; end }}
+{{- if !settings.generate_context; context_generic = "EmptyContext"; else; context_generic = fsm.name+"FSMContext"; end -}}
+{{- if settings.mode == "Clazz" -}}
+class {{ fsm.name }}StateMachine : StaterStateMachine<{{ state_generic }}, {{ context_generic }}>(
+    transitions = listOf(
+    {{- for item in fsm.state_transitions }}
+        Transition(
+            name = "{{ item.transition.name }}",
+            start = {{ state item.start_state.name }},
+            end = {{ state item.end_state.name }}
+        ){{- if !for.last }}{{ "," }}{{- end }}
+    {{- end }}
+    ),
+    {{- if fsm.start_state != null }}
+    startState = {{ state fsm.start_state.name }},
+    {{- end }}
+    context = {{ context_generic }}()
+){{- if settings.generate_interface }} {
+  {{- for item in fsm.transitions }}
+    fun {{ item.name }}() = transition("{{ item.name }}")
+  {{- end }}
+}
+{{- end }}
+{{- else if settings.mode == "Builder" -}}
+val builder{{ fsm.name }}StateMachine = StaterStateMachineBuilder<{{ state_generic }}, {{ context_generic }}>()
+    {{- if fsm.start_state != null }}
+    .setStartState({{ state fsm.start_state.name }})
+    {{- end }}
+    .setContext({{ context_generic }}())
+    {{- for item in fsm.state_transitions }}
+    .addTransition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
+    {{- end }}
+{{- end }}

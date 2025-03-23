@@ -1,11 +1,10 @@
-using System.Collections;
 using Stater.Domain.Models;
 
 namespace Stater.CodeGeneration.Tests.LanguageAdapter;
 
-public class DoorStateMachineTestData : IEnumerable<object[]>
+public static class DoorStateMachineTestData
 {
-    public IEnumerator<object[]> GetEnumerator()
+    public static StateMachine CreateDoorStateMachine()
     {
         var open = new State(
             Guid.NewGuid(),
@@ -121,15 +120,12 @@ public class DoorStateMachineTestData : IEnumerable<object[]>
             ajarMinus
         };
 
-        var stateMachine = new StateMachine(
+        return new StateMachine(
             Guid.NewGuid(),
             "Door",
             states,
             transitions,
             new List<Variable> { degreeOfOpening }
         );
-        yield return new object[] { stateMachine };
     }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
