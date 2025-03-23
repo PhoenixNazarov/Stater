@@ -1,9 +1,16 @@
 {{- if settings.generate_states -}}
-enum class States {
-    {{- for item in fsm.states }}
-    {{ item.name }}{{- if !for.last }}{{ "," }}{{- end }}
-    {{- end }}
-}
+from enum import Enum
+{{ end }}
+{{- if settings.generate_states -}}
+from pydantic import BaseModel
+{{ end }}
+from stater_state_machine import Context, StaterStateMachine, Transition, StaterStateMachineBuilder, ContextJsonAdapter
+
+{{- if settings.generate_states -}}
+class States(Enum):
+    CLOSE = "CLOSE"
+    AJAR = "AJAR"
+    OPEN = "OPEN"
 
 {{ end }}
 {{- func state(name) -}}
@@ -14,9 +21,8 @@ States.{{ name }}
 {{- end -}}
 {{- end -}}
 {{- if settings.generate_context -}}
-data class {{ fsm.name }}FSMContext(
-    var degreeOfOpening: Int = 100,
-) : Context
+class DoorFSMContext(BaseModel, Context):
+    degree_of_opening: int = 100
 
 {{ end -}}
 {{- if !settings.generate_states; state_generic = "String"; else; state_generic = "States"; end }}

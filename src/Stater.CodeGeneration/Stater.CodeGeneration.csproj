@@ -10,6 +10,7 @@
     
     <ItemGroup>
       <EmbeddedResource Include="Templates\kotlin.scriban" />
+      <EmbeddedResource Include="Templates\python.scriban" />
     </ItemGroup>
 
 
