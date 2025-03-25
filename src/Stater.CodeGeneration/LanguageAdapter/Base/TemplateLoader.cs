@@ -1,4 +1,7 @@
 using System.Reflection;
+using Scriban;
+using Stater.CodeGeneration.Entity;
+using Stater.Domain.Models;
 
 namespace Stater.CodeGeneration.LanguageAdapter.Base;
 
@@ -14,5 +17,15 @@ public static class TemplateLoader
 
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
+    }
+
+    public static string RenderTemplate(string templateName, StateMachine stateMachine, GenerationSettings settings)
+    {
+        var templateContent = LoadTemplate(templateName);
+        var template = Template.Parse(templateContent);
+        return template.Render(new
+        {
+            fsm = stateMachine, settings
+        });
     }
 }
