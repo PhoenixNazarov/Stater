@@ -20,7 +20,11 @@ States.{{ name }}
 {{- end -}}
 {{- if settings.generate_context -}}
 const build{{ fsm.name }}FSMContext = () => {
-    return {degreeOfOpening: 100}
+    return {
+{{- for item in fsm.variables }}
+        {{ item.name }}: {{ convert_variable_value item.start_value }}{{- if !for.last }}{{ "," }}{{- end }}
+{{- end}}
+    }
 }
 
 

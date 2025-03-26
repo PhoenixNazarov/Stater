@@ -15,7 +15,9 @@ States.{{ name }}
 {{- end -}}
 {{- if settings.generate_context -}}
 data class {{ fsm.name }}FSMContext(
-    var degreeOfOpening: Int = 100,
+{{- for item in fsm.variables }}
+    var {{ item.name }}: {{ convert_variable_type item.start_value }} = {{ convert_variable_value item.start_value }}{{- if !for.last }}{{ "," }}{{- end }}
+{{- end}}
 ) : Context
 
 {{ end -}}

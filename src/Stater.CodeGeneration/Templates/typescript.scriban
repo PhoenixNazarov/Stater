@@ -20,11 +20,17 @@ States.{{ name }}
 {{- end -}}
 {{- if settings.generate_context -}}
 interface {{ fsm.name }}FSMContext extends Context {
-    degreeOfOpening: number
+{{- for item in fsm.variables }}
+    {{ item.name }}: {{ convert_variable_value item.start_value }}
+{{- end}}
 }
 
 const build{{ fsm.name }}FSMContext: () => {{ fsm.name }}FSMContext = () => {
-    return {degreeOfOpening: 100}
+    return {
+{{- for item in fsm.variables }}
+        {{ item.name }}: {{ convert_variable_value item.start_value }}{{- if !for.last }}{{ "," }}{{- end }}
+{{- end}}
+    }
 }
 
 

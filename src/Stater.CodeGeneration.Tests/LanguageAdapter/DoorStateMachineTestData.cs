@@ -49,6 +49,21 @@ public static class DoorStateMachineTestData
             "degreeOfOpening",
             new VariableValue.IntVariable(0)
         );
+        var closeVariable = new Variable(
+            Guid.NewGuid(),
+            "closeVariable",
+            new VariableValue.BoolVariable(false)
+        );
+        var nameVariable = new Variable(
+            Guid.NewGuid(),
+            "doorName",
+            new VariableValue.StringVariable("asd")
+        );
+        var degreeOfOpeningFloat = new Variable(
+            Guid.NewGuid(),
+            "floatVariable",
+            new VariableValue.FloatVariable(0)
+        );
 
 
         var preOpen = new Transition(
@@ -125,7 +140,7 @@ public static class DoorStateMachineTestData
             "Door",
             states,
             transitions,
-            new List<Variable> { degreeOfOpening }
+            new List<Variable> { degreeOfOpening, closeVariable, nameVariable, degreeOfOpeningFloat }
         );
     }
 }

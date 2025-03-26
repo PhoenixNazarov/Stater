@@ -28,7 +28,5 @@ public abstract record Event
     public record VariableSet(
         Guid VariableGuid,
         VariableValue Value
-    ) : Event
-    {
-    }
+    ) : Event;
 }

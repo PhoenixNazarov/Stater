@@ -1,5 +1,6 @@
 using System.Reflection;
 using Scriban;
+using Scriban.Runtime;
 using Stater.CodeGeneration.Entity;
 using Stater.Domain.Models;
 
@@ -19,13 +20,25 @@ public static class TemplateLoader
         return reader.ReadToEnd();
     }
 
-    public static string RenderTemplate(string templateName, StateMachine stateMachine, GenerationSettings settings)
+    public static string RenderTemplate(
+        string templateName,
+        StateMachine stateMachine,
+        GenerationSettings settings,
+        Func<VariableValue, string> convertVariableType,
+        Func<VariableValue, string> convertVariableValue
+    )
     {
+        var scriptObject = new ScriptObject();
+        scriptObject.Import("convert_variable_type", new Func<VariableValue, string>(convertVariableType));
+        scriptObject.Import("convert_variable_value", new Func<VariableValue, string>(convertVariableValue));
+        scriptObject["fsm"] = stateMachine;
+        scriptObject["settings"] = settings;
+        
+        var context = new TemplateContext();
+        context.PushGlobal(scriptObject);
+        
         var templateContent = LoadTemplate(templateName);
         var template = Template.Parse(templateContent);
-        return template.Render(new
-        {
-            fsm = stateMachine, settings
-        });
+        return template.Render(context);
     }
 }

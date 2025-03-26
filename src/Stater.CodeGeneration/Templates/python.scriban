@@ -22,8 +22,9 @@ States.{{ name }}
 {{- end -}}
 {{- if settings.generate_context -}}
 class DoorFSMContext(BaseModel, Context):
-    degree_of_opening: int = 100
-
+{{- for item in fsm.variables }}
+    {{ item.name }}: {{ convert_variable_type item.start_value }} = {{ convert_variable_value item.start_value }}
+{{- end}}
 
 {{ end -}}
 {{- if !settings.generate_states; state_generic = "str"; else; state_generic = "States"; end }}

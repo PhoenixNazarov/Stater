@@ -1,13 +1,33 @@
-using Stater.CodeGeneration.Entity;
 using Stater.CodeGeneration.LanguageAdapter.Base;
 using Stater.Domain.Models;
 
 namespace Stater.CodeGeneration.LanguageAdapter.TypeScript;
 
-public class TypeScriptAdapter : ILanguageAdapter
+public class TypeScriptAdapter : BaseLanguageAdapter
 {
-    public string Generate(StateMachine stateMachine, GenerationSettings settings)
+    protected override string TemplateName => "typescript";
+
+    protected override string GetVariableValueTypeName(VariableValue value)
     {
-        return TemplateLoader.RenderTemplate("typescript", stateMachine, settings);
+        return value switch
+        {
+            VariableValue.IntVariable => "number",
+            VariableValue.BoolVariable => "boolean",
+            VariableValue.StringVariable => "string",
+            VariableValue.FloatVariable => "number",
+            _ => "unknown"
+        };
+    }
+
+    protected override string GetVariableValue(VariableValue value)
+    {
+        return value switch
+        {
+            VariableValue.IntVariable variable => variable.ToString(),
+            VariableValue.BoolVariable variable => variable.Value ? "false" : "true",
+            VariableValue.StringVariable variable => '"' + variable.Value + '"',
+            VariableValue.FloatVariable variable => variable + ".0",
+            _ => "unknown"
+        };
     }
 }
