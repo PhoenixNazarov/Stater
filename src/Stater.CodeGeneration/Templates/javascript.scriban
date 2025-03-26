@@ -1,0 +1,89 @@
+{{- if settings.generate_context }}import {Context} from "./StaterStateMachine";{{ "\n" }}{{- else }}import {EmptyContext} from "./StaterStateMachine";{{ "\n" }}{{- end }}
+{{- if settings.generate_interface }}import {StateMachineFactory} from "./StaterStateMachine";{{ "\n" }}{{- end }}
+{{- if settings.generate_interface || settings.mode == "Clazz" }}import {StaterStateMachine} from "./StaterStateMachine";{{ "\n" }}{{- end }}
+{{- if settings.mode == "Builder" }}import {StaterStateMachineBuilder} from "./StaterStateMachine";{{ "\n" }}{{- end }}
+{{- if settings.mode == "Clazz" }}{{ "\n" }}{{- end }}
+{{ if settings.generate_states -}}
+const States = Object.freeze({
+    {{- for item in fsm.states }}
+    {{ item.name }}: "{{ item.name }}"{{- if !for.last }}{{ "," }}{{- end }}
+    {{- end }}
+});
+
+{{ end }}
+{{- func state(name) -}}
+{{- if settings.generate_states -}}
+States.{{ name }}
+{{- else -}}
+"{{ name }}"
+{{- end -}}
+{{- end -}}
+{{- if settings.generate_context -}}
+const build{{ fsm.name }}FSMContext = () => {
+    return {degreeOfOpening: 100}
+}
+
+
+{{ end -}}
+{{- if !settings.generate_states; state_generic = "string"; else; state_generic = "States"; end }}
+{{- if !settings.generate_context; context_generic = "EmptyContext"; else; context_generic = fsm.name+"FSMContext"; end -}}
+{{- if !settings.generate_context; context_generic_builder = "new EmptyContext()"; else; context_generic_builder = "build"+fsm.name+"FSMContext()"; end -}}
+{{- if settings.mode == "Clazz" -}}
+class {{ fsm.name }}StateMachine extends StaterStateMachine {
+    constructor() {
+        super(
+            [
+                {{- for item in fsm.state_transitions }}
+                {
+                    name: "{{ item.transition.name }}",
+                    start: {{ state item.start_state.name }},
+                    end: {{ state item.end_state.name }}
+                }{{- if !for.last }}{{ "," }}{{- end }}
+                {{- end }}
+            ],
+            {{ context_generic_builder }},
+            {{- if fsm.start_state != null }}
+            {{ state fsm.start_state.name }},
+            {{- end }}
+        )
+    }
+{{- if settings.generate_interface }}
+{{ end -}}
+{{- if settings.generate_interface }}
+{{- for item in fsm.transitions }}
+    {{ item.name }}() {
+        this.transition("{{ item.name }}")
+    }
+{{- if !for.last }}
+{{ end -}}
+{{- end }}
+{{- end }}
+}
+
+{{- else if settings.mode == "Builder" -}}
+{{- if settings.generate_interface -}}
+class Types{{ fsm.name }}StateMachine extends StaterStateMachine {
+{{- for item in fsm.transitions }}
+    {{ item.name }}() {
+        this.transition("{{ item.name }}")
+    }
+{{- if !for.last }}
+{{ end -}}
+{{- end }}
+}
+
+const typed{{ fsm.name }}Factory = (...args) => new Types{{ fsm.name }}StateMachine(...args);
+
+{{ end -}}
+const builder{{ fsm.name }}StateMachine = new StaterStateMachineBuilder()
+    {{- if fsm.start_state != null }}
+    .setStartState({{ state fsm.start_state.name }})
+    {{- end }}
+    .setContext({{ context_generic_builder }})
+    {{- if settings.generate_interface }}
+    .setFactory(typed{{ fsm.name }}Factory)
+    {{- end }}
+    {{- for item in fsm.state_transitions }}
+    .addTransition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
+    {{- end }}
+{{- end }}
