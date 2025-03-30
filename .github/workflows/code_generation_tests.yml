@@ -47,10 +47,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: PhoenixNazarov/stater-fsm-code
-          path: projects/python
       
       - name: Install dependencies
         run: |
+          cd projects/python
           poetry install --no-root
 
       - name: Install pytest and pytest-cov
@@ -62,8 +62,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: python-generated-files
-          path: test/
+          path: projects/python/test/
       
       - name: Run tests with pytest
         run: |
+          cd projects/python
           poetry run pytest --cov --junitxml=junit.xml -o junit_family=legacy
