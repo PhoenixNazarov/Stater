@@ -23,7 +23,11 @@ jobs:
       - name: Run generate javascript
         run: |
           dotnet run --project src/Stater.CodeGeneration.App artifacts/js/ 0 javascript
-
+          
+      - name: Run generate typescript
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/ts/ 0 typescript
+      
       - name: Save python3 generated files
         uses: actions/upload-artifact@v4
         with:
@@ -36,6 +40,12 @@ jobs:
           name: js-generated-files
           path: artifacts/js/*
 
+      - name: Save ts generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: ts-generated-files
+          path: artifacts/ts/*
+      
   test-python:
     needs: [ build-artifacts ]
     runs-on: ubuntu-latest
@@ -113,4 +123,40 @@ jobs:
       - name: Run tests with Jest
         run: |
           cd projects/js
+          npm test -- --coverage --json --outputFile=test-results.json
+
+  test-typescript:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ '16', '18', '20' ]
+
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: projects/js/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd projects/ts
+          npm ci
+
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: ts-generated-files
+          path: projects/ts/src/
+
+      - name: Run tests with Jest
+        run: |
+          cd projects/ts
           npm test -- --coverage --json --outputFile=test-results.json

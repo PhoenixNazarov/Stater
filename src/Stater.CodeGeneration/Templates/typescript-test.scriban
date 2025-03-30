@@ -1,101 +1,55 @@
-{{- if settings.generate_context }}import {Context} from "./StaterStateMachine";{{ "\n" }}{{- else }}import {EmptyContext} from "./StaterStateMachine";{{ "\n" }}{{- end }}
-{{- if settings.generate_interface }}import {StateMachineFactory} from "./StaterStateMachine";{{ "\n" }}{{- end }}
-{{- if settings.generate_interface || settings.mode == "Clazz" }}import {StaterStateMachine} from "./StaterStateMachine";{{ "\n" }}{{- end }}
-{{- if settings.mode == "Builder" }}import {StaterStateMachineBuilder} from "./StaterStateMachine";{{ "\n" }}{{- end }}
-{{- if settings.mode == "Clazz" }}{{ "\n" }}{{- end }}
-{{ if settings.generate_states -}}
-enum States {
-    {{- for item in fsm.states }}
-    {{ item.name }} = "{{ item.name }}"{{- if !for.last }}{{ "," }}{{- end }}
-    {{- end }}
-}
+{{- if settings.mode == "Builder" && settings.generate_interface }}import {builder{{ fsm.name }}StateMachine, Types{{ fsm.name }}StateMachine} from "./{{ fsm.name }}";{{ "\n" }}{{- end }}
+{{- if settings.mode == "Builder" && !settings.generate_interface }}import {builder{{ fsm.name }}StateMachine} from "./{{ fsm.name }}";{{ "\n" }}{{- end }}
+{{- if settings.mode == "Clazz" }}import { {{- fsm.name }}StateMachine} from "./{{ fsm.name }}";{{ "\n" }}{{- end }}
+{{- if settings.generate_states }}import {States} from "./{{fsm.name}}";{{ "\n" }}{{- end }}
 
-{{ end }}
-{{- func state(name) -}}
+{{ func state(name) }}
 {{- if settings.generate_states -}}
 States.{{ name }}
 {{- else -}}
 "{{ name }}"
 {{- end -}}
-{{- end -}}
-{{- if settings.generate_context -}}
-interface {{ fsm.name }}FSMContext extends Context {
-{{- for item in fsm.variables }}
-    {{ item.name }}: {{ convert_variable_value item.start_value }}
-{{- end}}
-}
+{{ end }}
 
-const build{{ fsm.name }}FSMContext: () => {{ fsm.name }}FSMContext = () => {
-    return {
-{{- for item in fsm.variables }}
-        {{ item.name }}: {{ convert_variable_value item.start_value }}{{- if !for.last }}{{ "," }}{{- end }}
-{{- end}}
-    }
-}
+{{- if settings.mode == "Clazz"; build_generic = "new " + fsm.name + "StateMachine()"; else if settings.generate_interface; build_generic = "builder" + fsm.name + "StateMachine.build() as Types" + fsm.name + "StateMachine"; else; build_generic = "builder" + fsm.name + "StateMachine.build()"; end -}}
 
+test('testInit', () => {
+    {{ build_generic }}
+})
 
-{{ end -}}
-{{- if !settings.generate_states; state_generic = "string"; else; state_generic = "States"; end }}
-{{- if !settings.generate_context; context_generic = "EmptyContext"; else; context_generic = fsm.name+"FSMContext"; end -}}
-{{- if !settings.generate_context; context_generic_builder = "new EmptyContext()"; else; context_generic_builder = "build"+fsm.name+"FSMContext()"; end -}}
-{{- if settings.mode == "Clazz" -}}
-class {{ fsm.name }}StateMachine extends StaterStateMachine<{{ state_generic }}, {{ context_generic }}> {
-    constructor() {
-        super(
-            [
-                {{- for item in fsm.state_transitions }}
-                {
-                    name: "{{ item.transition.name }}",
-                    start: {{ state item.start_state.name }},
-                    end: {{ state item.end_state.name }}
-                }{{- if !for.last }}{{ "," }}{{- end }}
-                {{- end }}
-            ],
-            {{ context_generic_builder }},
-            {{- if fsm.start_state != null }}
-            {{ state fsm.start_state.name }},
-            {{- end }}
-        )
-    }
-{{- if settings.generate_interface }}
-{{ end -}}
-{{- if settings.generate_interface }}
-{{- for item in fsm.transitions }}
-    {{ item.name }}() {
-        this.transition("{{ item.name }}")
-    }
-{{- if !for.last }}
-{{ end -}}
-{{- end }}
-{{- end }}
-}
+{{ for index in 0..(scenarios.size - 1) }}
 
-{{- else if settings.mode == "Builder" -}}
-{{- if settings.generate_interface -}}
-class Types{{ fsm.name }}StateMachine extends StaterStateMachine<{{ state_generic }}, {{ context_generic }}> {
-{{- for item in fsm.transitions }}
-    {{ item.name }}() {
-        this.transition("{{ item.name }}")
-    }
-{{- if !for.last }}
-{{ end -}}
-{{- end }}
-}
+test('testScenario{{ index }}', () => {
+    const sm = {{ build_generic }}
+    sm.disableEvents()
 
-const typed{{ fsm.name }}Factory: StateMachineFactory<{{ state_generic }}, {{ context_generic }}> = (...args): StaterStateMachine<{{ state_generic }}, {{ context_generic }}> => {
-    return new Types{{ fsm.name }}StateMachine(...args);
-};
-
-{{ end -}}
-const builder{{ fsm.name }}StateMachine = new StaterStateMachineBuilder<{{ state_generic }}, {{ context_generic }}>()
-    {{- if fsm.start_state != null }}
-    .setStartState({{ state fsm.start_state.name }})
-    {{- end }}
-    .setContext({{ context_generic_builder }})
+{{ for transition in scenarios[index] }}
     {{- if settings.generate_interface }}
-    .setFactory(typed{{ fsm.name }}Factory)
+    sm.{{ transition.name }}()
+    {{- else }}
+    sm.transition('{{ transition.name }}')
     {{- end }}
-    {{- for item in fsm.state_transitions }}
-    .addTransition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
-    {{- end }}
+    expect(sm.getState()).toBe({{ state get_state_by_uuid(transition.end).name }})
+{{ end }}
+}){{- end }}
+
+
+test('testJsonSchema', () => {
+    const sm = {{ build_generic }}
+    expect(JSON.parse(`{{ state_machine_json_schema fsm }}`)).toStrictEqual(JSON.parse(sm.toJsonSchema()))
+})
+
+{{ if settings.mode == "Builder" && !settings.generate_states }}
+test('testSystemAppendStateTransition', () => {
+    let smBuilder = builder{{ fsm.name }}StateMachine
+    
+    smBuilder = smBuilder.addState('__test_state_1__')
+    expect(JSON.parse(`{{ state_machine_json_schema fsm_test_state_1 }}`)).toStrictEqual(JSON.parse(smBuilder.build().toJsonSchema()))
+    
+    smBuilder = smBuilder.addState('__test_state_2__')
+    expect(JSON.parse(`{{ state_machine_json_schema fsm_test_state_2 }}`)).toStrictEqual(JSON.parse(smBuilder.build().toJsonSchema()))
+    
+    smBuilder = smBuilder.addTransition('__test_transition__', '__test_state_1__', '__test_state_2__')
+    expect(JSON.parse(`{{ state_machine_json_schema fsm_test_state_3 }}`)).toStrictEqual(JSON.parse(smBuilder.build().toJsonSchema()))
+})
 {{- end }}

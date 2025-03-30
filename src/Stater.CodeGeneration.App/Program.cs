@@ -4,7 +4,6 @@
 using Stater.CodeGeneration;
 using Stater.CodeGeneration.App;
 using Stater.CodeGeneration.Entity;
-using Stater.Domain.Models;
 
 
 if (args.Length < 3)
@@ -51,6 +50,11 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
                         path += randomStateMachine.Name + ".js";
                         testPath += randomStateMachine.Name + ".test.js";
                         languageS = Language.JavaScript;
+                        break;
+                    case "typescript":
+                        path += randomStateMachine.Name + ".ts";
+                        testPath += randomStateMachine.Name + ".test.ts";
+                        languageS = Language.TypeScript;
                         break;
                 }
 

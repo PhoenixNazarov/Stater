@@ -4,7 +4,7 @@
 {{- if settings.mode == "Builder" }}import {StaterStateMachineBuilder} from "./StaterStateMachine";{{ "\n" }}{{- end }}
 {{- if settings.mode == "Clazz" }}{{ "\n" }}{{- end }}
 {{ if settings.generate_states -}}
-enum States {
+export enum States {
     {{- for item in fsm.states }}
     {{ item.name }} = "{{ item.name }}"{{- if !for.last }}{{ "," }}{{- end }}
     {{- end }}
@@ -39,7 +39,7 @@ const build{{ fsm.name }}FSMContext: () => {{ fsm.name }}FSMContext = () => {
 {{- if !settings.generate_context; context_generic = "EmptyContext"; else; context_generic = fsm.name+"FSMContext"; end -}}
 {{- if !settings.generate_context; context_generic_builder = "new EmptyContext()"; else; context_generic_builder = "build"+fsm.name+"FSMContext()"; end -}}
 {{- if settings.mode == "Clazz" -}}
-class {{ fsm.name }}StateMachine extends StaterStateMachine<{{ state_generic }}, {{ context_generic }}> {
+export class {{ fsm.name }}StateMachine extends StaterStateMachine<{{ state_generic }}, {{ context_generic }}> {
     constructor() {
         super(
             [
@@ -72,7 +72,7 @@ class {{ fsm.name }}StateMachine extends StaterStateMachine<{{ state_generic }},
 
 {{- else if settings.mode == "Builder" -}}
 {{- if settings.generate_interface -}}
-class Types{{ fsm.name }}StateMachine extends StaterStateMachine<{{ state_generic }}, {{ context_generic }}> {
+export class Types{{ fsm.name }}StateMachine extends StaterStateMachine<{{ state_generic }}, {{ context_generic }}> {
 {{- for item in fsm.transitions }}
     {{ item.name }}() {
         this.transition("{{ item.name }}")
@@ -87,7 +87,7 @@ const typed{{ fsm.name }}Factory: StateMachineFactory<{{ state_generic }}, {{ co
 };
 
 {{ end -}}
-const builder{{ fsm.name }}StateMachine = new StaterStateMachineBuilder<{{ state_generic }}, {{ context_generic }}>()
+export const builder{{ fsm.name }}StateMachine = new StaterStateMachineBuilder<{{ state_generic }}, {{ context_generic }}>()
     {{- if fsm.start_state != null }}
     .setStartState({{ state fsm.start_state.name }})
     {{- end }}

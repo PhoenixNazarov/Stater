@@ -6,7 +6,7 @@ namespace Stater.CodeGeneration.LanguageAdapter.TypeScript;
 public class TypeScriptAdapter : BaseLanguageAdapter
 {
     protected override string TemplateName => "typescript";
-    protected override string TestTemplateName => "javascript";
+    protected override string TestTemplateName => "typescript-test";
     
     protected override string GetVariableValueTypeName(VariableValue value)
     {
@@ -27,7 +27,7 @@ public class TypeScriptAdapter : BaseLanguageAdapter
             VariableValue.IntVariable variable => variable.ToString(),
             VariableValue.BoolVariable variable => variable.Value ? "false" : "true",
             VariableValue.StringVariable variable => '"' + variable.Value + '"',
-            VariableValue.FloatVariable variable => variable + ".0",
+            VariableValue.FloatVariable variable => variable.ToString(),
             _ => "unknown"
         };
     }
