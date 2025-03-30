@@ -97,11 +97,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: projects/ts/package-lock.json
+          cache-dependency-path: projects/js/package-lock.json
 
       - name: Install dependencies
         run: |
-          cd projects/ts
+          cd projects/js
           npm ci
 
       - name: Download generated files
@@ -112,5 +112,5 @@ jobs:
 
       - name: Run tests with Jest
         run: |
-          cd projects/ts
+          cd projects/js
           npm test -- --coverage --json --outputFile=test-results.json
