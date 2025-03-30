@@ -43,7 +43,7 @@ public class StateMachineJsonAdapterTests
 
         var states = new List<State>
         {
-            open, ajar, close
+            ajar, close, open 
         };
 
 
@@ -125,9 +125,9 @@ public class StateMachineJsonAdapterTests
         """
         {
           "states": [
-            "OPEN",
             "AJAR",
-            "CLOSE"
+            "CLOSE",
+            "OPEN"
           ],
           "startState": "OPEN",
           "transitions": [

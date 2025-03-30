@@ -7,7 +7,7 @@ internal record MultipleGuid(
     Guid Guid2
 );
 
-public class ScenarioFinder
+public static class ScenarioFinder
 {
     public static List<List<Transition>> FindScenarios(StateMachine stateMachine)
     {
@@ -17,7 +17,7 @@ public class ScenarioFinder
             .Where(el => el.Count > 0)
             .DistinctBy(el => el
                 .Select(t => t.Guid.GetHashCode())
-                .Aggregate(0, (acc, h) => HashCode.Combine(acc, h))
+                .Aggregate(0, HashCode.Combine)
             )
             .OrderByDescending(el => el.Count)
             .Take(3)
@@ -38,7 +38,7 @@ public class ScenarioFinder
         var graph = new Dictionary<Guid, List<Guid>>();
 
         foreach (var transition in
-                 transitions.Where(transition => transition.Start.HasValue && transition.End.HasValue))
+                 transitions.Where(transition => transition is { Start: not null, End: not null }))
         {
             if (!graph.ContainsKey(transition.Start!.Value))
                 graph[transition.Start.Value] = new List<Guid>();

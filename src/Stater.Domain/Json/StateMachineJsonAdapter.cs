@@ -3,7 +3,7 @@ using Stater.Domain.Models;
 
 namespace Stater.Domain.Json;
 
-public class StateMachineJsonAdapter
+public static class StateMachineJsonAdapter
 {
     private static readonly JsonSerializerOptions Options = new()
     {
@@ -14,7 +14,7 @@ public class StateMachineJsonAdapter
     public static string ToJsonSchema(StateMachine stateMachine)
     {
         var jsonSchema = new JsonSchema(
-            States: stateMachine.States.Select(el => el.Name).ToList(),
+            States: stateMachine.States.Select(el => el.Name).Distinct().Order().ToList(),
             StartState: stateMachine.StartState!.Name,
             Transitions: stateMachine.StateTransitions.Select(
                 el => new JsonTransition(Name: el.Transition.Name, Start: el.StartState.Name, End: el.EndState.Name)

@@ -1,7 +1,9 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Scriban;
 using Scriban.Runtime;
 using Stater.CodeGeneration.Entity;
+using Stater.Domain.Json;
 using Stater.Domain.Models;
 
 namespace Stater.CodeGeneration.LanguageAdapter.Base;
@@ -27,7 +29,7 @@ public static class TemplateLoader
         Func<VariableValue, string> convertVariableType,
         Func<VariableValue, string> convertVariableValue,
         Func<Transition, Condition, StateMachine, string> convertCondition,
-        Func<Transition, Event, StateMachine, string> convertEvent, 
+        Func<Transition, Event, StateMachine, string> convertEvent,
         List<List<Transition>> scenarios
     )
     {
@@ -45,6 +47,9 @@ public static class TemplateLoader
         scriptObject["scenarios"] = scenarios;
         scriptObject.Import("get_variable_by_uuid", stateMachine.GetVariableByGuid);
         scriptObject.Import("get_state_by_uuid", stateMachine.GetStateByGuid);
+        scriptObject.Import("state_machine_json_schema", StateMachineJsonAdapter.ToJsonSchema);
+
+        InitTestStateMachines(scriptObject, stateMachine);
 
         var context = new TemplateContext();
         context.PushGlobal(scriptObject);
@@ -52,5 +57,26 @@ public static class TemplateLoader
         var templateContent = LoadTemplate(templateName);
         var template = Template.Parse(templateContent);
         return template.Render(context);
+    }
+
+    private static void InitTestStateMachines(ScriptObject scriptObject, StateMachine sm)
+    {
+        var sm1 = sm with { States = sm.States.Concat(new[] { new State { Name = "a__test_state_1__" } }).ToList() };
+        var sm2 = sm1 with { States = sm1.States.Concat(new[] { new State { Name = "a__test_state_2__" } }).ToList() };
+        var sm3 = sm2 with
+        {
+            Transitions = sm2.Transitions.Concat(new[]
+            {
+                new Transition
+                {
+                    Name = "a__test_transition__",
+                    Start = sm2.GetStateByName("a__test_state_1__")!.Guid,
+                    End = sm2.GetStateByName("a__test_state_2__")!.Guid,
+                }
+            }).ToList()
+        };
+        scriptObject["fsm_test_state_1"] = sm1;
+        scriptObject["fsm_test_state_2"] = sm2;
+        scriptObject["fsm_test_state_3"] = sm3;
     }
 }

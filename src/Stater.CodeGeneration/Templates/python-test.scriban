@@ -1,3 +1,5 @@
+import json{{ "\n" }}{{ "\n" }}
+
 {{- if settings.mode == "Builder" }}from .{{ fsm.name }} import builder_{{ fsm.name }}_state_machine{{ "\n" }}{{- end }}
 {{- if settings.mode == "Clazz" }}from .{{ fsm.name }} import {{ fsm.name }}StateMachine{{ "\n" }}{{- end }}
 {{- if settings.generate_states }}from .{{ fsm.name }} import States{{ "\n" }}{{- end }}
@@ -32,5 +34,18 @@ def test_scenario_{{index}}():
 
 def test_json_schema():
     sm = {{ build_generic }}()
-    assert sm.to_json_schema()
+    assert json.loads('''{{ state_machine_json_schema fsm }}''') == json.loads(sm.to_json_schema())
+
+{{ if settings.mode == "Builder" && !settings.generate_states }}
+def test_system_append_state_transition():
+    sm_builder = builder_{{ fsm.name }}_state_machine
     
+    sm_builder = sm_builder.add_state('a__test_state_1__')
+    assert json.loads('''{{ state_machine_json_schema fsm_test_state_1 }}''') == json.loads(sm_builder.build().to_json_schema())
+    
+    sm_builder = sm_builder.add_state('a__test_state_2__')
+    assert json.loads('''{{ state_machine_json_schema fsm_test_state_2 }}''') == json.loads(sm_builder.build().to_json_schema())
+    
+    sm_builder = sm_builder.add_transition('a__test_transition__', 'a__test_state_1__', 'a__test_state_2__')
+    assert json.loads('''{{ state_machine_json_schema fsm_test_state_3 }}''') == json.loads(sm_builder.build().to_json_schema())
+{{- end }}
