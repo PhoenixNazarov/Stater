@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build-python-artifacts:
+  build-artifacts:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout current repository
@@ -46,7 +46,7 @@ jobs:
       - name: Checkout specific folder from another repository
         uses: actions/checkout@v4
         with:
-          repository: https://github.com/PhoenixNazarov/stater-fsm-code
+          repository: PhoenixNazarov/stater-fsm-code
           path: projects/python
       
       - name: Install dependencies
