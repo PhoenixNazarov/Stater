@@ -22,7 +22,7 @@ jobs:
 
       - name: Run generate javascript
         run: |
-          dotnet run --project src/Stater.CodeGeneration.App artifacts/js/ 0 python3
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/js/ 0 javascript
 
       - name: Save python3 generated files
         uses: actions/upload-artifact@v4
