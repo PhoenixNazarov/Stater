@@ -10,10 +10,13 @@
     
     <ItemGroup>
       <EmbeddedResource Include="Templates\kotlin.scriban" />
+      <EmbeddedResource Include="Templates\kotlin-test.scriban" />
       <EmbeddedResource Include="Templates\python.scriban" />
       <EmbeddedResource Include="Templates\python-test.scriban" />
       <EmbeddedResource Include="Templates\typescript.scriban" />
+      <EmbeddedResource Include="Templates\typescript-test.scriban" />
       <EmbeddedResource Include="Templates\javascript.scriban" />
+      <EmbeddedResource Include="Templates\javascript-test.scriban" />
     </ItemGroup>
 
 

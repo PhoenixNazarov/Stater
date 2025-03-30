@@ -4,6 +4,7 @@
 using Stater.CodeGeneration;
 using Stater.CodeGeneration.App;
 using Stater.CodeGeneration.Entity;
+using Stater.Domain.Models;
 
 
 if (args.Length < 3)
@@ -39,11 +40,18 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
                 var path = outputPath;
                 var testPath = outputPath;
                 var languageS = Language.Python3;
-                if (language == "python3")
+                switch (language)
                 {
-                    path += randomStateMachine.Name + ".py";
-                    testPath += "test_" + randomStateMachine.Name + ".py";
-                    languageS = Language.Python3;
+                    case "python3":
+                        path += randomStateMachine.Name + ".py";
+                        testPath += "test_" + randomStateMachine.Name + ".py";
+                        languageS = Language.Python3;
+                        break;
+                    case "javascript":
+                        path += randomStateMachine.Name + ".js";
+                        testPath += randomStateMachine.Name + ".test.js";
+                        languageS = Language.JavaScript;
+                        break;
                 }
 
                 var settings = new GenerationSettings(
@@ -53,7 +61,7 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
                     , GenerateContext: generateContext
                     , GenerateInterface: generateInterface
                 );
-
+                
                 using var sw = new StreamWriter(path);
                 var result = codeGenerator.Generate(randomStateMachine, settings);
                 sw.WriteLine(result);

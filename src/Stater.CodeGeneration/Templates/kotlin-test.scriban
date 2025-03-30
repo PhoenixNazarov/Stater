@@ -1,0 +1,46 @@
+{{- if settings.mode == "Clazz"; build_generic = fsm.name + "StateMachine"; else; build_generic = "builder_" + fsm.name + "_state_machine.build"; end -}}
+class Test{{ fsm.name }}StateMachine {
+    @Test
+    fun testInit() {
+        {{ build_generic }}()
+    }
+    {{ for index in 0..(scenarios.size - 1) }}
+    
+    @Test
+    fun testScenario{{index}}(){
+        val sm = {{ build_generic }}()
+        sm.disableEvents()
+    
+    {{ for transition in scenarios[index] }}
+        {{- if settings.generate_interface }}
+        sm.{{ transition.name }}()
+        {{- else }}
+        sm.transition("{{ transition.name }}")
+        {{- end }}
+        assertEquals(sm.getState(), {{ state get_state_by_uuid(transition.end).name }})
+    {{ end }}
+    }
+    {{- end }}
+    
+    @Test
+    fun testJsonSchema() {
+        val sm = {{ build_generic }}()
+        assertEquals(json.loads("""{{ state_machine_json_schema fsm }}"""), json.loads(sm.toJsonSchema()))
+    }
+    
+    {{ if settings.mode == "Builder" && !settings.generate_states }}
+    @Test
+    fun testSystemAppendStateTransition(){
+        var smBuilder = builder{{ fsm.name }}StateMachine
+        
+        smBuilder = smBuilder.addState("__test_state_1__")
+        assertEquals(objectMapper.readTree("""{{ state_machine_json_schema fsm_test_state_1 }}"""), objectMapper.readTree(smBuilder.build().toJsonSchema()))
+        
+        smBuilder = smBuilder.addState("__test_state_2__")
+        assertEquals(objectMapper.readTree("""{{ state_machine_json_schema fsm_test_state_2 }}"""), objectMapper.readTree(smBuilder.build().toJsonSchema()))
+        
+        smBuilder = smBuilder.addTransition("__test_transition__", "__test_state_1__", "__test_state_2__")
+        assertEquals(objectMapper.readTree("""{{ state_machine_json_schema fsm_test_state_3 }}"""), objectMapper.readTree(smBuilder.build().toJsonSchema()))
+    }
+    {{- end }}
+}

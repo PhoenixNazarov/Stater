@@ -16,15 +16,25 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Build and Run C# program
+      - name: Run generate python3
         run: |
           dotnet run --project src/Stater.CodeGeneration.App artifacts/python/ 0 python3
-
-      - name: Save generated files
+          
+      - name: Run generate javascript
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/js/ 0 python3
+      
+      - name: Save python3 generated files
         uses: actions/upload-artifact@v4
         with:
           name: python-generated-files
           path: artifacts/python/*
+
+      - name: Save js generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: js-generated-files
+          path: artifacts/js/*
 
   test-python:
     needs: [build-artifacts]
@@ -68,3 +78,39 @@ jobs:
         run: |
           cd projects/python
           poetry run pytest --cov --junitxml=junit.xml -o junit_family=legacy
+
+  test-javascript:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ '16', '18', '20' ]
+    
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: projects/ts/package-lock.json
+
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Install dependencies
+        run: |
+          cd projects/ts
+          npm ci
+
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: js-generated-files
+          path: projects/js/src/
+
+      - name: Run tests with Jest
+        run: |
+          cd projects/ts
+          npm test -- --coverage --json --outputFile=test-results.json

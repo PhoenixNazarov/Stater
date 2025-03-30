@@ -1,0 +1,54 @@
+{{- if settings.mode == "Builder" }}import {builder{{ fsm.name }}StateMachine} from "./{{ fsm.name }}.js";{{ "\n" }}{{- end }}
+{{- if settings.mode == "Clazz" }}import { {{- fsm.name }}StateMachine} from "./{{ fsm.name }}.js";{{ "\n" }}{{- end }}
+{{- if settings.generate_states }}import {States} from "./{{fsm.name}}.js";{{ "\n" }}{{- end }}
+
+{{ func state(name) }}
+{{- if settings.generate_states -}}
+States.{{ name }}
+{{- else -}}
+"{{ name }}"
+{{- end -}}
+{{ end }}
+
+{{- if settings.mode == "Clazz"; build_generic = "new " + fsm.name + "StateMachine"; else; build_generic = "builder" + fsm.name + "StateMachine.build"; end -}}
+
+test('testInit', () => {
+    {{ build_generic }}()
+})
+
+{{ for index in 0..(scenarios.size - 1) }}
+
+test('testScenario{{ index }}', () => {
+    const sm = {{ build_generic }}()
+    sm.disableEvents()
+
+{{ for transition in scenarios[index] }}
+    {{- if settings.generate_interface }}
+    sm.{{ transition.name }}()
+    {{- else }}
+    sm.transition('{{ transition.name }}')
+    {{- end }}
+    expect(sm.getState()).toBe({{ state get_state_by_uuid(transition.end).name }})
+{{ end }}
+}){{- end }}
+
+
+test('testJsonSchema', () => {
+    const sm = {{ build_generic }}()
+    expect(JSON.parse(`{{ state_machine_json_schema fsm }}`)).toStrictEqual(JSON.parse(sm.toJsonSchema()))
+})
+
+{{ if settings.mode == "Builder" && !settings.generate_states }}
+test('testSystemAppendStateTransition', () => {
+    let smBuilder = builder{{ fsm.name }}StateMachine
+    
+    smBuilder = smBuilder.addState('__test_state_1__')
+    expect(JSON.parse(`{{ state_machine_json_schema fsm_test_state_1 }}`)).toStrictEqual(JSON.parse(smBuilder.build().toJsonSchema()))
+    
+    smBuilder = smBuilder.addState('__test_state_2__')
+    expect(JSON.parse(`{{ state_machine_json_schema fsm_test_state_2 }}`)).toStrictEqual(JSON.parse(smBuilder.build().toJsonSchema()))
+    
+    smBuilder = smBuilder.addTransition('__test_transition__', '__test_state_1__', '__test_state_2__')
+    expect(JSON.parse(`{{ state_machine_json_schema fsm_test_state_3 }}`)).toStrictEqual(JSON.parse(smBuilder.build().toJsonSchema()))
+})
+{{- end }}
