@@ -171,8 +171,8 @@ jobs:
           cd projects/ts
           npm test -- --coverage --json --outputFile=test-results.json
 
-
   test-kotlin:
+    needs: [ build-artifacts ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
