@@ -15,6 +15,12 @@ var outputPath = args[0];
 var seed = int.Parse(args[1]);
 var language = args[2];
 
+if (!Directory.Exists(outputPath))
+{
+    Directory.CreateDirectory(outputPath);
+    Console.WriteLine($"Folder created: {outputPath}");
+}
+
 var randomStateMachineGenerator = new RandomStateMachineGenerator(seed);
 
 var states = new List<bool> { false, true };
@@ -30,11 +36,18 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
             {
                 var randomStateMachine = randomStateMachineGenerator.GenerateStateMachine(5, 10, 10, 10, 10);
 
-                var path = outputPath + randomStateMachine.Name + ".py";
-                var testPath = outputPath + "test_" + randomStateMachine.Name + ".py";
+                var path = outputPath;
+                var testPath = outputPath;
+                var languageS = Language.Python3;
+                if (language == "python3")
+                {
+                    path += randomStateMachine.Name + ".py";
+                    testPath += "test_" + randomStateMachine.Name + ".py";
+                    languageS = Language.Python3;
+                }
 
                 var settings = new GenerationSettings(
-                    Language.Python3
+                    languageS
                     , generateMode
                     , GenerateStates: generateStates
                     , GenerateContext: generateContext
@@ -44,8 +57,8 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
                 using var sw = new StreamWriter(path);
                 var result = codeGenerator.Generate(randomStateMachine, settings);
                 sw.WriteLine(result);
-                
-                
+
+
                 using var swTest = new StreamWriter(testPath);
                 var results = ScenarioFinder.FindScenarios(randomStateMachine);
                 var resultTest = codeGenerator.GenerateTests(randomStateMachine, settings, results);
