@@ -22,6 +22,17 @@ public abstract record Condition
             Ge, // >=
         }
 
+        public string GetDefaultConditionSign() => ConditionType switch
+        {
+            ConditionTypeEnum.Lt => "<",
+            ConditionTypeEnum.Le => "<=",
+            ConditionTypeEnum.Eq => "==",
+            ConditionTypeEnum.Ne => "!=",
+            ConditionTypeEnum.Gt => ">",
+            ConditionTypeEnum.Ge => ">=",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
         public VariableCondition() : this(Guid.Empty, ConditionTypeEnum.Lt, null)
         {
         }

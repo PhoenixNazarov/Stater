@@ -384,14 +384,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PluginData\PluginData.csproj">
-      <Project>{41A0B9E4-C529-4F6D-8F69-AB0EE1AE6951}</Project>
-      <Name>PluginData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\StateFlow\StateFlow.csproj">
-      <Project>{2FC95B0A-B404-4E88-8FB0-11F357D2A7C1}</Project>
-      <Name>StateFlow</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TextProcessor\TextProcessor.csproj">
       <Project>{412DC173-85E2-4A92-B886-11F173CB40E4}</Project>
       <Name>TextProcessor</Name>

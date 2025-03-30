@@ -20,6 +20,15 @@ public abstract record Event
             Div, // /
         }
 
+        public string GetDefaultMathTypeSign() => MathType switch
+        {
+            MathTypeEnum.Sum => "+",
+            MathTypeEnum.Sub => "-",
+            MathTypeEnum.Mul => "*",
+            MathTypeEnum.Div => "/",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
         public VariableMath() : this(Guid.Empty, MathTypeEnum.Sum, null)
         {
         }

@@ -6,6 +6,7 @@ namespace Stater.CodeGeneration.LanguageAdapter.JavaScript;
 public class JavaScriptAdapter : BaseLanguageAdapter
 {
     protected override string TemplateName => "javascript";
+    protected override string TestTemplateName => "javascript";
 
     protected override string GetVariableValueTypeName(VariableValue value)
     {
@@ -22,5 +23,15 @@ public class JavaScriptAdapter : BaseLanguageAdapter
             VariableValue.FloatVariable variable => variable + ".0",
             _ => "unknown"
         };
+    }
+
+    protected override string GetCondition(Transition transition, Condition condition, StateMachine stateMachine)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override string GetEvent(Transition transition, Event eEvent, StateMachine stateMachine)
+    {
+        throw new NotImplementedException();
     }
 }

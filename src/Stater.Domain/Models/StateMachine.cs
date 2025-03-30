@@ -23,6 +23,9 @@ public record StateMachine(
         get { return States.Find(x => x.Type == StateType.Start); }
     }
 
+    public Variable? GetVariableByGuid(Guid guid) => Variables.Find(el => el.Guid == guid);
+    public State? GetStateByGuid(Guid guid) => States.Find(el => el.Guid == guid);
+
     public List<StateTransition> StateTransitions
     {
         get

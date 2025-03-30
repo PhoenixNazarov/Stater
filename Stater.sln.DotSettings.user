@@ -9,6 +9,7 @@
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::879047E1-76DD-4892-AF8F-8EC562514AD7::net8.0::Stater.CodeGeneration.Tests.LanguageAdapter.Kotlin.KotlinAdapterDoorTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::879047E1-76DD-4892-AF8F-8EC562514AD7::net8.0::Stater.CodeGeneration.Tests.LanguageAdapter.Python.PythonAdapterDoorTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::879047E1-76DD-4892-AF8F-8EC562514AD7::net8.0::Stater.CodeGeneration.Tests.ScenarioFinderTests.ClazzGenerate&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/Housekeeping/SolutionSettingsUpgraded/IsUpgraded/@EntryValue">True</s:Boolean>

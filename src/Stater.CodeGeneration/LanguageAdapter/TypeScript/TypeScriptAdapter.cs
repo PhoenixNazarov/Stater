@@ -6,7 +6,8 @@ namespace Stater.CodeGeneration.LanguageAdapter.TypeScript;
 public class TypeScriptAdapter : BaseLanguageAdapter
 {
     protected override string TemplateName => "typescript";
-
+    protected override string TestTemplateName => "javascript";
+    
     protected override string GetVariableValueTypeName(VariableValue value)
     {
         return value switch
@@ -29,5 +30,15 @@ public class TypeScriptAdapter : BaseLanguageAdapter
             VariableValue.FloatVariable variable => variable + ".0",
             _ => "unknown"
         };
+    }
+
+    protected override string GetCondition(Transition transition, Condition condition, StateMachine stateMachine)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override string GetEvent(Transition transition, Event eEvent, StateMachine stateMachine)
+    {
+        throw new NotImplementedException();
     }
 }

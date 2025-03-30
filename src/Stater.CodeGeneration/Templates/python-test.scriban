@@ -1,0 +1,36 @@
+{{- if settings.mode == "Builder" }}from .{{ fsm.name }} import builder_{{ fsm.name }}_state_machine{{ "\n" }}{{- end }}
+{{- if settings.mode == "Clazz" }}from .{{ fsm.name }} import {{ fsm.name }}StateMachine{{ "\n" }}{{- end }}
+{{- if settings.generate_states }}from .{{ fsm.name }} import States{{ "\n" }}{{- end }}
+
+{{ func state(name) }}
+{{- if settings.generate_states -}}
+States.{{ name }}
+{{- else -}}
+"{{ name }}"
+{{- end -}}
+{{ end }}
+
+{{- if settings.mode == "Clazz"; build_generic = fsm.name + "StateMachine"; else; build_generic = "builder_" + fsm.name + "_state_machine.build"; end -}}
+
+def test_init():
+    {{ build_generic }}()
+{{ for index in 0..(scenarios.size - 1) }}
+
+def test_scenario_{{index}}():
+    sm = {{ build_generic }}()
+    sm.disable_events()
+
+{{ for transition in scenarios[index] }}
+    {{- if settings.generate_interface }}
+    sm.{{ transition.name }}()
+    {{- else }}
+    sm.transition('{{ transition.name }}')
+    {{- end }}
+    assert sm.get_state() == {{ state get_state_by_uuid(transition.end).name }}
+{{ end }}
+{{- end }}
+
+def test_json_schema():
+    sm = {{ build_generic }}()
+    assert sm.to_json_schema()
+    

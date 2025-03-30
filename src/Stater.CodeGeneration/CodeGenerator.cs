@@ -41,4 +41,32 @@ public class CodeGenerator
 
         return "";
     }
+    
+    public string GenerateTests(StateMachine stateMachine, GenerationSettings generationSettings, List<List<Transition>> scenarios)
+    {
+        if (generationSettings is { GenerateEventAndCondition: true, GenerateContext: false })
+        {
+            throw new InvalidDataException();
+        }
+        
+        switch (generationSettings.Language)
+        {
+            case Language.Kotlin: return kotlinAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
+            case Language.Java:
+                break;
+            case Language.CSharp:
+                break;
+            case Language.Python3: return pythonAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
+            case Language.JavaScript:return javaScriptAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
+            case Language.TypeScript:return typeScriptAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
+            case Language.C:
+                break;
+            case Language.CPlusPlus:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(generationSettings));
+        }
+
+        return "";
+    }
 }

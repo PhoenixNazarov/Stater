@@ -21,7 +21,7 @@ States.{{ name }}
 {{- end -}}
 {{- end -}}
 {{- if settings.generate_context -}}
-class DoorFSMContext(BaseModel, Context):
+class {{ fsm.name }}FSMContext(BaseModel, Context):
 {{- for item in fsm.variables }}
     {{ item.name }}: {{ convert_variable_type item.start_value }} = {{ convert_variable_value item.start_value }}
 {{- end}}
@@ -38,7 +38,11 @@ class {{ fsm.name }}StateMachine(StaterStateMachine[{{ state_generic }}, {{ cont
                 Transition(
                     name="{{ item.transition.name }}",
                     start={{ state item.start_state.name }},
-                    end={{ state item.end_state.name }}
+                    end={{ state item.end_state.name }} {{- if item.transition.condition }},
+                    condition=lambda ctx: {{ convert_condition item.transition item.transition.condition }}
+                   {{- end }}{{- if item.transition.event }},
+                    event=lambda ctx: {{ convert_event item.transition item.transition.event }}
+                   {{- end }}
                 ){{- if !for.last }}{{ "," }}{{- end }}
             {{- end }}
             ],
@@ -71,7 +75,7 @@ class Types{{ fsm.name }}StateMachine(StaterStateMachine[{{ state_generic }}, {{
 
 
 def typed_{{ fsm.name }}_factory(*args, **kwargs):
-    return Types{{ fsm.name }}StateMachine(StaterStateMachine(*args, **kwargs))
+    return Types{{ fsm.name }}StateMachine(*args, **kwargs)
 
 
 {{ end -}}
@@ -86,6 +90,12 @@ builder_{{ fsm.name }}_state_machine = (
     {{- end }}
     {{- for item in fsm.state_transitions }}
     .add_transition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
+        {{- if item.transition.condition }}
+    .set_transition_condition("{{ item.transition.name }}", lambda ctx: {{ convert_condition item.transition item.transition.condition }})
+        {{- end }}
+        {{- if item.transition.event }}
+    .set_transition_event("{{ item.transition.name }}", lambda ctx: {{ convert_event item.transition item.transition.event }})
+        {{- end }}
     {{- end }}
 )
 {{- end }}

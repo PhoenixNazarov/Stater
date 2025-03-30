@@ -11,6 +11,7 @@
     <ItemGroup>
       <EmbeddedResource Include="Templates\kotlin.scriban" />
       <EmbeddedResource Include="Templates\python.scriban" />
+      <EmbeddedResource Include="Templates\python-test.scriban" />
       <EmbeddedResource Include="Templates\typescript.scriban" />
       <EmbeddedResource Include="Templates\javascript.scriban" />
     </ItemGroup>
