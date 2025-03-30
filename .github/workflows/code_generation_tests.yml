@@ -19,11 +19,11 @@ jobs:
       - name: Run generate python3
         run: |
           dotnet run --project src/Stater.CodeGeneration.App artifacts/python/ 0 python3
-          
+
       - name: Run generate javascript
         run: |
           dotnet run --project src/Stater.CodeGeneration.App artifacts/js/ 0 python3
-      
+
       - name: Save python3 generated files
         uses: actions/upload-artifact@v4
         with:
@@ -37,11 +37,11 @@ jobs:
           path: artifacts/js/*
 
   test-python:
-    needs: [build-artifacts]
+    needs: [ build-artifacts ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: [ '3.9', '3.10', '3.11', '3.12', '3.13' ]
     steps:
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -52,12 +52,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install poetry
-          
+
       - name: Checkout specific folder from another repository
         uses: actions/checkout@v4
         with:
           repository: PhoenixNazarov/stater-fsm-code
-      
+
       - name: Install dependencies
         run: |
           cd projects/python
@@ -67,13 +67,13 @@ jobs:
         run: |
           cd projects/python
           poetry add --dev pytest pytest-cov
-          
+
       - name: Download generated files
         uses: actions/download-artifact@v4
         with:
           name: python-generated-files
           path: projects/python/test/
-      
+
       - name: Run tests with pytest
         run: |
           cd projects/python
@@ -87,16 +87,17 @@ jobs:
         node-version: [ '16', '18', '20' ]
     
     steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+          
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-
-      - name: Checkout specific folder from another repository
-        uses: actions/checkout@v4
-        with:
-          repository: PhoenixNazarov/stater-fsm-code
+          cache-dependency-path: projects/ts/package-lock.json
 
       - name: Install dependencies
         run: |
