@@ -27,7 +27,7 @@ jobs:
           path: artifacts/python/*
 
   test-python:
-    needs: [build-python-artifacts]
+    needs: [build-artifacts]
     runs-on: ubuntu-latest
     strategy:
       matrix:
