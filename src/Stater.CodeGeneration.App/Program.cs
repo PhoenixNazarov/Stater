@@ -6,13 +6,14 @@ using Stater.CodeGeneration.App;
 using Stater.CodeGeneration.Entity;
 
 
-if (args.Length < 4)
+if (args.Length < 3)
 {
-    Console.WriteLine("Please write: [output-path] [seed] [language] [type: Matrix]");
+    Console.WriteLine("Please write: [output-path] [seed] [language]");
 }
 
 var outputPath = args[0];
 var seed = int.Parse(args[1]);
+var language = args[2];
 
 var randomStateMachineGenerator = new RandomStateMachineGenerator(seed);
 

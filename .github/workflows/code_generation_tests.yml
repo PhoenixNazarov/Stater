@@ -1,0 +1,69 @@
+name: Code Generation Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-python-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build and Run C# program
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/python/ 0 python3
+
+      - name: Save generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-generated-files
+          path: artifacts/python/*
+
+  test-python:
+    needs: [build-python-artifacts]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: https://github.com/PhoenixNazarov/stater-fsm-code
+          path: projects/python
+      
+      - name: Install dependencies
+        run: |
+          poetry install --no-root
+
+      - name: Install pytest and pytest-cov
+        run: |
+          cd projects/python
+          poetry add --dev pytest pytest-cov
+          
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: python-generated-files
+          path: test/
+      
+      - name: Run tests with pytest
+        run: |
+          poetry run pytest --cov --junitxml=junit.xml -o junit_family=legacy

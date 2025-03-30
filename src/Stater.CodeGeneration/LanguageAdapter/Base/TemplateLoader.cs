@@ -61,17 +61,17 @@ public static class TemplateLoader
 
     private static void InitTestStateMachines(ScriptObject scriptObject, StateMachine sm)
     {
-        var sm1 = sm with { States = sm.States.Concat(new[] { new State { Name = "a__test_state_1__" } }).ToList() };
-        var sm2 = sm1 with { States = sm1.States.Concat(new[] { new State { Name = "a__test_state_2__" } }).ToList() };
+        var sm1 = sm with { States = sm.States.Concat(new[] { new State { Name = "__test_state_1__" } }).ToList() };
+        var sm2 = sm1 with { States = sm1.States.Concat(new[] { new State { Name = "__test_state_2__" } }).ToList() };
         var sm3 = sm2 with
         {
             Transitions = sm2.Transitions.Concat(new[]
             {
                 new Transition
                 {
-                    Name = "a__test_transition__",
-                    Start = sm2.GetStateByName("a__test_state_1__")!.Guid,
-                    End = sm2.GetStateByName("a__test_state_2__")!.Guid,
+                    Name = "__test_transition__",
+                    Start = sm2.GetStateByName("__test_state_1__")!.Guid,
+                    End = sm2.GetStateByName("__test_state_2__")!.Guid,
                 }
             }).ToList()
         };
