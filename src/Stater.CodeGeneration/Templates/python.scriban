@@ -63,7 +63,7 @@ class {{ fsm.name }}StateMachine(StaterStateMachine[{{ state_generic }}, {{ cont
 {{- end }}
 
 {{- else if settings.mode == "Builder" -}}
-{{- if settings.generate_interface -}}
+{{- if settings.generate_interface }}
 class Types{{ fsm.name }}StateMachine(StaterStateMachine[{{ state_generic }}, {{ context_generic }}]):
     {{- for item in fsm.transitions }}
     def {{ item.name }}(self):
