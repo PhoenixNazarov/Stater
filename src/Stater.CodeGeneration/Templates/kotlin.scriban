@@ -1,4 +1,8 @@
-{{- if settings.generate_states -}}
+package fsm.{{ fsm.name | string.downcase }}
+
+import com.stater.statemachine.kotlin.*
+
+{{ if settings.generate_states -}}
 enum class States {
     {{- for item in fsm.states }}
     {{ item.name }}{{- if !for.last }}{{ "," }}{{- end }}
@@ -70,14 +74,12 @@ class Types{{ fsm.name }}StateMachine(
     stateCallbacks = stateCallbacks,
     stateAllCallbacks = stateAllCallbacks,
     contextJsonAdapter = contextJsonAdapter
-) {
-    fun ajarPlus() = transition("ajarPlus")
-    fun ajarMinus() = transition("ajarMinus")
-    fun preOpen() = transition("preOpen")
-    fun preClose() = transition("preClose")
-    fun open() = transition("open")
-    fun close() = transition("close")
+){{- if settings.generate_interface }} {
+    {{- for item in fsm.transitions }}
+    fun {{ item.name }}() = transition("{{ item.name }}")
+    {{- end }}
 }
+{{- end }}
 
 private val typed{{ fsm.name }}Factory: StateMachineFactory<{{ state_generic }}, {{ context_generic }}> = {
         transitionsA,

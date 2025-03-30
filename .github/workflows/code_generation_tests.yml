@@ -27,6 +27,10 @@ jobs:
       - name: Run generate typescript
         run: |
           dotnet run --project src/Stater.CodeGeneration.App artifacts/ts/ 0 typescript
+          
+      - name: Run generate kotlin
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/kotlin/ 0 kotlin
       
       - name: Save python3 generated files
         uses: actions/upload-artifact@v4
@@ -45,6 +49,12 @@ jobs:
         with:
           name: ts-generated-files
           path: artifacts/ts/*
+      
+      - name: Save kotlin generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: kotlin-generated-files
+          path: artifacts/kotlin/*
       
   test-python:
     needs: [ build-artifacts ]
@@ -160,3 +170,53 @@ jobs:
         run: |
           cd projects/ts
           npm test -- --coverage --json --outputFile=test-results.json
+
+
+  test-kotlin:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ '17', '21' ]
+
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: kotlin-generated-files
+          path: projects/kotlin/src/
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'gradle'
+
+      - name: Build project
+        run: |
+          cd projects/kotlin
+          ./gradlew build
+
+      - name: Run tests with coverage
+        run: |
+          cd projects/kotlin
+          ./gradlew test jacocoTestReport --console=plain
+
+      - name: Show test results in console
+        run: |
+          cat projects/kotlin/build/test-results/test/TEST-*.xml || true
+
+      - name: Show coverage summary in console
+        run: |
+          cd projects/kotlin
+          ./gradlew jacocoTestCoverageVerification --console=plain || true
+
+      - name: Create JAR
+        run: |
+          cd projects/kotlin
+          ./gradlew jar

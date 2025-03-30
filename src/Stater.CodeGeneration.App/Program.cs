@@ -56,6 +56,24 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
                         testPath += randomStateMachine.Name + ".test.ts";
                         languageS = Language.TypeScript;
                         break;
+                    case "kotlin":
+                        path += "main/kotlin/fsm/" + randomStateMachine.Name.ToLower() + "/";
+                        testPath += "test/kotlin/fsm/" + randomStateMachine.Name.ToLower() + "/";
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                            Console.WriteLine($"Folder created: {path}");
+                        }
+                        if (!Directory.Exists(testPath))
+                        {
+                            Directory.CreateDirectory(testPath);
+                            Console.WriteLine($"Folder created: {testPath}");
+                        }
+                        path += randomStateMachine.Name + ".kt";
+                        testPath += "Test" + randomStateMachine.Name + ".kt";
+                        
+                        languageS = Language.Kotlin;
+                        break;
                 }
 
                 var settings = new GenerationSettings(

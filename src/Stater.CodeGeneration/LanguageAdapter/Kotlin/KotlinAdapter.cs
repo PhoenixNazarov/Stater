@@ -6,7 +6,7 @@ namespace Stater.CodeGeneration.LanguageAdapter.Kotlin;
 public class KotlinAdapter : BaseLanguageAdapter
 {
     protected override string TemplateName => "kotlin";
-    protected override string TestTemplateName => "javascript";
+    protected override string TestTemplateName => "kotlin-test";
     
     protected override string GetVariableValueTypeName(VariableValue value)
     {
