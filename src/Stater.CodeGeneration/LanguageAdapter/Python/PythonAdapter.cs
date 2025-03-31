@@ -38,7 +38,7 @@ public class PythonAdapter : BaseLanguageAdapter
         {
             case Condition.VariableCondition e:
                 var variable = stateMachine.GetVariableByGuid(e.VariableGuid);
-                return $"ctx.{variable.Name} {e.GetDefaultConditionSign()} {GetVariableValue(variable.StartValue)}";
+                return $"ctx.{variable!.Name} {e.GetDefaultConditionSign()} {GetVariableValue(variable.StartValue)}";
         }
 
         return "";

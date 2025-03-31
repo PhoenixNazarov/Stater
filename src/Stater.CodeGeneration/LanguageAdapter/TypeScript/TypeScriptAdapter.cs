@@ -34,11 +34,31 @@ public class TypeScriptAdapter : BaseLanguageAdapter
 
     protected override string GetCondition(Transition transition, Condition condition, StateMachine stateMachine)
     {
-        throw new NotImplementedException();
+        switch (condition)
+        {
+            case Condition.VariableCondition e:
+                var variable = stateMachine.GetVariableByGuid(e.VariableGuid);
+                return $"ctx.{variable!.Name} {e.GetDefaultConditionSign()} {GetVariableValue(variable.StartValue)}";
+        }
+
+        return "";
     }
 
     protected override string GetEvent(Transition transition, Event eEvent, StateMachine stateMachine)
     {
-        throw new NotImplementedException();
+        switch (eEvent)
+        {
+            case Event.VariableMath e:
+                var variable1 = stateMachine.GetVariableByGuid(e.VariableGuid);
+                return !CheckDefaultMathEvent(variable1!.StartValue, e.Value, e.MathType)
+                    ? ""
+                    : $"ctx.{variable1.Name} = ctx.{variable1.Name} {e.GetDefaultMathTypeSign()} {GetVariableValue(e.Value)}";
+
+            case Event.VariableSet e:
+                var variable2 = stateMachine.GetVariableByGuid(e.VariableGuid);
+                return $"ctx.{variable2!.Name} = {GetVariableValue(e.Value)}";
+        }
+
+        return "";
     }
 }

@@ -10,10 +10,10 @@ public abstract class BaseLanguageAdapter
 
     protected abstract string GetVariableValueTypeName(VariableValue value);
     protected abstract string GetVariableValue(VariableValue value);
-    
+
     protected abstract string GetCondition(Transition transition, Condition condition, StateMachine stateMachine);
     protected abstract string GetEvent(Transition transition, Event eEvent, StateMachine stateMachine);
-    
+
     public string Generate(StateMachine stateMachine, GenerationSettings settings)
     {
         return TemplateLoader.RenderTemplate(
@@ -27,8 +27,9 @@ public abstract class BaseLanguageAdapter
             new List<List<Transition>>()
         );
     }
-    
-    public string GenerateTests(StateMachine stateMachine, GenerationSettings settings, List<List<Transition>> scenarios)
+
+    public string GenerateTests(StateMachine stateMachine, GenerationSettings settings,
+        List<List<Transition>> scenarios)
     {
         return TemplateLoader.RenderTemplate(
             TestTemplateName,
@@ -40,5 +41,24 @@ public abstract class BaseLanguageAdapter
             GetEvent,
             scenarios
         );
+    }
+
+    protected bool CheckDefaultMathEvent(
+        VariableValue variableValue1,
+        VariableValue variableValue2,
+        Event.VariableMath.MathTypeEnum mathTypeEnum
+    )
+    {
+        return (variableValue1, variableValue2, mathTypeEnum) switch
+        {
+            (VariableValue.IntVariable, VariableValue.IntVariable, _) => true,
+            (VariableValue.IntVariable, VariableValue.FloatVariable, _) => true,
+            (VariableValue.FloatVariable, VariableValue.IntVariable, _) => true,
+            (VariableValue.FloatVariable, VariableValue.FloatVariable, _) => true,
+
+            (VariableValue.StringVariable, VariableValue.StringVariable, Event.VariableMath.MathTypeEnum.Sum) => true,
+
+            _ => false
+        };
     }
 }

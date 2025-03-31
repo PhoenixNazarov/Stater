@@ -7,7 +7,7 @@ public class KotlinAdapter : BaseLanguageAdapter
 {
     protected override string TemplateName => "kotlin";
     protected override string TestTemplateName => "kotlin-test";
-    
+
     protected override string GetVariableValueTypeName(VariableValue value)
     {
         return value switch
@@ -34,11 +34,31 @@ public class KotlinAdapter : BaseLanguageAdapter
 
     protected override string GetCondition(Transition transition, Condition condition, StateMachine stateMachine)
     {
-        throw new NotImplementedException();
+        switch (condition)
+        {
+            case Condition.VariableCondition e:
+                var variable = stateMachine.GetVariableByGuid(e.VariableGuid);
+                return $"it.{variable!.Name} {e.GetDefaultConditionSign()} {GetVariableValue(variable.StartValue)}";
+        }
+
+        return "";
     }
 
     protected override string GetEvent(Transition transition, Event eEvent, StateMachine stateMachine)
     {
-        throw new NotImplementedException();
+        switch (eEvent)
+        {
+            case Event.VariableMath e:
+                var variable1 = stateMachine.GetVariableByGuid(e.VariableGuid);
+                return !CheckDefaultMathEvent(variable1!.StartValue, e.Value, e.MathType)
+                    ? ""
+                    : $"it.{variable1.Name} = it.{variable1.Name} {e.GetDefaultMathTypeSign()} {GetVariableValue(e.Value)}";
+
+            case Event.VariableSet e:
+                var variable2 = stateMachine.GetVariableByGuid(e.VariableGuid);
+                return $"it.{variable2!.Name} = {GetVariableValue(e.Value)}";
+        }
+
+        return "";
     }
 }

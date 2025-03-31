@@ -38,7 +38,11 @@ export class {{ fsm.name }}StateMachine extends StaterStateMachine {
                 {
                     name: "{{ item.transition.name }}",
                     start: {{ state item.start_state.name }},
-                    end: {{ state item.end_state.name }}
+                    end: {{ state item.end_state.name }} {{- if item.transition.condition }},
+                    condition: (ctx) => {{ convert_condition item.transition item.transition.condition }}
+                    {{- end }}{{- if item.transition.event }},
+                    event: (ctx) => { {{ convert_event item.transition item.transition.event }} }
+                    {{- end }}
                 }{{- if !for.last }}{{ "," }}{{- end }}
                 {{- end }}
             ],
@@ -86,5 +90,11 @@ export const builder{{ fsm.name }}StateMachine = new StaterStateMachineBuilder()
     {{- end }}
     {{- for item in fsm.state_transitions }}
     .addTransition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
+    {{- if item.transition.condition }}
+    .setTransitionCondition("{{ item.transition.name }}", (ctx) => {{ convert_condition item.transition item.transition.condition }})
+    {{- end }}
+    {{- if item.transition.event }}
+    .setTransitionEvent("{{ item.transition.name }}", (ctx) => { {{ convert_event item.transition item.transition.event }} })
+    {{- end }}
     {{- end }}
 {{- end }}
