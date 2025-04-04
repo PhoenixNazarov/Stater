@@ -232,6 +232,7 @@ jobs:
           ./gradlew jar
           
   test-java:
+    needs: [ build-artifacts ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
