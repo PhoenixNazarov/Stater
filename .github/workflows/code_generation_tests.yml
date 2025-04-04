@@ -31,6 +31,10 @@ jobs:
       - name: Run generate kotlin
         run: |
           dotnet run --project src/Stater.CodeGeneration.App artifacts/kotlin/ 0 kotlin
+          
+      - name: Run generate java
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/java/ 0 java
       
       - name: Save python3 generated files
         uses: actions/upload-artifact@v4
@@ -55,6 +59,12 @@ jobs:
         with:
           name: kotlin-generated-files
           path: artifacts/kotlin/*
+
+      - name: Save java generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-generated-files
+          path: artifacts/java/*
       
   test-python:
     needs: [ build-artifacts ]
@@ -220,3 +230,38 @@ jobs:
         run: |
           cd projects/kotlin
           ./gradlew jar
+          
+  test-java:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 17, 21 ]
+
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: java-generated-files
+          path: projects/java/src/
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'maven'
+
+      - name: Run tests with coverage
+        run: |
+          cd projects/java
+          mvn clean verify -P java${{ matrix.java-version }}
+
+      - name: Create JAR
+        run: |
+          cd projects/java
+          mvn clean package -P java${{ matrix.java-version }}

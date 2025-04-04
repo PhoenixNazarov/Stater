@@ -9,6 +9,10 @@
     </ItemGroup>
     
     <ItemGroup>
+      <EmbeddedResource Include="Templates\csharp.scriban" />
+      <EmbeddedResource Include="Templates\csharp-test.scriban" />
+      <EmbeddedResource Include="Templates\java.scriban" />
+      <EmbeddedResource Include="Templates\java-test.scriban" />
       <EmbeddedResource Include="Templates\kotlin.scriban" />
       <EmbeddedResource Include="Templates\kotlin-test.scriban" />
       <EmbeddedResource Include="Templates\python.scriban" />

@@ -43,6 +43,33 @@ public abstract class BaseLanguageAdapter
         );
     }
 
+    protected bool CheckDefaultMathCondition(
+        VariableValue variableValue1,
+        VariableValue variableValue2,
+        Condition.VariableCondition.ConditionTypeEnum conditionType
+    )
+    {
+        return (variableValue1, variableValue2, conditionType) switch
+        {
+            (VariableValue.IntVariable, VariableValue.IntVariable, _) => true,
+            (VariableValue.IntVariable, VariableValue.FloatVariable, _) => true,
+            (VariableValue.FloatVariable, VariableValue.IntVariable, _) => true,
+            (VariableValue.FloatVariable, VariableValue.FloatVariable, _) => true,
+
+            (VariableValue.StringVariable, VariableValue.StringVariable, Condition.VariableCondition.ConditionTypeEnum
+                .Eq) => true,
+            (VariableValue.StringVariable, VariableValue.StringVariable, Condition.VariableCondition.ConditionTypeEnum
+                .Ne) => true,
+
+            (VariableValue.BoolVariable, VariableValue.BoolVariable, Condition.VariableCondition.ConditionTypeEnum.Eq)
+                => true,
+            (VariableValue.BoolVariable, VariableValue.BoolVariable, Condition.VariableCondition.ConditionTypeEnum.Ne)
+                => true,
+
+            _ => false
+        };
+    }
+
     protected bool CheckDefaultMathEvent(
         VariableValue variableValue1,
         VariableValue variableValue2,

@@ -74,6 +74,24 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
                         
                         languageS = Language.Kotlin;
                         break;
+                    case "java":
+                        path += "main/java/fsm/" + randomStateMachine.Name.ToLower() + "/";
+                        testPath += "test/java/fsm/" + randomStateMachine.Name.ToLower() + "/";
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                            Console.WriteLine($"Folder created: {path}");
+                        }
+                        if (!Directory.Exists(testPath))
+                        {
+                            Directory.CreateDirectory(testPath);
+                            Console.WriteLine($"Folder created: {testPath}");
+                        }
+                        path += randomStateMachine.Name + ".java";
+                        testPath += "Test" + randomStateMachine.Name + ".java";
+                        
+                        languageS = Language.Java;
+                        break;
                 }
 
                 var settings = new GenerationSettings(
