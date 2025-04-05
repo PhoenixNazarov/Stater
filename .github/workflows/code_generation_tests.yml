@@ -298,19 +298,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: csharp-generated-files
-          path: projects/c#/Stater.StateMachine.Lib/
+          path: projects/csharp/Stater.StateMachine.Lib/
 
       - name: Restore dependencies
         run: |
-          cd 'projects/с#/Stater.StateMachine.Lib'
+          cd projects/csharp/Stater.StateMachine.Lib
           dotnet restore
 
       - name: Build the project
         run: |
-          cd 'projects/с#/Stater.StateMachine.Lib'
+          cd projects/csharp/Stater.StateMachine.Lib
           dotnet build --configuration Release
 
       - name: Run tests with coverage
         run: |
-          cd 'projects/с#/Stater.StateMachine.Lib'
+          cd projects/csharp/Stater.StateMachine.Lib
           dotnet test --configuration Release --collect:"XPlat Code Coverage"
