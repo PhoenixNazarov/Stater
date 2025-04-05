@@ -92,6 +92,24 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
                         
                         languageS = Language.Java;
                         break;
+                    case "csharp":
+                        path += "/Stater.StateMachine.Lib/fsm/" + randomStateMachine.Name.ToLower() + "/";
+                        testPath += "/Stater.StateMachine.Lib.Tests/fsm/" + randomStateMachine.Name.ToLower() + "/";
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                            Console.WriteLine($"Folder created: {path}");
+                        }
+                        if (!Directory.Exists(testPath))
+                        {
+                            Directory.CreateDirectory(testPath);
+                            Console.WriteLine($"Folder created: {testPath}");
+                        }
+                        path += randomStateMachine.Name + ".cs";
+                        testPath += "Test" + randomStateMachine.Name + ".cs";
+                        
+                        languageS = Language.CSharp;
+                        break;
                 }
 
                 var settings = new GenerationSettings(

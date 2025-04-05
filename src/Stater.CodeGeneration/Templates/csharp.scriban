@@ -1,9 +1,9 @@
-package fsm.{{ fsm.name | string.downcase }}
+namespace fsm.{{ fsm.name | string.downcase }};
 
-import com.stater.statemachine.kotlin.*
+using Stater.StateMachine.Lib;
 
-{{ if settings.generate_states -}}
-enum class States {
+{{ if settings.generate_states ~}}
+public enum States {
     {{- for item in fsm.states }}
     {{ item.name }}{{- if !for.last }}{{ "," }}{{- end }}
     {{- end }}
@@ -17,75 +17,88 @@ States.{{ name }}
 "{{ name }}"
 {{- end -}}
 {{- end -}}
-{{- if settings.generate_context -}}
-data class {{ fsm.name }}FSMContext(
+{{- if settings.generate_context ~}}
+public class {{ fsm.name }}FSMContext : IContext{
 {{- for item in fsm.variables }}
-    var {{ item.name }}: {{ convert_variable_type item.start_value }} = {{ convert_variable_value item.start_value }}{{- if !for.last }}{{ "," }}{{- end }}
+    public {{ convert_variable_type item.start_value }} {{ item.name }} = {{ convert_variable_value item.start_value }};
 {{- end}}
-) : Context
+}
 
 {{ end -}}
 {{- if !settings.generate_states; state_generic = "String"; else; state_generic = "States"; end }}
 {{- if !settings.generate_context; context_generic = "EmptyContext"; else; context_generic = fsm.name+"FSMContext"; end -}}
-{{- if settings.mode == "Clazz" -}}
-class {{ fsm.name }}StateMachine : StaterStateMachine<{{ state_generic }}, {{ context_generic }}>(
-    transitions = listOf(
+{{- if settings.mode == "Clazz" ~}}
+public class {{ fsm.name }}StateMachine() : StaterStateMachine<{{ state_generic }}, {{ context_generic }}>(
+    new List<Transition<{{ state_generic }}, {{ context_generic }}>>
+    {
     {{- for item in fsm.state_transitions }}
-        Transition(
-            name = "{{ item.transition.name }}",
-            start = {{ state item.start_state.name }},
-            end = {{ state item.end_state.name }} {{- if item.transition.condition && settings.generate_context }},
-            condition = { {{ convert_condition item.transition item.transition.condition }} }
+        new(
+            "{{ item.transition.name }}",
+            {{ state item.start_state.name }},
+            {{ state item.end_state.name }} {{- if item.transition.condition && settings.generate_context }},
+            ctx => {{ convert_condition item.transition item.transition.condition }} {{- else }}, 
+            ctx => true
             {{- end }}{{- if item.transition.event && settings.generate_context }},
-            event = { {{ convert_event item.transition item.transition.event }} }
+            ctx => {{ convert_event item.transition item.transition.event }} {{- else }}, 
+            ctx => { }
             {{- end }}
         ){{- if !for.last }}{{ "," }}{{- end }}
     {{- end }}
-    ),
+    },
+    new {{ context_generic }}(),
     {{- if fsm.start_state != null }}
-    startState = {{ state fsm.start_state.name }},
-    {{- end }}
-    context = {{ context_generic }}()
-){{- if settings.generate_interface }} {
-  {{- for item in fsm.transitions }}
-    fun {{ item.name }}() = transition("{{ item.name }}")
-  {{- end }}
-}
-{{- end }}
-{{- else if settings.mode == "Builder" -}}
-{{- if settings.generate_interface -}}
-class Types{{ fsm.name }}StateMachine(
-    transitions: List<Transition<{{ state_generic }}, {{ context_generic }}>>,
-    startState: {{ state_generic }},
-    states: Set<{{ state_generic }}>,
-    context: {{ context_generic }},
-    transitionMiddlewares: Map<String, List<TransitionMiddleware<{{ context_generic }}>>> = mapOf(),
-    transitionAllMiddlewares: List<TransitionNameMiddleware<{{ context_generic }}>> = listOf(),
-    transitionCallbacks: Map<String, List<Event<{{ context_generic }}>>> = mapOf(),
-    transitionAllCallbacks: List<NameEvent<{{ context_generic }}>> = listOf(),
-    stateCallbacks: Map<{{ state_generic }}, List<Event<{{ context_generic }}>>> = mapOf(),
-    stateAllCallbacks: List<StateEvent<{{ state_generic }}, {{ context_generic }}>> = listOf(),
-    contextJsonAdapter: ContextJsonAdapter<{{ context_generic }}>? = null,
-) : StaterStateMachine<{{ state_generic }}, {{ context_generic }}>(
-    transitions = transitions,
-    startState = startState,
-    states = states,
-    context = context,
-    transitionMiddlewares = transitionMiddlewares,
-    transitionAllMiddlewares = transitionAllMiddlewares,
-    transitionCallbacks = transitionCallbacks,
-    transitionAllCallbacks = transitionAllCallbacks,
-    stateCallbacks = stateCallbacks,
-    stateAllCallbacks = stateAllCallbacks,
-    contextJsonAdapter = contextJsonAdapter
-){{- if settings.generate_interface }} {
+    {{ state fsm.start_state.name }}
+    {{- else }}null{{ end }}
+)
+{
+{{- if settings.generate_interface }}
     {{- for item in fsm.transitions }}
-    fun {{ item.name }}() = transition("{{ item.name }}")
+    public void {{ item.name }}() 
+    {
+        Transition("{{ item.name }}");
+    }{{- if !for.last }}{{ "\n" }}{{- end }}
     {{- end }}
-}
 {{- end }}
-
-private val typed{{ fsm.name }}Factory: StateMachineFactory<{{ state_generic }}, {{ context_generic }}> = {
+}
+{{- else if settings.mode == "Builder" -}}
+public class {{fsm.name}} {
+{{~ if settings.generate_interface ~}}
+    public class Types{{ fsm.name }}StateMachine(
+        List<Transition<{{ state_generic }}, {{ context_generic }}>> transitions,
+        {{ context_generic }} context,
+        {{ state_generic }} startState,
+        HashSet<{{ state_generic }}> states,
+        Dictionary<String, List<TransitionMiddleware<{{ context_generic }}>>> transitionMiddlewares,
+        List<TransitionNameMiddleware<{{ context_generic }}>> transitionAllMiddlewares,
+        Dictionary<String, List<Event<{{ context_generic }}>>> transitionCallbacks,
+        List<NameEvent<{{ context_generic }}>> transitionAllCallbacks,
+        Dictionary<{{ state_generic }}, List<Event<{{ context_generic }}>>> stateCallbacks,
+        List<StateEvent<{{ state_generic }}, {{ context_generic }}>> stateAllCallbacks,
+        IContextJsonAdapter<{{ context_generic }}> contextJsonAdapter
+    ) : StaterStateMachine<{{ state_generic }}, {{ context_generic }}>(
+        transitions,
+        context,
+        startState,
+        states,
+        transitionMiddlewares,
+        transitionAllMiddlewares,
+        transitionCallbacks,
+        transitionAllCallbacks,
+        stateCallbacks,
+        stateAllCallbacks,
+        contextJsonAdapter
+    )
+    {
+    {{- if settings.generate_interface }}
+        {{- for item in fsm.transitions }}
+        public void {{ item.name }}() 
+        {
+            Transition("{{ item.name }}");
+        }{{- if !for.last }}{{ "\n" }}{{- end }}
+        {{- end }}
+    }
+{{- end }}
+    private static StateMachineFactory<{{ state_generic }}, {{ context_generic }}> Typed{{ fsm.name }}Factory = (
         transitionsA,
         contextA,
         startStateA,
@@ -96,39 +109,39 @@ private val typed{{ fsm.name }}Factory: StateMachineFactory<{{ state_generic }},
         transitionAllCallbacksA,
         stateCallbacksA,
         stateAllCallbacksA,
-        contextJsonAdapterA,
-    ->
-    Types{{ fsm.name }}StateMachine(
-        transitions = transitionsA,
-        context = contextA,
-        startState = startStateA,
-        states = statesA,
-        transitionMiddlewares = transitionMiddlewaresA,
-        transitionAllMiddlewares = transitionAllMiddlewaresA,
-        transitionCallbacks = transitionCallbacksA,
-        transitionAllCallbacks = transitionAllCallbacksA,
-        stateCallbacks = stateCallbacksA,
-        stateAllCallbacks = stateAllCallbacksA,
-        contextJsonAdapter = contextJsonAdapterA
-    )
-}
+        contextJsonAdapterA
+    ) => new Types{{ fsm.name }}StateMachine(
+        transitionsA,
+        contextA,
+        startStateA,
+        statesA,
+        transitionMiddlewaresA,
+        transitionAllMiddlewaresA,
+        transitionCallbacksA,
+        transitionAllCallbacksA,
+        stateCallbacksA,
+        stateAllCallbacksA,
+        contextJsonAdapterA
+    );
 
-{{ end -}}
-val builder{{ fsm.name }}StateMachine = StaterStateMachineBuilder<{{ state_generic }}, {{ context_generic }}>()
+
+{{ end ~}}
+    public static StaterStateMachineBuilder<{{ state_generic }}, {{ context_generic }}> Builder{{ fsm.name }}StateMachine = new StaterStateMachineBuilder<{{ state_generic }}, {{ context_generic }}>()
     {{- if fsm.start_state != null }}
-    .setStartState({{ state fsm.start_state.name }})
+        .SetStartState({{ state fsm.start_state.name }})
     {{- end }}
-    .setContext({{ context_generic }}())
+        .SetContext(new {{ context_generic }}())
     {{- if settings.generate_interface }}
-    .setFactory(typed{{ fsm.name }}Factory)
+        .SetFactory(Typed{{ fsm.name }}Factory)
     {{- end }}
     {{- for item in fsm.state_transitions }}
-    .addTransition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
+        .AddTransition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
     {{- if item.transition.condition && settings.generate_context }}
-    .setTransitionCondition("{{ item.transition.name }}") { {{ convert_condition item.transition item.transition.condition }} }
+        .SetTransitionCondition("{{ item.transition.name }}", ctx => {{ convert_condition item.transition item.transition.condition }})
     {{- end }}
     {{- if item.transition.event && settings.generate_context }}
-    .setTransitionEvent("{{ item.transition.name }}") { {{ convert_event item.transition item.transition.event }} }
+        .SetTransitionEvent("{{ item.transition.name }}", ctx => {{ convert_event item.transition item.transition.event }})
     {{- end }}
-    {{- end }}
+    {{- end }};
+}
 {{- end }}

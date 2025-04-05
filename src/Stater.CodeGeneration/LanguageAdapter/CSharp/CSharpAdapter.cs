@@ -12,10 +12,10 @@ public class CSharpAdapter: BaseLanguageAdapter
     {
         return value switch
         {
-            VariableValue.IntVariable => "Int",
-            VariableValue.BoolVariable => "Boolean",
-            VariableValue.StringVariable => "String",
-            VariableValue.FloatVariable => "Float",
+            VariableValue.IntVariable => "int",
+            VariableValue.BoolVariable => "bool",
+            VariableValue.StringVariable => "string",
+            VariableValue.FloatVariable => "float",
             _ => "unknown"
         };
     }
@@ -38,10 +38,12 @@ public class CSharpAdapter: BaseLanguageAdapter
         {
             case Condition.VariableCondition e:
                 var variable = stateMachine.GetVariableByGuid(e.VariableGuid);
-                return $"it.{variable!.Name} {e.GetDefaultConditionSign()} {GetVariableValue(variable.StartValue)}";
+                return !CheckDefaultMathCondition(variable!.StartValue, e.Value, e.ConditionType)
+                    ? "true"
+                    : $"ctx.{variable.Name} {e.GetDefaultConditionSign()} {GetVariableValue(variable.StartValue)}";
         }
 
-        return "";
+        return "true";
     }
 
     protected override string GetEvent(Transition transition, Event eEvent, StateMachine stateMachine)
@@ -51,14 +53,14 @@ public class CSharpAdapter: BaseLanguageAdapter
             case Event.VariableMath e:
                 var variable1 = stateMachine.GetVariableByGuid(e.VariableGuid);
                 return !CheckDefaultMathEvent(variable1!.StartValue, e.Value, e.MathType)
-                    ? ""
-                    : $"it.{variable1.Name} = it.{variable1.Name} {e.GetDefaultMathTypeSign()} {GetVariableValue(e.Value)}";
+                    ? "{}"
+                    : $"ctx.{variable1.Name} = ctx.{variable1.Name} {e.GetDefaultMathTypeSign()} {GetVariableValue(e.Value)}";
 
             case Event.VariableSet e:
                 var variable2 = stateMachine.GetVariableByGuid(e.VariableGuid);
-                return $"it.{variable2!.Name} = {GetVariableValue(e.Value)}";
+                return $"ctx.{variable2!.Name} = {GetVariableValue(e.Value)}";
         }
 
-        return "";
+        return "{}";
     }
 }

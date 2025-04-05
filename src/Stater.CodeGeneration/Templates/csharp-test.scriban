@@ -1,134 +1,73 @@
-package fsm.{{ fsm.name | string.downcase }}
+namespace fsm.{{ fsm.name | string.downcase }};
 
-import com.stater.statemachine.kotlin.*
+using Newtonsoft.Json.Linq;
 
-{{ if settings.generate_states -}}
-enum class States {
-    {{- for item in fsm.states }}
-    {{ item.name }}{{- if !for.last }}{{ "," }}{{- end }}
-    {{- end }}
-}
 
-{{ end }}
 {{- func state(name) -}}
 {{- if settings.generate_states -}}
 States.{{ name }}
 {{- else -}}
 "{{ name }}"
 {{- end -}}
-{{- end -}}
-{{- if settings.generate_context -}}
-data class {{ fsm.name }}FSMContext(
-{{- for item in fsm.variables }}
-    var {{ item.name }}: {{ convert_variable_type item.start_value }} = {{ convert_variable_value item.start_value }}{{- if !for.last }}{{ "," }}{{- end }}
-{{- end}}
-) : Context
-
-{{ end -}}
-{{- if !settings.generate_states; state_generic = "String"; else; state_generic = "States"; end }}
-{{- if !settings.generate_context; context_generic = "EmptyContext"; else; context_generic = fsm.name+"FSMContext"; end -}}
-{{- if settings.mode == "Clazz" -}}
-class {{ fsm.name }}StateMachine : StaterStateMachine<{{ state_generic }}, {{ context_generic }}>(
-    transitions = listOf(
-    {{- for item in fsm.state_transitions }}
-        Transition(
-            name = "{{ item.transition.name }}",
-            start = {{ state item.start_state.name }},
-            end = {{ state item.end_state.name }} {{- if item.transition.condition && settings.generate_context }},
-            condition = { {{ convert_condition item.transition item.transition.condition }} }
-            {{- end }}{{- if item.transition.event && settings.generate_context }},
-            event = { {{ convert_event item.transition item.transition.event }} }
-            {{- end }}
-        ){{- if !for.last }}{{ "," }}{{- end }}
-    {{- end }}
-    ),
-    {{- if fsm.start_state != null }}
-    startState = {{ state fsm.start_state.name }},
-    {{- end }}
-    context = {{ context_generic }}()
-){{- if settings.generate_interface }} {
-  {{- for item in fsm.transitions }}
-    fun {{ item.name }}() = transition("{{ item.name }}")
-  {{- end }}
-}
-{{- end }}
-{{- else if settings.mode == "Builder" -}}
-{{- if settings.generate_interface -}}
-class Types{{ fsm.name }}StateMachine(
-    transitions: List<Transition<{{ state_generic }}, {{ context_generic }}>>,
-    startState: {{ state_generic }},
-    states: Set<{{ state_generic }}>,
-    context: {{ context_generic }},
-    transitionMiddlewares: Map<String, List<TransitionMiddleware<{{ context_generic }}>>> = mapOf(),
-    transitionAllMiddlewares: List<TransitionNameMiddleware<{{ context_generic }}>> = listOf(),
-    transitionCallbacks: Map<String, List<Event<{{ context_generic }}>>> = mapOf(),
-    transitionAllCallbacks: List<NameEvent<{{ context_generic }}>> = listOf(),
-    stateCallbacks: Map<{{ state_generic }}, List<Event<{{ context_generic }}>>> = mapOf(),
-    stateAllCallbacks: List<StateEvent<{{ state_generic }}, {{ context_generic }}>> = listOf(),
-    contextJsonAdapter: ContextJsonAdapter<{{ context_generic }}>? = null,
-) : StaterStateMachine<{{ state_generic }}, {{ context_generic }}>(
-    transitions = transitions,
-    startState = startState,
-    states = states,
-    context = context,
-    transitionMiddlewares = transitionMiddlewares,
-    transitionAllMiddlewares = transitionAllMiddlewares,
-    transitionCallbacks = transitionCallbacks,
-    transitionAllCallbacks = transitionAllCallbacks,
-    stateCallbacks = stateCallbacks,
-    stateAllCallbacks = stateAllCallbacks,
-    contextJsonAdapter = contextJsonAdapter
-){{- if settings.generate_interface }} {
-    {{- for item in fsm.transitions }}
-    fun {{ item.name }}() = transition("{{ item.name }}")
-    {{- end }}
-}
 {{- end }}
 
-private val typed{{ fsm.name }}Factory: StateMachineFactory<{{ state_generic }}, {{ context_generic }}> = {
-        transitionsA,
-        contextA,
-        startStateA,
-        statesA,
-        transitionMiddlewaresA,
-        transitionAllMiddlewaresA,
-        transitionCallbacksA,
-        transitionAllCallbacksA,
-        stateCallbacksA,
-        stateAllCallbacksA,
-        contextJsonAdapterA,
-    ->
-    Types{{ fsm.name }}StateMachine(
-        transitions = transitionsA,
-        context = contextA,
-        startState = startStateA,
-        states = statesA,
-        transitionMiddlewares = transitionMiddlewaresA,
-        transitionAllMiddlewares = transitionAllMiddlewaresA,
-        transitionCallbacks = transitionCallbacksA,
-        transitionAllCallbacks = transitionAllCallbacksA,
-        stateCallbacks = stateCallbacksA,
-        stateAllCallbacks = stateAllCallbacksA,
-        contextJsonAdapter = contextJsonAdapterA
-    )
+{{if settings.mode == "Clazz"; build_generic = "new " + fsm.name + "StateMachine()"; else if settings.generate_interface; build_generic = fsm.name + ".Builder" + fsm.name + "StateMachine.Build() as " + fsm.name + ".Types" + fsm.name + "StateMachine"; else; build_generic = fsm.name + ".Builder" + fsm.name + "StateMachine.Build()"; end -}}
+[Collection("{{ fsm.name }} Auto Generated Tests")]
+public class Test{{ fsm.name }} {
+    [Fact]
+    private void TestInit() 
+    {
+        _ = {{ build_generic }};
+    }
+    
+{{ for index in 0..(scenarios.size - 1) }}
+    [Fact]
+    private void TestScenario{{index}}() 
+    {
+        var sm = {{ build_generic }};
+        sm.DisableEvents();
+    
+{{ for transition in scenarios[index] }}
+        {{- if settings.generate_interface }}
+        sm.{{ transition.name }}();
+        {{- else }}
+        sm.Transition("{{ transition.name }}");
+        {{- end }}
+        Assert.Equal({{ state get_state_by_uuid(transition.end).name }}, sm.GetState());
+{{ end }}
+    }
+    {{- end }}
+    
+    [Fact]
+    private void TestJsonSchema()
+    {
+        var sm = {{ build_generic }};
+        Assert.Equal(JObject.Parse("""
+        {{ state_machine_json_schema fsm }}
+        """
+        ), JObject.Parse(sm.ToJsonSchema()));
+    }
+    
+{{ if settings.mode == "Builder" && !settings.generate_states }}
+    [Fact]
+    private void TestSystemAppendStateTransition()
+    {
+        var smBuilder = {{ fsm.name }}.Builder{{ fsm.name }}StateMachine.Copy();
+        
+        smBuilder = smBuilder.AddState("__test_state_1__");
+        Assert.Equal(JObject.Parse("""
+            {{ state_machine_json_schema fsm_test_state_1 }}
+        """), JObject.Parse(smBuilder.Build().ToJsonSchema()));
+        
+        smBuilder = smBuilder.AddState("__test_state_2__");
+        Assert.Equal(JObject.Parse("""
+            {{ state_machine_json_schema fsm_test_state_2 }}
+        """), JObject.Parse(smBuilder.Build().ToJsonSchema()));
+        
+        smBuilder = smBuilder.AddTransition("__test_transition__", "__test_state_1__", "__test_state_2__");
+        Assert.Equal(JObject.Parse("""
+            {{ state_machine_json_schema fsm_test_state_3 }}
+        """), JObject.Parse(smBuilder.Build().ToJsonSchema()));
+    }
+    {{- end }}
 }
-
-{{ end -}}
-val builder{{ fsm.name }}StateMachine = StaterStateMachineBuilder<{{ state_generic }}, {{ context_generic }}>()
-    {{- if fsm.start_state != null }}
-    .setStartState({{ state fsm.start_state.name }})
-    {{- end }}
-    .setContext({{ context_generic }}())
-    {{- if settings.generate_interface }}
-    .setFactory(typed{{ fsm.name }}Factory)
-    {{- end }}
-    {{- for item in fsm.state_transitions }}
-    .addTransition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
-    {{- if item.transition.condition && settings.generate_context }}
-    .setTransitionCondition("{{ item.transition.name }}") { {{ convert_condition item.transition item.transition.condition }} }
-    {{- end }}
-    {{- if item.transition.event && settings.generate_context }}
-    .setTransitionEvent("{{ item.transition.name }}") { {{ convert_event item.transition item.transition.event }} }
-    {{- end }}
-    {{- end }}
-{{- end }}
