@@ -1,0 +1,13 @@
+﻿#pragma once
+
+#include <stater_state_machine.h>
+
+inline stater_state_machine_builder<std::string, empty_context> builder_Door_state_machine = stater_state_machine_builder<std::string, empty_context>()
+    .set_start_state("OPEN")
+    .set_context(new empty_context())
+    .add_transition("preOpen", "CLOSE", "AJAR")
+    .add_transition("preClose", "OPEN", "AJAR")
+    .add_transition("open", "AJAR", "OPEN")
+    .add_transition("close", "AJAR", "CLOSE")
+    .add_transition("ajarPlus", "AJAR", "AJAR")
+    .add_transition("ajarMinus", "AJAR", "AJAR");

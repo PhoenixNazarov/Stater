@@ -1,0 +1,265 @@
+﻿package fsm.door;
+
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import com.fasterxml.jackson.databind.ObjectMapper
+
+class TestDoor {
+    @Test
+    fun testInit() {
+        builderDoorStateMachine.build()
+    }
+    
+
+    @Test
+    fun testScenario0() {
+        val sm = builderDoorStateMachine.build()
+        sm.disableEvents()
+    
+
+        sm.transition("preClose")
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.transition("close")
+        assertEquals(sm.getState(), "CLOSE")
+
+        sm.transition("preOpen")
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.transition("ajarPlus")
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.transition("open")
+        assertEquals(sm.getState(), "OPEN")
+
+    }
+    @Test
+    fun testScenario1() {
+        val sm = builderDoorStateMachine.build()
+        sm.disableEvents()
+    
+
+        sm.transition("preClose")
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.transition("ajarPlus")
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.transition("close")
+        assertEquals(sm.getState(), "CLOSE")
+
+        sm.transition("preOpen")
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.transition("open")
+        assertEquals(sm.getState(), "OPEN")
+
+    }
+    @Test
+    fun testScenario2() {
+        val sm = builderDoorStateMachine.build()
+        sm.disableEvents()
+    
+
+        sm.transition("preClose")
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.transition("close")
+        assertEquals(sm.getState(), "CLOSE")
+
+        sm.transition("preOpen")
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.transition("open")
+        assertEquals(sm.getState(), "OPEN")
+
+    }
+    
+    @Test
+    fun testJsonSchema() {
+        val sm = builderDoorStateMachine.build()
+        assertEquals(ObjectMapper().readTree("""{
+  "states": [
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    }
+  ]
+}"""), ObjectMapper().readTree(sm.toJsonSchema()))
+    }
+    
+    
+        @Test
+        fun testSystemAppendStateTransition(){
+            var smBuilder = builderDoorStateMachine
+            
+            smBuilder = smBuilder.addState("__test_state_1__")
+            assertEquals(ObjectMapper().readTree("""{
+  "states": [
+    "__test_state_1__",
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    }
+  ]
+}"""), ObjectMapper().readTree(smBuilder.build().toJsonSchema()))
+            
+            smBuilder = smBuilder.addState("__test_state_2__")
+            assertEquals(ObjectMapper().readTree("""{
+  "states": [
+    "__test_state_1__",
+    "__test_state_2__",
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    }
+  ]
+}"""), ObjectMapper().readTree(smBuilder.build().toJsonSchema()))
+            
+            smBuilder = smBuilder.addTransition("__test_transition__", "__test_state_1__", "__test_state_2__")
+            assertEquals(ObjectMapper().readTree("""{
+  "states": [
+    "__test_state_1__",
+    "__test_state_2__",
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "__test_transition__",
+      "start": "__test_state_1__",
+      "end": "__test_state_2__"
+    }
+  ]
+}"""), ObjectMapper().readTree(smBuilder.build().toJsonSchema()))
+        }
+}

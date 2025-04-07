@@ -1,0 +1,83 @@
+﻿from enum import Enum
+from pydantic import BaseModel
+from stater_state_machine import Context
+from stater_state_machine import StaterStateMachine
+from stater_state_machine import Transition
+
+
+class States(Enum):
+    OPEN = "OPEN"
+    AJAR = "AJAR"
+    CLOSE = "CLOSE"
+    
+
+class DoorFSMContext(BaseModel, Context):
+    degreeOfOpening: int = 0
+    closeVariable: bool = True
+    doorName: str = "asd"
+    floatVariable: float = 0
+
+class DoorStateMachine(StaterStateMachine[States, DoorFSMContext]):
+    def __init__(self):
+        super().__init__(
+            transitions=[
+                Transition(
+                    name="preOpen",
+                    start=States.CLOSE,
+                    end=States.AJAR,
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 1)
+                ),
+                Transition(
+                    name="preClose",
+                    start=States.OPEN,
+                    end=States.AJAR,
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 99)
+                ),
+                Transition(
+                    name="open",
+                    start=States.AJAR,
+                    end=States.OPEN,
+                    condition=lambda ctx: ctx.degreeOfOpening >= 0,
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 100)
+                ),
+                Transition(
+                    name="close",
+                    start=States.AJAR,
+                    end=States.CLOSE,
+                    condition=lambda ctx: ctx.degreeOfOpening <= 0,
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 0)
+                ),
+                Transition(
+                    name="ajarPlus",
+                    start=States.AJAR,
+                    end=States.AJAR,
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', ctx.degreeOfOpening + 1)
+                ),
+                Transition(
+                    name="ajarMinus",
+                    start=States.AJAR,
+                    end=States.AJAR,
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', ctx.degreeOfOpening - 1)
+                )
+            ],
+            context=DoorFSMContext(),
+            start_state=States.OPEN,
+        )
+
+    def preOpen(self):
+        self.transition("preOpen")
+
+    def preClose(self):
+        self.transition("preClose")
+
+    def open(self):
+        self.transition("open")
+
+    def close(self):
+        self.transition("close")
+
+    def ajarPlus(self):
+        self.transition("ajarPlus")
+
+    def ajarMinus(self):
+        self.transition("ajarMinus")

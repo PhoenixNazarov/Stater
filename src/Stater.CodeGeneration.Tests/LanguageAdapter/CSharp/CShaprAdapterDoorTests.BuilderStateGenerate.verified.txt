@@ -1,0 +1,21 @@
+﻿namespace fsm.door;
+
+using Stater.StateMachine.Lib;
+
+public enum States {
+    OPEN,
+    AJAR,
+    CLOSE
+}
+
+public class Door {
+    public static StaterStateMachineBuilder<States, EmptyContext> BuilderDoorStateMachine = new StaterStateMachineBuilder<States, EmptyContext>()
+        .SetStartState(States.OPEN)
+        .SetContext(new EmptyContext())
+        .AddTransition("preOpen", States.CLOSE, States.AJAR)
+        .AddTransition("preClose", States.OPEN, States.AJAR)
+        .AddTransition("open", States.AJAR, States.OPEN)
+        .AddTransition("close", States.AJAR, States.CLOSE)
+        .AddTransition("ajarPlus", States.AJAR, States.AJAR)
+        .AddTransition("ajarMinus", States.AJAR, States.AJAR);
+}

@@ -1,0 +1,74 @@
+﻿package fsm.door;
+
+import com.stater.statemachine.java.*;
+import java.util.*;
+
+class Door {
+    static class TypesDoorStateMachine extends StaterStateMachine<String, EmptyContext> {
+        public TypesDoorStateMachine(
+                List<Transition<String, EmptyContext>> transitions,
+                EmptyContext context,
+                String startState,
+                Set<String> states,
+                Map<String, List<TransitionMiddleware<EmptyContext>>> transitionMiddlewares,
+                List<TransitionNameMiddleware<EmptyContext>> transitionAllMiddlewares,
+                Map<String, List<Event<EmptyContext>>> transitionCallbacks,
+                List<NameEvent<EmptyContext>> transitionAllCallbacks,
+                Map<String, List<Event<EmptyContext>>> stateCallbacks,
+                List<StateEvent<String, EmptyContext>> stateAllCallbacks,
+                ContextJsonAdapter<EmptyContext> contextJsonAdapter
+        ) {
+            super(
+                transitions,
+                context,
+                startState,
+                states,
+                transitionMiddlewares,
+                transitionAllMiddlewares,
+                transitionCallbacks,
+                transitionAllCallbacks,
+                stateCallbacks,
+                stateAllCallbacks,
+                contextJsonAdapter
+            );
+        }
+    
+        void preOpen() {
+            transition("preOpen");
+        }
+    
+        void preClose() {
+            transition("preClose");
+        }
+    
+        void open() {
+            transition("open");
+        }
+    
+        void close() {
+            transition("close");
+        }
+    
+        void ajarPlus() {
+            transition("ajarPlus");
+        }
+    
+        void ajarMinus() {
+            transition("ajarMinus");
+        }
+    }
+
+    static private final StateMachineFactory<String, EmptyContext> typedDoorFactory = TypesDoorStateMachine::new;
+
+
+    static public final StaterStateMachineBuilder<String, EmptyContext> builderDoorStateMachine = new StaterStateMachineBuilder<String, EmptyContext>()
+        .setStartState("OPEN")
+        .setContext(new EmptyContext())
+        .setFactory(typedDoorFactory)
+        .addTransition("preOpen", "CLOSE", "AJAR")
+        .addTransition("preClose", "OPEN", "AJAR")
+        .addTransition("open", "AJAR", "OPEN")
+        .addTransition("close", "AJAR", "CLOSE")
+        .addTransition("ajarPlus", "AJAR", "AJAR")
+        .addTransition("ajarMinus", "AJAR", "AJAR");
+}

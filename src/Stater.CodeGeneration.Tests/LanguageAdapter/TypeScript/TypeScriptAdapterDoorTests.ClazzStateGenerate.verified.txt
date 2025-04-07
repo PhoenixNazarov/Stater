@@ -1,0 +1,50 @@
+﻿import {EmptyContext} from "./StaterStateMachine";
+import {StaterStateMachine} from "./StaterStateMachine";
+
+
+export enum States {
+    OPEN = "OPEN",
+    AJAR = "AJAR",
+    CLOSE = "CLOSE"
+}
+
+export class DoorStateMachine extends StaterStateMachine<States, EmptyContext> {
+    constructor() {
+        super(
+            [
+                {
+                    name: "preOpen",
+                    start: States.CLOSE,
+                    end: States.AJAR
+                },
+                {
+                    name: "preClose",
+                    start: States.OPEN,
+                    end: States.AJAR
+                },
+                {
+                    name: "open",
+                    start: States.AJAR,
+                    end: States.OPEN
+                },
+                {
+                    name: "close",
+                    start: States.AJAR,
+                    end: States.CLOSE
+                },
+                {
+                    name: "ajarPlus",
+                    start: States.AJAR,
+                    end: States.AJAR
+                },
+                {
+                    name: "ajarMinus",
+                    start: States.AJAR,
+                    end: States.AJAR
+                }
+            ],
+            new EmptyContext(),
+            States.OPEN,
+        )
+    }
+}

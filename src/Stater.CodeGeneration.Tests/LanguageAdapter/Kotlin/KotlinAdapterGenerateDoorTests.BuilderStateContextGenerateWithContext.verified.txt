@@ -1,0 +1,96 @@
+﻿package fsm.door
+
+import com.stater.statemachine.kotlin.*
+
+enum class States {
+    OPEN,
+    AJAR,
+    CLOSE
+}
+
+data class DoorFSMContext(
+    var degreeOfOpening: Int = 0,
+    var closeVariable: Boolean = true,
+    var doorName: String = "asd",
+    var floatVariable: Float = 0f
+) : Context
+
+class TypesDoorStateMachine(
+    transitions: List<Transition<States, DoorFSMContext>>,
+    startState: States,
+    states: Set<States>,
+    context: DoorFSMContext,
+    transitionMiddlewares: Map<String, List<TransitionMiddleware<DoorFSMContext>>> = mapOf(),
+    transitionAllMiddlewares: List<TransitionNameMiddleware<DoorFSMContext>> = listOf(),
+    transitionCallbacks: Map<String, List<Event<DoorFSMContext>>> = mapOf(),
+    transitionAllCallbacks: List<NameEvent<DoorFSMContext>> = listOf(),
+    stateCallbacks: Map<States, List<Event<DoorFSMContext>>> = mapOf(),
+    stateAllCallbacks: List<StateEvent<States, DoorFSMContext>> = listOf(),
+    contextJsonAdapter: ContextJsonAdapter<DoorFSMContext>? = null,
+) : StaterStateMachine<States, DoorFSMContext>(
+    transitions = transitions,
+    startState = startState,
+    states = states,
+    context = context,
+    transitionMiddlewares = transitionMiddlewares,
+    transitionAllMiddlewares = transitionAllMiddlewares,
+    transitionCallbacks = transitionCallbacks,
+    transitionAllCallbacks = transitionAllCallbacks,
+    stateCallbacks = stateCallbacks,
+    stateAllCallbacks = stateAllCallbacks,
+    contextJsonAdapter = contextJsonAdapter
+) {
+    fun preOpen() = transition("preOpen")
+    fun preClose() = transition("preClose")
+    fun open() = transition("open")
+    fun close() = transition("close")
+    fun ajarPlus() = transition("ajarPlus")
+    fun ajarMinus() = transition("ajarMinus")
+}
+
+private val typedDoorFactory: StateMachineFactory<States, DoorFSMContext> = {
+        transitionsA,
+        contextA,
+        startStateA,
+        statesA,
+        transitionMiddlewaresA,
+        transitionAllMiddlewaresA,
+        transitionCallbacksA,
+        transitionAllCallbacksA,
+        stateCallbacksA,
+        stateAllCallbacksA,
+        contextJsonAdapterA,
+    ->
+    TypesDoorStateMachine(
+        transitions = transitionsA,
+        context = contextA,
+        startState = startStateA,
+        states = statesA,
+        transitionMiddlewares = transitionMiddlewaresA,
+        transitionAllMiddlewares = transitionAllMiddlewaresA,
+        transitionCallbacks = transitionCallbacksA,
+        transitionAllCallbacks = transitionAllCallbacksA,
+        stateCallbacks = stateCallbacksA,
+        stateAllCallbacks = stateAllCallbacksA,
+        contextJsonAdapter = contextJsonAdapterA
+    )
+}
+
+val builderDoorStateMachine = StaterStateMachineBuilder<States, DoorFSMContext>()
+    .setStartState(States.OPEN)
+    .setContext(DoorFSMContext())
+    .setFactory(typedDoorFactory)
+    .addTransition("preOpen", States.CLOSE, States.AJAR)
+    .setTransitionEvent("preOpen") { it.degreeOfOpening = 1 }
+    .addTransition("preClose", States.OPEN, States.AJAR)
+    .setTransitionEvent("preClose") { it.degreeOfOpening = 99 }
+    .addTransition("open", States.AJAR, States.OPEN)
+    .setTransitionCondition("open") { it.degreeOfOpening >= 0 }
+    .setTransitionEvent("open") { it.degreeOfOpening = 100 }
+    .addTransition("close", States.AJAR, States.CLOSE)
+    .setTransitionCondition("close") { it.degreeOfOpening <= 0 }
+    .setTransitionEvent("close") { it.degreeOfOpening = 0 }
+    .addTransition("ajarPlus", States.AJAR, States.AJAR)
+    .setTransitionEvent("ajarPlus") { it.degreeOfOpening = it.degreeOfOpening + 1 }
+    .addTransition("ajarMinus", States.AJAR, States.AJAR)
+    .setTransitionEvent("ajarMinus") { it.degreeOfOpening = it.degreeOfOpening - 1 }

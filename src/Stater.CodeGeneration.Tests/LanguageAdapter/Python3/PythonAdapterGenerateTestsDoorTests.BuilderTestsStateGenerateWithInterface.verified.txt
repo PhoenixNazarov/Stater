@@ -1,0 +1,113 @@
+﻿import json
+
+from .Door import builder_Door_state_machine
+from .Door import States
+
+
+def test_init():
+    builder_Door_state_machine.build()
+
+
+def test_scenario_0():
+    sm = builder_Door_state_machine.build()
+    sm.disable_events()
+
+
+    sm.preClose()
+    assert sm.get_state() == States.AJAR
+
+    sm.close()
+    assert sm.get_state() == States.CLOSE
+
+    sm.preOpen()
+    assert sm.get_state() == States.AJAR
+
+    sm.ajarPlus()
+    assert sm.get_state() == States.AJAR
+
+    sm.open()
+    assert sm.get_state() == States.OPEN
+
+
+def test_scenario_1():
+    sm = builder_Door_state_machine.build()
+    sm.disable_events()
+
+
+    sm.preClose()
+    assert sm.get_state() == States.AJAR
+
+    sm.ajarPlus()
+    assert sm.get_state() == States.AJAR
+
+    sm.close()
+    assert sm.get_state() == States.CLOSE
+
+    sm.preOpen()
+    assert sm.get_state() == States.AJAR
+
+    sm.open()
+    assert sm.get_state() == States.OPEN
+
+
+def test_scenario_2():
+    sm = builder_Door_state_machine.build()
+    sm.disable_events()
+
+
+    sm.preClose()
+    assert sm.get_state() == States.AJAR
+
+    sm.close()
+    assert sm.get_state() == States.CLOSE
+
+    sm.preOpen()
+    assert sm.get_state() == States.AJAR
+
+    sm.open()
+    assert sm.get_state() == States.OPEN
+
+
+def test_json_schema():
+    sm = builder_Door_state_machine.build()
+    assert json.loads("""{
+  "states": [
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    }
+  ]
+}""") == json.loads(sm.to_json_schema())
+

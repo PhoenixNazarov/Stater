@@ -1,0 +1,37 @@
+﻿package fsm.door;
+
+import com.stater.statemachine.java.*;
+import java.util.*;
+
+class Door {
+    static enum States {
+        OPEN,
+        AJAR,
+        CLOSE
+    }
+
+    static class DoorFSMContext implements Context{
+        int degreeOfOpening = 0;
+        boolean closeVariable = true;
+        String doorName = "asd";
+        float floatVariable = 0f;
+    }
+
+    static public final StaterStateMachineBuilder<States, DoorFSMContext> builderDoorStateMachine = new StaterStateMachineBuilder<States, DoorFSMContext>()
+        .setStartState(States.OPEN)
+        .setContext(new DoorFSMContext())
+        .addTransition("preOpen", States.CLOSE, States.AJAR)
+        .setTransitionEvent("preOpen", ctx -> ctx.degreeOfOpening = 1)
+        .addTransition("preClose", States.OPEN, States.AJAR)
+        .setTransitionEvent("preClose", ctx -> ctx.degreeOfOpening = 99)
+        .addTransition("open", States.AJAR, States.OPEN)
+        .setTransitionCondition("open", ctx -> ctx.degreeOfOpening >= 0)
+        .setTransitionEvent("open", ctx -> ctx.degreeOfOpening = 100)
+        .addTransition("close", States.AJAR, States.CLOSE)
+        .setTransitionCondition("close", ctx -> ctx.degreeOfOpening <= 0)
+        .setTransitionEvent("close", ctx -> ctx.degreeOfOpening = 0)
+        .addTransition("ajarPlus", States.AJAR, States.AJAR)
+        .setTransitionEvent("ajarPlus", ctx -> ctx.degreeOfOpening = ctx.degreeOfOpening + 1)
+        .addTransition("ajarMinus", States.AJAR, States.AJAR)
+        .setTransitionEvent("ajarMinus", ctx -> ctx.degreeOfOpening = ctx.degreeOfOpening - 1);
+}

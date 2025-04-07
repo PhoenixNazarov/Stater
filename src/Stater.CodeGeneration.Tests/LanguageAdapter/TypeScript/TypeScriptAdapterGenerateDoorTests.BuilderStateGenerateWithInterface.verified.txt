@@ -1,0 +1,51 @@
+﻿import {EmptyContext} from "./StaterStateMachine";
+import {StateMachineFactory} from "./StaterStateMachine";
+import {StaterStateMachine} from "./StaterStateMachine";
+import {StaterStateMachineBuilder} from "./StaterStateMachine";
+
+export enum States {
+    OPEN = "OPEN",
+    AJAR = "AJAR",
+    CLOSE = "CLOSE"
+}
+
+export class TypesDoorStateMachine extends StaterStateMachine<States, EmptyContext> {
+    preOpen() {
+        this.transition("preOpen")
+    }
+
+    preClose() {
+        this.transition("preClose")
+    }
+
+    open() {
+        this.transition("open")
+    }
+
+    close() {
+        this.transition("close")
+    }
+
+    ajarPlus() {
+        this.transition("ajarPlus")
+    }
+
+    ajarMinus() {
+        this.transition("ajarMinus")
+    }
+}
+
+const typedDoorFactory: StateMachineFactory<States, EmptyContext> = (...args): StaterStateMachine<States, EmptyContext> => {
+    return new TypesDoorStateMachine(...args);
+};
+
+export const builderDoorStateMachine = new StaterStateMachineBuilder<States, EmptyContext>()
+    .setStartState(States.OPEN)
+    .setContext(new EmptyContext())
+    .setFactory(typedDoorFactory)
+    .addTransition("preOpen", States.CLOSE, States.AJAR)
+    .addTransition("preClose", States.OPEN, States.AJAR)
+    .addTransition("open", States.AJAR, States.OPEN)
+    .addTransition("close", States.AJAR, States.CLOSE)
+    .addTransition("ajarPlus", States.AJAR, States.AJAR)
+    .addTransition("ajarMinus", States.AJAR, States.AJAR)

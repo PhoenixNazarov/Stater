@@ -1,0 +1,43 @@
+﻿import {Context} from "./StaterStateMachine";
+import {StaterStateMachineBuilder} from "./StaterStateMachine";
+
+export enum States {
+    OPEN = "OPEN",
+    AJAR = "AJAR",
+    CLOSE = "CLOSE"
+}
+
+interface DoorFSMContext extends Context {
+    degreeOfOpening: number
+    closeVariable: boolean
+    doorName: string
+    floatVariable: number
+}
+
+const buildDoorFSMContext: () => DoorFSMContext = () => {
+    return {
+        degreeOfOpening: 0,
+        closeVariable: true,
+        doorName: "asd",
+        floatVariable: 0
+    }
+}
+
+
+export const builderDoorStateMachine = new StaterStateMachineBuilder<States, DoorFSMContext>()
+    .setStartState(States.OPEN)
+    .setContext(buildDoorFSMContext())
+    .addTransition("preOpen", States.CLOSE, States.AJAR)
+    .setTransitionEvent("preOpen", (ctx) => { ctx.degreeOfOpening = 1 })
+    .addTransition("preClose", States.OPEN, States.AJAR)
+    .setTransitionEvent("preClose", (ctx) => { ctx.degreeOfOpening = 99 })
+    .addTransition("open", States.AJAR, States.OPEN)
+    .setTransitionCondition("open", (ctx) => ctx.degreeOfOpening >= 0)
+    .setTransitionEvent("open", (ctx) => { ctx.degreeOfOpening = 100 })
+    .addTransition("close", States.AJAR, States.CLOSE)
+    .setTransitionCondition("close", (ctx) => ctx.degreeOfOpening <= 0)
+    .setTransitionEvent("close", (ctx) => { ctx.degreeOfOpening = 0 })
+    .addTransition("ajarPlus", States.AJAR, States.AJAR)
+    .setTransitionEvent("ajarPlus", (ctx) => { ctx.degreeOfOpening = ctx.degreeOfOpening + 1 })
+    .addTransition("ajarMinus", States.AJAR, States.AJAR)
+    .setTransitionEvent("ajarMinus", (ctx) => { ctx.degreeOfOpening = ctx.degreeOfOpening - 1 })

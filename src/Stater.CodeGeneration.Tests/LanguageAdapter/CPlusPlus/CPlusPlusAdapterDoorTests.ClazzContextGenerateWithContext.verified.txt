@@ -1,0 +1,88 @@
+﻿#pragma once
+
+#include <stater_state_machine.h>
+
+class Door_context final : context {
+public:
+    int degreeOfOpening = 0;
+    bool closeVariable = true;
+    std::string doorName = "asd";
+    float floatVariable = 0f;
+};
+
+class Door_state_machine : public stater_state_machine<std::string, Door_context> {
+public:
+    Door_state_machine() : stater_state_machine (
+        {
+            transition_t<::std::string, Door_context>(
+                "preOpen",
+                "CLOSE",
+                "AJAR", 
+                [](Door_context *ctx) { return true; },
+                [](Door_context *ctx) { ctx->degreeOfOpening = 1; }
+            ),
+            transition_t<::std::string, Door_context>(
+                "preClose",
+                "OPEN",
+                "AJAR", 
+                [](Door_context *ctx) { return true; },
+                [](Door_context *ctx) { ctx->degreeOfOpening = 99; }
+            ),
+            transition_t<::std::string, Door_context>(
+                "open",
+                "AJAR",
+                "OPEN",
+                [](Door_context *ctx) { return ctx->degreeOfOpening >= 0; },
+                [](Door_context *ctx) { ctx->degreeOfOpening = 100; }
+            ),
+            transition_t<::std::string, Door_context>(
+                "close",
+                "AJAR",
+                "CLOSE",
+                [](Door_context *ctx) { return ctx->degreeOfOpening <= 0; },
+                [](Door_context *ctx) { ctx->degreeOfOpening = 0; }
+            ),
+            transition_t<::std::string, Door_context>(
+                "ajarPlus",
+                "AJAR",
+                "AJAR", 
+                [](Door_context *ctx) { return true; },
+                [](Door_context *ctx) { ctx->degreeOfOpening = ctx->degreeOfOpening + 1; }
+            ),
+            transition_t<::std::string, Door_context>(
+                "ajarMinus",
+                "AJAR",
+                "AJAR", 
+                [](Door_context *ctx) { return true; },
+                [](Door_context *ctx) { ctx->degreeOfOpening = ctx->degreeOfOpening - 1; }
+            )
+        },
+        new Door_context(),
+        "OPEN"
+    ) {
+    }
+
+    void preOpen() {
+        transition("preOpen");
+    }
+
+    void preClose() {
+        transition("preClose");
+    }
+
+    void open() {
+        transition("open");
+    }
+
+    void close() {
+        transition("close");
+    }
+
+    void ajarPlus() {
+        transition("ajarPlus");
+    }
+
+    void ajarMinus() {
+        transition("ajarMinus");
+    }
+};

@@ -24,7 +24,7 @@ public static class ScenarioFinder
             .ToList();
     }
 
-    private static List<List<Transition>> FindAllPaths(List<Transition> transitions, Guid start)
+    private static IEnumerable<List<Transition>> FindAllPaths(List<Transition> transitions, Guid start)
     {
         var graph = BuildGraph(transitions);
         var paths = new List<List<Transition>>();

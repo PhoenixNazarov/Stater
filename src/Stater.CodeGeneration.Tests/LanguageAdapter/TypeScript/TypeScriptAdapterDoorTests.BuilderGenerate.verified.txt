@@ -1,0 +1,12 @@
+﻿import {EmptyContext} from "./StaterStateMachine";
+import {StaterStateMachineBuilder} from "./StaterStateMachine";
+
+export const builderDoorStateMachine = new StaterStateMachineBuilder<string, EmptyContext>()
+    .setStartState("OPEN")
+    .setContext(new EmptyContext())
+    .addTransition("preOpen", "CLOSE", "AJAR")
+    .addTransition("preClose", "OPEN", "AJAR")
+    .addTransition("open", "AJAR", "OPEN")
+    .addTransition("close", "AJAR", "CLOSE")
+    .addTransition("ajarPlus", "AJAR", "AJAR")
+    .addTransition("ajarMinus", "AJAR", "AJAR")

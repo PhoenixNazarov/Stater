@@ -1,0 +1,133 @@
+﻿#pragma once
+
+#include <stater_state_machine.h>
+
+enum class e_Door_states {
+    OPEN,
+    AJAR,
+    CLOSE
+};
+
+inline void to_json(nlohmann::json &j, const e_Door_states &e) {
+    switch (e) {
+        case e_Door_states::OPEN: j = "OPEN";
+            break;
+        case e_Door_states::AJAR: j = "AJAR";
+            break;
+        case e_Door_states::CLOSE: j = "CLOSE";
+            break;
+    }
+}
+
+inline void from_json(const nlohmann::json &j, e_Door_states &e) {
+    std::string state_str = j.get<std::string>();
+
+    if (state_str == "OPEN") e = e_Door_states::OPEN;
+    else if (state_str == "AJAR") e = e_Door_states::AJAR;
+    else if (state_str == "CLOSE") e = e_Door_states::CLOSE;
+}
+
+class Door_context final : context {
+public:
+    int degreeOfOpening = 0;
+    bool closeVariable = true;
+    std::string doorName = "asd";
+    float floatVariable = 0f;
+};
+
+class types_Door_state_machine : public stater_state_machine<e_Door_states, Door_context> {
+public:
+    types_Door_state_machine(
+        const std::vector<transition_t<e_Door_states, Door_context>> &transitions,
+        Door_context *context,
+        const e_Door_states &start_state,
+        const std::unordered_set<e_Door_states> &states,
+        const std::unordered_map<std::string, std::vector<transition_middleware<Door_context>>> &transition_middlewares,
+        const std::vector<transition_name_middleware<Door_context>> &transition_all_middlewares,
+        const std::unordered_map<std::string, std::vector<event<Door_context>>> &transition_callbacks,
+        const std::vector<name_event<Door_context>> &transition_all_callbacks,
+        const std::unordered_map<e_Door_states, std::vector<event<Door_context>>> &state_callbacks,
+        const std::vector<state_event<e_Door_states, Door_context>> &state_all_callbacks,
+        const std::shared_ptr<::context_json_adapter<Door_context> > &context_json_adapter
+    ) : stater_state_machine(
+        transitions,
+        context,
+        start_state,
+        states,
+        transition_middlewares,
+        transition_all_middlewares,
+        transition_callbacks,
+        transition_all_callbacks,
+        state_callbacks,
+        state_all_callbacks,
+        context_json_adapter
+    ) { 
+    }
+
+    void preOpen() {
+        transition("preOpen");
+    }
+
+    void preClose() {
+        transition("preClose");
+    }
+
+    void open() {
+        transition("open");
+    }
+
+    void close() {
+        transition("close");
+    }
+
+    void ajarPlus() {
+        transition("ajarPlus");
+    }
+
+    void ajarMinus() {
+        transition("ajarMinus");
+    }
+};
+
+inline state_machine_factory<e_Door_states, Door_context> typed_Door_factory = [](
+    const std::vector<transition_t<e_Door_states, Door_context> > &transitions,
+    Door_context *context,
+    e_Door_states start_state,
+    const std::unordered_set<e_Door_states> &states,
+    const std::unordered_map<std::string, std::vector<::transition_middleware<Door_context> > > &
+    transition_middleware,
+    const std::vector<transition_name_middleware<Door_context> > &
+    transition_all_middlewares,
+    const std::unordered_map<std::string, std::vector<event<Door_context> > > &
+    transition_callbacks,
+    const std::vector<name_event<Door_context> > &transition_all_callbacks,
+    const std::unordered_map<::e_Door_states, std::vector<event<Door_context> > > &state_callbacks,
+    const std::vector<state_event<::e_Door_states, Door_context> > &state_all_callbacks,
+    const std::shared_ptr<context_json_adapter<Door_context> >& context_json_adapter_) ->
+    std::unique_ptr<types_Door_state_machine> {
+    return std::make_unique<types_Door_state_machine>(
+        transitions, context, start_state, states,
+        transition_middleware, transition_all_middlewares,
+        transition_callbacks, transition_all_callbacks,
+        state_callbacks, state_all_callbacks, context_json_adapter_);
+};
+
+
+inline stater_state_machine_builder<e_Door_states, Door_context> builder_Door_state_machine = stater_state_machine_builder<e_Door_states, Door_context>()
+    .set_start_state(e_Door_states::OPEN)
+    .set_context(new Door_context())
+    .set_factory(typed_Door_factory)
+    .add_transition("preOpen", e_Door_states::CLOSE, e_Door_states::AJAR)
+    .set_transition_event("preOpen", [](Door_context *ctx) { ctx->degreeOfOpening = 1; })
+    .add_transition("preClose", e_Door_states::OPEN, e_Door_states::AJAR)
+    .set_transition_event("preClose", [](Door_context *ctx) { ctx->degreeOfOpening = 99; })
+    .add_transition("open", e_Door_states::AJAR, e_Door_states::OPEN)
+    .set_transition_condition("open", [](Door_context *ctx) { return ctx->degreeOfOpening >= 0; })
+    .set_transition_event("open", [](Door_context *ctx) { ctx->degreeOfOpening = 100; })
+    .add_transition("close", e_Door_states::AJAR, e_Door_states::CLOSE)
+    .set_transition_condition("close", [](Door_context *ctx) { return ctx->degreeOfOpening <= 0; })
+    .set_transition_event("close", [](Door_context *ctx) { ctx->degreeOfOpening = 0; })
+    .add_transition("ajarPlus", e_Door_states::AJAR, e_Door_states::AJAR)
+    .set_transition_event("ajarPlus", [](Door_context *ctx) { ctx->degreeOfOpening = ctx->degreeOfOpening + 1; })
+    .add_transition("ajarMinus", e_Door_states::AJAR, e_Door_states::AJAR)
+    .set_transition_event("ajarMinus", [](Door_context *ctx) { ctx->degreeOfOpening = ctx->degreeOfOpening - 1; });

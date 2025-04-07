@@ -1,0 +1,66 @@
+﻿package fsm.door;
+
+import com.stater.statemachine.java.*;
+import java.util.*;
+
+class Door {
+    static class DoorFSMContext implements Context{
+        int degreeOfOpening = 0;
+        boolean closeVariable = true;
+        String doorName = "asd";
+        float floatVariable = 0f;
+    }
+
+    static class DoorStateMachine extends StaterStateMachine<String, DoorFSMContext>{
+        public DoorStateMachine() {
+            super(
+                List.of(
+                    new Transition<>(
+                        "preOpen",
+                        "CLOSE",
+                        "AJAR", 
+                        ctx -> true,
+                        ctx -> ctx.degreeOfOpening = 1
+                    ),
+                    new Transition<>(
+                        "preClose",
+                        "OPEN",
+                        "AJAR", 
+                        ctx -> true,
+                        ctx -> ctx.degreeOfOpening = 99
+                    ),
+                    new Transition<>(
+                        "open",
+                        "AJAR",
+                        "OPEN",
+                        ctx -> ctx.degreeOfOpening >= 0,
+                        ctx -> ctx.degreeOfOpening = 100
+                    ),
+                    new Transition<>(
+                        "close",
+                        "AJAR",
+                        "CLOSE",
+                        ctx -> ctx.degreeOfOpening <= 0,
+                        ctx -> ctx.degreeOfOpening = 0
+                    ),
+                    new Transition<>(
+                        "ajarPlus",
+                        "AJAR",
+                        "AJAR", 
+                        ctx -> true,
+                        ctx -> ctx.degreeOfOpening = ctx.degreeOfOpening + 1
+                    ),
+                    new Transition<>(
+                        "ajarMinus",
+                        "AJAR",
+                        "AJAR", 
+                        ctx -> true,
+                        ctx -> ctx.degreeOfOpening = ctx.degreeOfOpening - 1
+                    )
+                ),
+                new DoorFSMContext(),
+                "OPEN"
+            );
+        }
+    }
+}
