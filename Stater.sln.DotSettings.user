@@ -15,6 +15,7 @@
       &lt;TestId&gt;xUnit::D1E2AF9B-55A2-4198-8797-633ABA37AA81::net8.0::Stater.Domain.Tests.Json.StateMachineJsonAdapterTests.TestFromJsonSchema&lt;/TestId&gt;
     &lt;/TestAncestor&gt;
     &lt;ProjectFile&gt;D1E2AF9B-55A2-4198-8797-633ABA37AA81/d:Json/f:StateMachineJsonAdapterTests.cs&lt;/ProjectFile&gt;
+    &lt;Project Location="/Users/vnazarov/RiderProjects/Stater3/src/Stater.CodeGeneration.Tests" Presentation="&amp;lt;Stater.CodeGeneration.Tests&amp;gt;" /&gt;
   &lt;/Or&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/Housekeeping/SolutionSettingsUpgraded/IsUpgraded/@EntryValue">True</s:Boolean>

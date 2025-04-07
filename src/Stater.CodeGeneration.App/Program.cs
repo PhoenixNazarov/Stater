@@ -111,7 +111,7 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
                         languageS = Language.CSharp;
                         break;
                     case "cplusplus":
-                        path += "fsm/" + randomStateMachine.Name.ToLower() + "/";
+                        path += "fsm/" + randomStateMachine.Name + "/";
                         testPath += "tests/";
                         if (!Directory.Exists(path))
                         {
