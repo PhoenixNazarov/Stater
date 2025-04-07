@@ -1,4 +1,5 @@
 using Stater.CodeGeneration.Entity;
+using Stater.CodeGeneration.LanguageAdapter.CPlusPlus;
 using Stater.CodeGeneration.LanguageAdapter.CSharp;
 using Stater.CodeGeneration.LanguageAdapter.Java;
 using Stater.CodeGeneration.LanguageAdapter.JavaScript;
@@ -17,6 +18,7 @@ public class CodeGenerator
     private readonly TypeScriptAdapter typeScriptAdapter = new();
     private readonly JavaAdapter javaAdapter = new();
     private readonly CSharpAdapter cSharpAdapter = new();
+    private readonly CPlusPlusAdapter cPlusPlusAdapter = new();
 
     public string Generate(StateMachine stateMachine, GenerationSettings generationSettings)
     {
@@ -24,24 +26,18 @@ public class CodeGenerator
         {
             throw new InvalidDataException();
         }
-        
-        switch (generationSettings.Language)
-        {
-            case Language.Kotlin: return kotlinAdapter.Generate(stateMachine, generationSettings);
-            case Language.Java: return javaAdapter.Generate(stateMachine, generationSettings);
-            case Language.CSharp: return cSharpAdapter.Generate(stateMachine, generationSettings);
-            case Language.Python3: return pythonAdapter.Generate(stateMachine, generationSettings);
-            case Language.JavaScript:return javaScriptAdapter.Generate(stateMachine, generationSettings);
-            case Language.TypeScript:return typeScriptAdapter.Generate(stateMachine, generationSettings);
-            case Language.C:
-                break;
-            case Language.CPlusPlus:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(generationSettings));
-        }
 
-        return "";
+        return generationSettings.Language switch
+        {
+            Language.Kotlin => kotlinAdapter.Generate(stateMachine, generationSettings),
+            Language.Java => javaAdapter.Generate(stateMachine, generationSettings),
+            Language.CSharp => cSharpAdapter.Generate(stateMachine, generationSettings),
+            Language.Python3 => pythonAdapter.Generate(stateMachine, generationSettings),
+            Language.JavaScript => javaScriptAdapter.Generate(stateMachine, generationSettings),
+            Language.TypeScript => typeScriptAdapter.Generate(stateMachine, generationSettings),
+            Language.CPlusPlus => cPlusPlusAdapter.Generate(stateMachine, generationSettings),
+            _ => throw new ArgumentOutOfRangeException(nameof(generationSettings))
+        };
     }
     
     public string GenerateTests(StateMachine stateMachine, GenerationSettings generationSettings, List<List<Transition>> scenarios)
@@ -50,23 +46,17 @@ public class CodeGenerator
         {
             throw new InvalidDataException();
         }
-        
-        switch (generationSettings.Language)
-        {
-            case Language.Kotlin: return kotlinAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
-            case Language.Java: return javaAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
-            case Language.CSharp: return cSharpAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
-            case Language.Python3: return pythonAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
-            case Language.JavaScript:return javaScriptAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
-            case Language.TypeScript:return typeScriptAdapter.GenerateTests(stateMachine, generationSettings, scenarios);
-            case Language.C:
-                break;
-            case Language.CPlusPlus:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(generationSettings));
-        }
 
-        return "";
+        return generationSettings.Language switch
+        {
+            Language.Kotlin => kotlinAdapter.GenerateTests(stateMachine, generationSettings, scenarios),
+            Language.Java => javaAdapter.GenerateTests(stateMachine, generationSettings, scenarios),
+            Language.CSharp => cSharpAdapter.GenerateTests(stateMachine, generationSettings, scenarios),
+            Language.Python3 => pythonAdapter.GenerateTests(stateMachine, generationSettings, scenarios),
+            Language.JavaScript => javaScriptAdapter.GenerateTests(stateMachine, generationSettings, scenarios),
+            Language.TypeScript => typeScriptAdapter.GenerateTests(stateMachine, generationSettings, scenarios),
+            Language.CPlusPlus => cPlusPlusAdapter.GenerateTests(stateMachine, generationSettings, scenarios),
+            _ => throw new ArgumentOutOfRangeException(nameof(generationSettings))
+        };
     }
 }

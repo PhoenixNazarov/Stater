@@ -39,6 +39,10 @@ jobs:
       - name: Run generate csharp
         run: |
           dotnet run --project src/Stater.CodeGeneration.App artifacts/csharp/ 0 csharp
+          
+      - name: Run generate c++
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/cplusplus/ 0 cplusplus
       
       - name: Save python3 generated files
         uses: actions/upload-artifact@v4
@@ -75,6 +79,12 @@ jobs:
         with:
           name: csharp-generated-files
           path: artifacts/csharp/*
+
+      - name: Save c++ generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: csharp-generated-files
+          path: artifacts/cplusplus/*
       
   test-python:
     needs: [ build-artifacts ]
@@ -125,7 +135,6 @@ jobs:
     strategy:
       matrix:
         node-version: [ '16', '18', '20' ]
-    
     steps:
       - name: Checkout specific folder from another repository
         uses: actions/checkout@v4
@@ -161,7 +170,6 @@ jobs:
     strategy:
       matrix:
         node-version: [ '16', '18', '20' ]
-
     steps:
       - name: Checkout specific folder from another repository
         uses: actions/checkout@v4
@@ -197,7 +205,6 @@ jobs:
     strategy:
       matrix:
         java-version: [ '17', '21' ]
-
     steps:
       - name: Checkout specific folder from another repository
         uses: actions/checkout@v4
@@ -247,7 +254,6 @@ jobs:
     strategy:
       matrix:
         java-version: [ 17, 21 ]
-
     steps:
       - name: Checkout specific folder from another repository
         uses: actions/checkout@v4
@@ -314,3 +320,103 @@ jobs:
         run: |
           cd projects/csharp/Stater.StateMachine.Lib
           dotnet test --configuration Release --collect:"XPlat Code Coverage"
+
+  test-cplusplus:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler:
+          - { cc: gcc-11, cxx: g++-11 }
+          - { cc: gcc-12, cxx: g++-12 }
+          - { cc: gcc-13, cxx: g++-13 }
+          - { cc: clang-16, cxx: clang++-16 }
+          - { cc: clang-17, cxx: clang++-17 }
+      fail-fast: false
+
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov cmake
+          sudo apt-get install -y ${{ matrix.compiler.cc }} ${{ matrix.compiler.cxx }}
+          if [ "${{ matrix.compiler.cc }}" = "clang-16" ]; then
+            sudo apt-get install -y llvm-16
+          elif [ "${{ matrix.compiler.cc }}" = "clang-17" ]; then
+            sudo apt-get install -y llvm-17
+          fi
+          pip install gcovr
+          
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: csharp-generated-files
+          path: projects/cPlusPlus/
+      
+      - name: Configure CMake
+        env:
+          CC: ${{ matrix.compiler.cc }}
+          CXX: ${{ matrix.compiler.cxx }}
+        run: |
+          cd projects/cPlusPlus
+          sh auto_config_cmake.sh fsm
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage"
+
+      - name: Build
+        env:
+          CC: ${{ matrix.compiler.cc }}
+          CXX: ${{ matrix.compiler.cxx }}
+        run: |
+          cd projects/cPlusPlus
+          if [[ "${{ matrix.compiler.cc }}" == clang-* ]]; then
+            export CFLAGS="-fprofile-instr-generate -fcoverage-mapping"
+            export CXXFLAGS="-fprofile-instr-generate -fcoverage-mapping"
+          else
+            export CFLAGS="--coverage"
+            export CXXFLAGS="--coverage"
+          fi
+
+          cmake -B build -S . \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_C_COMPILER=${{ matrix.compiler.cc }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} \
+            -DCMAKE_C_FLAGS="${CFLAGS}" \
+            -DCMAKE_CXX_FLAGS="${CXXFLAGS}"
+
+          cmake --build build
+
+      - name: Run tests
+        run: |
+          cd projects/cPlusPlus/build
+          if [[ "${{ matrix.compiler.cc }}" == clang-* ]]; then
+            export LLVM_PROFILE_FILE="coverage-%p.profraw"
+          else
+            export LLVM_PROFILE_FILE=""
+          fi
+          ctest --output-on-failure
+
+      - name: Generate and show detailed coverage
+        run: |
+          cd projects/cPlusPlus/build
+          if [ "${{ matrix.compiler.cc }}" = "clang-16" ]; then
+            llvm-profdata-16 merge -sparse coverage-*.profraw -o coverage.profdata
+            llvm-cov-16 report ./fsm_tests -instr-profile=coverage.profdata --ignore-filename-regex=".*(gtest|nlohmann|CMakeFiles).*"
+          elif [ "${{ matrix.compiler.cc }}" = "clang-17" ]; then
+            llvm-profdata-17 merge -sparse coverage-*.profraw -o coverage.profdata
+            llvm-cov-17 report ./fsm_tests -instr-profile=coverage.profdata --ignore-filename-regex=".*(gtest|nlohmann|CMakeFiles).*"
+          else
+            if [ "${{ matrix.compiler.cc }}" = "gcc-11" ]; then
+              GCOV_EXEC=gcov-11
+            elif [ "${{ matrix.compiler.cc }}" = "gcc-12" ]; then
+              GCOV_EXEC=gcov-12
+            elif [ "${{ matrix.compiler.cc }}" = "gcc-13" ]; then
+              GCOV_EXEC=gcov-13
+            fi
+            gcovr -r .. --exclude '.*gtest.*' --exclude '.*nlohmann.*' --gcov-executable $GCOV_EXEC --txt
+          fi
+    

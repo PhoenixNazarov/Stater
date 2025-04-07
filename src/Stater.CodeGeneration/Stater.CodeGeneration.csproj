@@ -9,6 +9,8 @@
     </ItemGroup>
     
     <ItemGroup>
+      <EmbeddedResource Include="Templates\cplusplus.scriban" />
+      <EmbeddedResource Include="Templates\cplusplus-test.scriban" />
       <EmbeddedResource Include="Templates\csharp.scriban" />
       <EmbeddedResource Include="Templates\csharp-test.scriban" />
       <EmbeddedResource Include="Templates\java.scriban" />

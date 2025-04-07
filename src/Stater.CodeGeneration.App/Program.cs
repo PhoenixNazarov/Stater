@@ -110,6 +110,24 @@ foreach (var generateMode in new List<Mode> { Mode.Builder, Mode.Clazz })
                         
                         languageS = Language.CSharp;
                         break;
+                    case "cplusplus":
+                        path += "fsm/" + randomStateMachine.Name.ToLower() + "/";
+                        testPath += "tests/";
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                            Console.WriteLine($"Folder created: {path}");
+                        }
+                        if (!Directory.Exists(testPath))
+                        {
+                            Directory.CreateDirectory(testPath);
+                            Console.WriteLine($"Folder created: {testPath}");
+                        }
+                        path += randomStateMachine.Name + ".h";
+                        testPath += "test_" + randomStateMachine.Name + ".cpp";
+                        
+                        languageS = Language.CPlusPlus;
+                        break;
                 }
 
                 var settings = new GenerationSettings(

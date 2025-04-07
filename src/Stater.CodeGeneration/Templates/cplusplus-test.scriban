@@ -1,0 +1,60 @@
+#include <{{fsm.name}}.h>
+
+#include <gtest/gtest.h>
+
+{{ func state(name) }}
+{{- if settings.generate_states -}}
+e_{{ fsm.name }}_states::{{ name }}
+{{- else -}}
+"{{ name }}"
+{{- end -}}
+{{ end }}
+
+{{if settings.mode == "Clazz"; build_generic = "new " + fsm.name + "_state_machine()"; else if settings.generate_interface; build_generic = "dynamic_cast<types_" + fsm.name + "_state_machine *>(" + "st.get())"; else; build_generic = "builder_" + fsm.name + "_state_machine.build()"; end -}}
+TEST({{ fsm.name }}_state_machine_test, test_init) {
+    {{- if settings.mode != "Clazz" && settings.generate_interface }}
+    const auto st = builder_{{ fsm.name }}_state_machine.build();
+    {{- end }}
+    {{ build_generic }};
+}
+{{ for index in 0..(scenarios.size - 1) }}
+
+TEST({{ fsm.name }}_state_machine_test, test_scenario_{{index}}) {
+    {{- if settings.mode != "Clazz" && settings.generate_interface }}
+    const auto st = builder_{{ fsm.name }}_state_machine.build();
+    {{- end }}
+    const auto sm = {{ build_generic }};
+    sm->disable_events();
+
+{{ for transition in scenarios[index] }}
+    {{- if settings.generate_interface }}
+    sm->{{ transition.name }}();
+    {{- else }}
+    sm->transition("{{ transition.name }}");
+    {{- end }}
+    ASSERT_EQ(sm->get_state(), {{ state get_state_by_uuid(transition.end).name }});
+{{ end -}}
+}
+{{- end }}
+
+TEST({{ fsm.name }}_state_machine_test, test_json_schema) {
+    {{- if settings.mode != "Clazz" && settings.generate_interface }}
+    const auto st = builder_{{ fsm.name }}_state_machine.build();
+    {{- end }}
+    auto sm = {{ build_generic }};
+    ASSERT_EQ(nlohmann::json::parse(R"({{ state_machine_json_schema fsm }})"), nlohmann::json::parse(sm->to_json_schema()));
+}
+{{ if settings.mode == "Builder" && !settings.generate_states }}
+TEST({{ fsm.name }}_state_machine_test, test_system_append_state_transition) {
+    auto sm_builder = builder_{{ fsm.name }}_state_machine;
+    
+    sm_builder = sm_builder.add_state("__test_state_1__");
+    ASSERT_EQ(nlohmann::json::parse(R"({{ state_machine_json_schema fsm_test_state_1 }})"), nlohmann::json::parse(sm_builder.build()->to_json_schema()));
+    
+    sm_builder = sm_builder.add_state("__test_state_2__");
+    ASSERT_EQ(nlohmann::json::parse(R"({{ state_machine_json_schema fsm_test_state_2 }})"), nlohmann::json::parse(sm_builder.build()->to_json_schema()));
+    
+    sm_builder = sm_builder.add_transition("__test_transition__", "__test_state_1__", "__test_state_2__");
+    ASSERT_EQ(nlohmann::json::parse(R"({{ state_machine_json_schema fsm_test_state_3 }})"), nlohmann::json::parse(sm_builder.build()->to_json_schema()));
+}
+{{- end }}
