@@ -13,9 +13,14 @@ public static class StateMachineJsonAdapter
 
     public static string ToJsonSchema(StateMachine stateMachine)
     {
+        var startState = stateMachine.StartState;
+        if (startState == null)
+        {
+            startState = stateMachine.States[0];
+        }
         var jsonSchema = new JsonSchema(
             States: stateMachine.States.Select(el => el.Name).Distinct().Order().ToList(),
-            StartState: stateMachine.StartState!.Name,
+            StartState: startState.Name,
             Transitions: stateMachine.StateTransitions.Select(
                 el => new JsonTransition(Name: el.Transition.Name, Start: el.StartState.Name, End: el.EndState.Name)
             ).ToList()

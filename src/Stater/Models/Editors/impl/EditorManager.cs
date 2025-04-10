@@ -56,4 +56,9 @@ public class EditorManager : IEditorManager
         _variableEditor.DoSelect(variable);
         _editorType.OnNext(EditorTypeEnum.Variable);
     }
+
+    public void DoSelectCodeGeneration()
+    {
+        _editorType.OnNext(EditorTypeEnum.CodeGeneration);
+    }
 }

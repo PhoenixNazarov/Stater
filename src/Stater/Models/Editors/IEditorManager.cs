@@ -9,7 +9,8 @@ public enum EditorTypeEnum
     StateMachine,
     State,
     Transition,
-    Variable
+    Variable,
+    CodeGeneration
 }
 
 public interface IEditorManager
@@ -22,4 +23,5 @@ public interface IEditorManager
     void DoSelectState(State state);
     void DoSelectTransition(Transition transition);
     void DoSelectVariable(Variable variable);
+    void DoSelectCodeGeneration();
 }

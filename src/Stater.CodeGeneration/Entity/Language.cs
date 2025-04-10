@@ -8,6 +8,6 @@ public enum Language
     Python3,
     JavaScript,
     TypeScript,
-    C,
+    // C,
     CPlusPlus
 }

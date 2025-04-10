@@ -45,6 +45,7 @@ public class MainWindowViewModel : ReactiveObject
         NewStateCommand = ReactiveCommand.Create(NewState);
         UndoCommand = ReactiveCommand.Create(Undo);
         RedoCommand = ReactiveCommand.Create(Redo);
+        OpenCodeGeneration = ReactiveCommand.Create(() => _editorManager.DoSelectCodeGeneration());
         PluginButtinCommand = ReactiveCommand.Create<PathPluginDto>(StartButtonFilePlugin);
     }
 
@@ -56,7 +57,8 @@ public class MainWindowViewModel : ReactiveObject
     public List<IPlugin> Plugins =>
         new()
         {
-            new SLXPlugin()
+            new SLXPlugin(),
+            new JsonCodeImportPlugin()
         };
 
     private StateMachine _stateMachine;
@@ -86,6 +88,8 @@ public class MainWindowViewModel : ReactiveObject
     public ICommand NewStateCommand { get; }
     public ICommand UndoCommand { get; }
     public ICommand RedoCommand { get; }
+
+    public ICommand OpenCodeGeneration { get; }
 
 
     private void OpenProject(StreamReader sr)

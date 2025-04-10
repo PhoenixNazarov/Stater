@@ -48,6 +48,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    <MenuItem Header="Code Generation" Command="{Binding OpenCodeGeneration}"/>
                 </MenuItem>
             </Menu>
         </Border>

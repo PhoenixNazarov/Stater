@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Stater.Views.Plugins.CodeGeneration"
+             xmlns:vm="using:Stater.ViewModels.Plugins"
+             x:DataType="vm:CodeGenerationViewModel">
+    <StackPanel Margin="10">
+        <TextBlock Text="Select Language:" />
+        <ComboBox ItemsSource="{Binding LanguageIndex}" Margin="0,0,0, 20">
+            <ComboBoxItem>Java</ComboBoxItem>
+            <ComboBoxItem>Kotlin</ComboBoxItem>
+            <ComboBoxItem>JavaScript</ComboBoxItem>
+            <ComboBoxItem>TypeScript</ComboBoxItem>
+            <ComboBoxItem>Python3</ComboBoxItem>
+            <ComboBoxItem>C#</ComboBoxItem>
+            <ComboBoxItem>C++</ComboBoxItem>
+        </ComboBox>
+
+        <TextBlock Text="Options" />
+        <TextBlock Text="Select generate mode:" />
+        <ComboBox ItemsSource="{Binding LanguageIndex }">
+            <ComboBoxItem>Class</ComboBoxItem>
+            <ComboBoxItem>Builder</ComboBoxItem>
+        </ComboBox>
+        <CheckBox IsChecked="{Binding GenerateStates}">Generate states</CheckBox>
+        <CheckBox IsChecked="{Binding GenerateContext}">Generate context</CheckBox>
+        <CheckBox IsChecked="{Binding GenerateInterface}">Generate interface</CheckBox>
+        <Button Click="Button_OnClick">Generate</Button>
+    </StackPanel>
+</UserControl>
