@@ -1,0 +1,34 @@
+﻿package fsm.door
+
+import com.stater.statemachine.kotlin.*
+
+enum class States {
+    OPEN,
+    AJAR,
+    CLOSE
+}
+
+data class DoorFSMContext(
+    var degreeOfOpening: Int = 0,
+    var closeVariable: Boolean = true,
+    var doorName: String = "asd",
+    var floatVariable: Float = 0f
+) : Context
+
+val builderDoorStateMachine = StaterStateMachineBuilder<States, DoorFSMContext>()
+    .setStartState(States.OPEN)
+    .setContext(DoorFSMContext())
+    .addTransition("preOpen", States.CLOSE, States.AJAR)
+    .setTransitionEvent("preOpen") { it.degreeOfOpening = 1 }
+    .addTransition("preClose", States.OPEN, States.AJAR)
+    .setTransitionEvent("preClose") { it.degreeOfOpening = 99 }
+    .addTransition("open", States.AJAR, States.OPEN)
+    .setTransitionCondition("open") { it.degreeOfOpening >= 0 }
+    .setTransitionEvent("open") { it.degreeOfOpening = 100 }
+    .addTransition("close", States.AJAR, States.CLOSE)
+    .setTransitionCondition("close") { it.degreeOfOpening <= 0 }
+    .setTransitionEvent("close") { it.degreeOfOpening = 0 }
+    .addTransition("ajarPlus", States.AJAR, States.AJAR)
+    .setTransitionEvent("ajarPlus") { it.degreeOfOpening = it.degreeOfOpening + 1 }
+    .addTransition("ajarMinus", States.AJAR, States.AJAR)
+    .setTransitionEvent("ajarMinus") { it.degreeOfOpening = it.degreeOfOpening - 1 }

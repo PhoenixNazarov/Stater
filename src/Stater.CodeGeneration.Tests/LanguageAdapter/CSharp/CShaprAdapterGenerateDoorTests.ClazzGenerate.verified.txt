@@ -1,0 +1,55 @@
+﻿namespace fsm.door;
+
+using Stater.StateMachine.Lib;
+
+public class DoorStateMachine() : StaterStateMachine<String, EmptyContext>(
+    new List<Transition<String, EmptyContext>>
+    {
+        new(
+            "preOpen",
+            "CLOSE",
+            "AJAR", 
+            ctx => true, 
+            ctx => { }
+        ),
+        new(
+            "preClose",
+            "OPEN",
+            "AJAR", 
+            ctx => true, 
+            ctx => { }
+        ),
+        new(
+            "open",
+            "AJAR",
+            "OPEN", 
+            ctx => true, 
+            ctx => { }
+        ),
+        new(
+            "close",
+            "AJAR",
+            "CLOSE", 
+            ctx => true, 
+            ctx => { }
+        ),
+        new(
+            "ajarPlus",
+            "AJAR",
+            "AJAR", 
+            ctx => true, 
+            ctx => { }
+        ),
+        new(
+            "ajarMinus",
+            "AJAR",
+            "AJAR", 
+            ctx => true, 
+            ctx => { }
+        )
+    },
+    new EmptyContext(),
+    "OPEN"
+)
+{
+}

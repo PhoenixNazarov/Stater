@@ -1,0 +1,125 @@
+﻿package fsm.door;
+
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import com.fasterxml.jackson.databind.ObjectMapper
+
+class TestDoor {
+    @Test
+    fun testInit() {
+        DoorStateMachine()
+    }
+    
+
+    @Test
+    fun testScenario0() {
+        val sm = DoorStateMachine()
+        sm.disableEvents()
+    
+
+        sm.preClose()
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.close()
+        assertEquals(sm.getState(), "CLOSE")
+
+        sm.preOpen()
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.ajarPlus()
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.open()
+        assertEquals(sm.getState(), "OPEN")
+
+    }
+    @Test
+    fun testScenario1() {
+        val sm = DoorStateMachine()
+        sm.disableEvents()
+    
+
+        sm.preClose()
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.ajarPlus()
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.close()
+        assertEquals(sm.getState(), "CLOSE")
+
+        sm.preOpen()
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.open()
+        assertEquals(sm.getState(), "OPEN")
+
+    }
+    @Test
+    fun testScenario2() {
+        val sm = DoorStateMachine()
+        sm.disableEvents()
+    
+
+        sm.preClose()
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.close()
+        assertEquals(sm.getState(), "CLOSE")
+
+        sm.preOpen()
+        assertEquals(sm.getState(), "AJAR")
+
+        sm.open()
+        assertEquals(sm.getState(), "OPEN")
+
+    }
+    
+    @Test
+    fun testJsonSchema() {
+        val sm = DoorStateMachine()
+        assertEquals(ObjectMapper().readTree("""{
+  "states": [
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    }
+  ]
+}"""), ObjectMapper().readTree(sm.toJsonSchema()))
+    }
+    
+    
+}

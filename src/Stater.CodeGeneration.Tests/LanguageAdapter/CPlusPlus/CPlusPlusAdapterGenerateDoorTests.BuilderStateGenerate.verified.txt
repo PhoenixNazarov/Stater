@@ -1,0 +1,38 @@
+﻿#pragma once
+
+#include <stater_state_machine.h>
+
+enum class e_Door_states {
+    OPEN,
+    AJAR,
+    CLOSE
+};
+
+inline void to_json(nlohmann::json &j, const e_Door_states &e) {
+    switch (e) {
+        case e_Door_states::OPEN: j = "OPEN";
+            break;
+        case e_Door_states::AJAR: j = "AJAR";
+            break;
+        case e_Door_states::CLOSE: j = "CLOSE";
+            break;
+    }
+}
+
+inline void from_json(const nlohmann::json &j, e_Door_states &e) {
+    std::string state_str = j.get<std::string>();
+
+    if (state_str == "OPEN") e = e_Door_states::OPEN;
+    else if (state_str == "AJAR") e = e_Door_states::AJAR;
+    else if (state_str == "CLOSE") e = e_Door_states::CLOSE;
+}
+
+inline stater_state_machine_builder<e_Door_states, empty_context> builder_Door_state_machine = stater_state_machine_builder<e_Door_states, empty_context>()
+    .set_start_state(e_Door_states::OPEN)
+    .set_context(new empty_context())
+    .add_transition("preOpen", e_Door_states::CLOSE, e_Door_states::AJAR)
+    .add_transition("preClose", e_Door_states::OPEN, e_Door_states::AJAR)
+    .add_transition("open", e_Door_states::AJAR, e_Door_states::OPEN)
+    .add_transition("close", e_Door_states::AJAR, e_Door_states::CLOSE)
+    .add_transition("ajarPlus", e_Door_states::AJAR, e_Door_states::AJAR)
+    .add_transition("ajarMinus", e_Door_states::AJAR, e_Door_states::AJAR);

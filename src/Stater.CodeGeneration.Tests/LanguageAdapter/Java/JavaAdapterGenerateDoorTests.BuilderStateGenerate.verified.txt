@@ -1,0 +1,22 @@
+﻿package fsm.door;
+
+import com.stater.statemachine.java.*;
+import java.util.*;
+
+class Door {
+    static enum States {
+        OPEN,
+        AJAR,
+        CLOSE
+    }
+
+    static public final StaterStateMachineBuilder<States, EmptyContext> builderDoorStateMachine = new StaterStateMachineBuilder<States, EmptyContext>()
+        .setStartState(States.OPEN)
+        .setContext(new EmptyContext())
+        .addTransition("preOpen", States.CLOSE, States.AJAR)
+        .addTransition("preClose", States.OPEN, States.AJAR)
+        .addTransition("open", States.AJAR, States.OPEN)
+        .addTransition("close", States.AJAR, States.CLOSE)
+        .addTransition("ajarPlus", States.AJAR, States.AJAR)
+        .addTransition("ajarMinus", States.AJAR, States.AJAR);
+}

@@ -1,0 +1,80 @@
+﻿package fsm.door;
+
+import com.stater.statemachine.java.*;
+import java.util.*;
+
+class Door {
+    static enum States {
+        OPEN,
+        AJAR,
+        CLOSE
+    }
+
+    static class TypesDoorStateMachine extends StaterStateMachine<States, EmptyContext> {
+        public TypesDoorStateMachine(
+                List<Transition<States, EmptyContext>> transitions,
+                EmptyContext context,
+                States startState,
+                Set<States> states,
+                Map<String, List<TransitionMiddleware<EmptyContext>>> transitionMiddlewares,
+                List<TransitionNameMiddleware<EmptyContext>> transitionAllMiddlewares,
+                Map<String, List<Event<EmptyContext>>> transitionCallbacks,
+                List<NameEvent<EmptyContext>> transitionAllCallbacks,
+                Map<States, List<Event<EmptyContext>>> stateCallbacks,
+                List<StateEvent<States, EmptyContext>> stateAllCallbacks,
+                ContextJsonAdapter<EmptyContext> contextJsonAdapter
+        ) {
+            super(
+                transitions,
+                context,
+                startState,
+                states,
+                transitionMiddlewares,
+                transitionAllMiddlewares,
+                transitionCallbacks,
+                transitionAllCallbacks,
+                stateCallbacks,
+                stateAllCallbacks,
+                contextJsonAdapter
+            );
+        }
+    
+        void preOpen() {
+            transition("preOpen");
+        }
+    
+        void preClose() {
+            transition("preClose");
+        }
+    
+        void open() {
+            transition("open");
+        }
+    
+        void close() {
+            transition("close");
+        }
+    
+        void ajarPlus() {
+            transition("ajarPlus");
+        }
+    
+        void ajarMinus() {
+            transition("ajarMinus");
+        }
+    }
+
+    static private final StateMachineFactory<States, EmptyContext> typedDoorFactory = TypesDoorStateMachine::new;
+
+
+    static public final StaterStateMachineBuilder<States, EmptyContext> builderDoorStateMachine = new StaterStateMachineBuilder<States, EmptyContext>()
+        .setStartState(States.OPEN)
+        .setContext(new EmptyContext())
+        .setFactory(typedDoorFactory)
+        .addTransition("preOpen", States.CLOSE, States.AJAR)
+        .addTransition("preClose", States.OPEN, States.AJAR)
+        .addTransition("open", States.AJAR, States.OPEN)
+        .addTransition("close", States.AJAR, States.CLOSE)
+        .addTransition("ajarPlus", States.AJAR, States.AJAR)
+        .addTransition("ajarMinus", States.AJAR, States.AJAR);
+}

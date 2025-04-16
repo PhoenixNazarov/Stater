@@ -1,0 +1,62 @@
+﻿namespace fsm.door;
+
+using Stater.StateMachine.Lib;
+
+public class DoorFSMContext : IContext{
+    public int degreeOfOpening = 0;
+    public bool closeVariable = true;
+    public string doorName = "asd";
+    public float floatVariable = 0f;
+}
+
+public class DoorStateMachine() : StaterStateMachine<String, DoorFSMContext>(
+    new List<Transition<String, DoorFSMContext>>
+    {
+        new(
+            "preOpen",
+            "CLOSE",
+            "AJAR", 
+            ctx => true,
+            ctx => ctx.degreeOfOpening = 1
+        ),
+        new(
+            "preClose",
+            "OPEN",
+            "AJAR", 
+            ctx => true,
+            ctx => ctx.degreeOfOpening = 99
+        ),
+        new(
+            "open",
+            "AJAR",
+            "OPEN",
+            ctx => ctx.degreeOfOpening >= 0,
+            ctx => ctx.degreeOfOpening = 100
+        ),
+        new(
+            "close",
+            "AJAR",
+            "CLOSE",
+            ctx => ctx.degreeOfOpening <= 0,
+            ctx => ctx.degreeOfOpening = 0
+        ),
+        new(
+            "ajarPlus",
+            "AJAR",
+            "AJAR", 
+            ctx => true,
+            ctx => ctx.degreeOfOpening = ctx.degreeOfOpening + 1
+        ),
+        new(
+            "ajarMinus",
+            "AJAR",
+            "AJAR", 
+            ctx => true,
+            ctx => ctx.degreeOfOpening = ctx.degreeOfOpening - 1
+        )
+    },
+    new DoorFSMContext(),
+    "OPEN"
+)
+{
+}

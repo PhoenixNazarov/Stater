@@ -1,0 +1,57 @@
+﻿from pydantic import BaseModel
+from stater_state_machine import Context
+from stater_state_machine import StaterStateMachine
+from stater_state_machine import StaterStateMachineBuilder
+
+
+class DoorFSMContext(BaseModel, Context):
+    degreeOfOpening: int = 0
+    closeVariable: bool = True
+    doorName: str = "asd"
+    floatVariable: float = 0
+
+
+class TypesDoorStateMachine(StaterStateMachine[str, DoorFSMContext]):
+    def preOpen(self):
+        self.transition("preOpen")
+    
+    def preClose(self):
+        self.transition("preClose")
+    
+    def open(self):
+        self.transition("open")
+    
+    def close(self):
+        self.transition("close")
+    
+    def ajarPlus(self):
+        self.transition("ajarPlus")
+    
+    def ajarMinus(self):
+        self.transition("ajarMinus")
+
+
+def typed_Door_factory(*args, **kwargs):
+    return TypesDoorStateMachine(*args, **kwargs)
+
+
+builder_Door_state_machine = (
+    StaterStateMachineBuilder[str, DoorFSMContext]()
+    .set_start_state("OPEN")
+    .set_context(DoorFSMContext())
+    .set_factory(typed_Door_factory)
+    .add_transition("preOpen", "CLOSE", "AJAR")
+    .set_transition_event("preOpen", lambda ctx: setattr(ctx, 'degreeOfOpening', 1))
+    .add_transition("preClose", "OPEN", "AJAR")
+    .set_transition_event("preClose", lambda ctx: setattr(ctx, 'degreeOfOpening', 99))
+    .add_transition("open", "AJAR", "OPEN")
+    .set_transition_condition("open", lambda ctx: ctx.degreeOfOpening >= 0)
+    .set_transition_event("open", lambda ctx: setattr(ctx, 'degreeOfOpening', 100))
+    .add_transition("close", "AJAR", "CLOSE")
+    .set_transition_condition("close", lambda ctx: ctx.degreeOfOpening <= 0)
+    .set_transition_event("close", lambda ctx: setattr(ctx, 'degreeOfOpening', 0))
+    .add_transition("ajarPlus", "AJAR", "AJAR")
+    .set_transition_event("ajarPlus", lambda ctx: setattr(ctx, 'degreeOfOpening', ctx.degreeOfOpening + 1))
+    .add_transition("ajarMinus", "AJAR", "AJAR")
+    .set_transition_event("ajarMinus", lambda ctx: setattr(ctx, 'degreeOfOpening', ctx.degreeOfOpening - 1))
+)

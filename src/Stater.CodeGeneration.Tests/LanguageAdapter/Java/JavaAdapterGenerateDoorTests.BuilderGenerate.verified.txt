@@ -1,0 +1,16 @@
+﻿package fsm.door;
+
+import com.stater.statemachine.java.*;
+import java.util.*;
+
+class Door {
+    static public final StaterStateMachineBuilder<String, EmptyContext> builderDoorStateMachine = new StaterStateMachineBuilder<String, EmptyContext>()
+        .setStartState("OPEN")
+        .setContext(new EmptyContext())
+        .addTransition("preOpen", "CLOSE", "AJAR")
+        .addTransition("preClose", "OPEN", "AJAR")
+        .addTransition("open", "AJAR", "OPEN")
+        .addTransition("close", "AJAR", "CLOSE")
+        .addTransition("ajarPlus", "AJAR", "AJAR")
+        .addTransition("ajarMinus", "AJAR", "AJAR");
+}

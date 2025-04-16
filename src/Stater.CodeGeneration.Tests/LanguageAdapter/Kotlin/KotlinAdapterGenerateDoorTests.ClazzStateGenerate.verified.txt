@@ -1,0 +1,46 @@
+﻿package fsm.door
+
+import com.stater.statemachine.kotlin.*
+
+enum class States {
+    OPEN,
+    AJAR,
+    CLOSE
+}
+
+class DoorStateMachine : StaterStateMachine<States, EmptyContext>(
+    transitions = listOf(
+        Transition(
+            name = "preOpen",
+            start = States.CLOSE,
+            end = States.AJAR
+        ),
+        Transition(
+            name = "preClose",
+            start = States.OPEN,
+            end = States.AJAR
+        ),
+        Transition(
+            name = "open",
+            start = States.AJAR,
+            end = States.OPEN
+        ),
+        Transition(
+            name = "close",
+            start = States.AJAR,
+            end = States.CLOSE
+        ),
+        Transition(
+            name = "ajarPlus",
+            start = States.AJAR,
+            end = States.AJAR
+        ),
+        Transition(
+            name = "ajarMinus",
+            start = States.AJAR,
+            end = States.AJAR
+        )
+    ),
+    startState = States.OPEN,
+    context = EmptyContext()
+)

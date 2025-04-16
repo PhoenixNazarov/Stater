@@ -1,0 +1,257 @@
+﻿import {builderDoorStateMachine, TypesDoorStateMachine} from "./Door";
+
+
+test('testInit', () => {
+    builderDoorStateMachine.build() as TypesDoorStateMachine
+})
+
+
+
+test('testScenario0', () => {
+    const sm = builderDoorStateMachine.build() as TypesDoorStateMachine
+    sm.disableEvents()
+
+
+    sm.preClose()
+    expect(sm.getState()).toBe("AJAR")
+
+    sm.close()
+    expect(sm.getState()).toBe("CLOSE")
+
+    sm.preOpen()
+    expect(sm.getState()).toBe("AJAR")
+
+    sm.ajarPlus()
+    expect(sm.getState()).toBe("AJAR")
+
+    sm.open()
+    expect(sm.getState()).toBe("OPEN")
+
+})
+
+test('testScenario1', () => {
+    const sm = builderDoorStateMachine.build() as TypesDoorStateMachine
+    sm.disableEvents()
+
+
+    sm.preClose()
+    expect(sm.getState()).toBe("AJAR")
+
+    sm.ajarPlus()
+    expect(sm.getState()).toBe("AJAR")
+
+    sm.close()
+    expect(sm.getState()).toBe("CLOSE")
+
+    sm.preOpen()
+    expect(sm.getState()).toBe("AJAR")
+
+    sm.open()
+    expect(sm.getState()).toBe("OPEN")
+
+})
+
+test('testScenario2', () => {
+    const sm = builderDoorStateMachine.build() as TypesDoorStateMachine
+    sm.disableEvents()
+
+
+    sm.preClose()
+    expect(sm.getState()).toBe("AJAR")
+
+    sm.close()
+    expect(sm.getState()).toBe("CLOSE")
+
+    sm.preOpen()
+    expect(sm.getState()).toBe("AJAR")
+
+    sm.open()
+    expect(sm.getState()).toBe("OPEN")
+
+})
+
+
+test('testJsonSchema', () => {
+    const sm = builderDoorStateMachine.build() as TypesDoorStateMachine
+    expect(JSON.parse(`{
+  "states": [
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    }
+  ]
+}`)).toStrictEqual(JSON.parse(sm.toJsonSchema()))
+})
+
+
+test('testSystemAppendStateTransition', () => {
+    let smBuilder = builderDoorStateMachine
+    
+    smBuilder = smBuilder.addState('__test_state_1__')
+    expect(JSON.parse(`{
+  "states": [
+    "__test_state_1__",
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    }
+  ]
+}`)).toStrictEqual(JSON.parse(smBuilder.build().toJsonSchema()))
+    
+    smBuilder = smBuilder.addState('__test_state_2__')
+    expect(JSON.parse(`{
+  "states": [
+    "__test_state_1__",
+    "__test_state_2__",
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    }
+  ]
+}`)).toStrictEqual(JSON.parse(smBuilder.build().toJsonSchema()))
+    
+    smBuilder = smBuilder.addTransition('__test_transition__', '__test_state_1__', '__test_state_2__')
+    expect(JSON.parse(`{
+  "states": [
+    "__test_state_1__",
+    "__test_state_2__",
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "__test_transition__",
+      "start": "__test_state_1__",
+      "end": "__test_state_2__"
+    }
+  ]
+}`)).toStrictEqual(JSON.parse(smBuilder.build().toJsonSchema()))
+})

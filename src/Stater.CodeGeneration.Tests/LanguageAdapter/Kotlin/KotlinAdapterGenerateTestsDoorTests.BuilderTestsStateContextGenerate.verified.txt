@@ -1,0 +1,125 @@
+﻿package fsm.door;
+
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import com.fasterxml.jackson.databind.ObjectMapper
+
+class TestDoor {
+    @Test
+    fun testInit() {
+        builderDoorStateMachine.build()
+    }
+    
+
+    @Test
+    fun testScenario0() {
+        val sm = builderDoorStateMachine.build()
+        sm.disableEvents()
+    
+
+        sm.transition("preClose")
+        assertEquals(sm.getState(), States.AJAR)
+
+        sm.transition("close")
+        assertEquals(sm.getState(), States.CLOSE)
+
+        sm.transition("preOpen")
+        assertEquals(sm.getState(), States.AJAR)
+
+        sm.transition("ajarPlus")
+        assertEquals(sm.getState(), States.AJAR)
+
+        sm.transition("open")
+        assertEquals(sm.getState(), States.OPEN)
+
+    }
+    @Test
+    fun testScenario1() {
+        val sm = builderDoorStateMachine.build()
+        sm.disableEvents()
+    
+
+        sm.transition("preClose")
+        assertEquals(sm.getState(), States.AJAR)
+
+        sm.transition("ajarPlus")
+        assertEquals(sm.getState(), States.AJAR)
+
+        sm.transition("close")
+        assertEquals(sm.getState(), States.CLOSE)
+
+        sm.transition("preOpen")
+        assertEquals(sm.getState(), States.AJAR)
+
+        sm.transition("open")
+        assertEquals(sm.getState(), States.OPEN)
+
+    }
+    @Test
+    fun testScenario2() {
+        val sm = builderDoorStateMachine.build()
+        sm.disableEvents()
+    
+
+        sm.transition("preClose")
+        assertEquals(sm.getState(), States.AJAR)
+
+        sm.transition("close")
+        assertEquals(sm.getState(), States.CLOSE)
+
+        sm.transition("preOpen")
+        assertEquals(sm.getState(), States.AJAR)
+
+        sm.transition("open")
+        assertEquals(sm.getState(), States.OPEN)
+
+    }
+    
+    @Test
+    fun testJsonSchema() {
+        val sm = builderDoorStateMachine.build()
+        assertEquals(ObjectMapper().readTree("""{
+  "states": [
+    "AJAR",
+    "CLOSE",
+    "OPEN"
+  ],
+  "startState": "OPEN",
+  "transitions": [
+    {
+      "name": "preOpen",
+      "start": "CLOSE",
+      "end": "AJAR"
+    },
+    {
+      "name": "preClose",
+      "start": "OPEN",
+      "end": "AJAR"
+    },
+    {
+      "name": "open",
+      "start": "AJAR",
+      "end": "OPEN"
+    },
+    {
+      "name": "close",
+      "start": "AJAR",
+      "end": "CLOSE"
+    },
+    {
+      "name": "ajarPlus",
+      "start": "AJAR",
+      "end": "AJAR"
+    },
+    {
+      "name": "ajarMinus",
+      "start": "AJAR",
+      "end": "AJAR"
+    }
+  ]
+}"""), ObjectMapper().readTree(sm.toJsonSchema()))
+    }
+    
+    
+}

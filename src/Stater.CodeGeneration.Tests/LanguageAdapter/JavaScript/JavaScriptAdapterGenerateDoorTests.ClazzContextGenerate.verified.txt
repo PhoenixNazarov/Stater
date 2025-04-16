@@ -1,0 +1,61 @@
+﻿import {StaterStateMachine} from "./index.js";
+
+
+const buildDoorFSMContext = () => {
+    return {
+        degreeOfOpening: 0,
+        closeVariable: true,
+        doorName: "asd",
+        floatVariable: 0
+    }
+}
+
+
+export class DoorStateMachine extends StaterStateMachine {
+    constructor() {
+        super(
+            [
+                {
+                    name: "preOpen",
+                    start: "CLOSE",
+                    end: "AJAR",
+                    event: (ctx) => { ctx.degreeOfOpening = 1 }
+                },
+                {
+                    name: "preClose",
+                    start: "OPEN",
+                    end: "AJAR",
+                    event: (ctx) => { ctx.degreeOfOpening = 99 }
+                },
+                {
+                    name: "open",
+                    start: "AJAR",
+                    end: "OPEN",
+                    condition: (ctx) => ctx.degreeOfOpening >= 0,
+                    event: (ctx) => { ctx.degreeOfOpening = 100 }
+                },
+                {
+                    name: "close",
+                    start: "AJAR",
+                    end: "CLOSE",
+                    condition: (ctx) => ctx.degreeOfOpening <= 0,
+                    event: (ctx) => { ctx.degreeOfOpening = 0 }
+                },
+                {
+                    name: "ajarPlus",
+                    start: "AJAR",
+                    end: "AJAR",
+                    event: (ctx) => { ctx.degreeOfOpening = ctx.degreeOfOpening + 1 }
+                },
+                {
+                    name: "ajarMinus",
+                    start: "AJAR",
+                    end: "AJAR",
+                    event: (ctx) => { ctx.degreeOfOpening = ctx.degreeOfOpening - 1 }
+                }
+            ],
+            buildDoorFSMContext(),
+            "OPEN",
+        )
+    }
+}

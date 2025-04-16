@@ -1,0 +1,92 @@
+﻿#pragma once
+
+#include <stater_state_machine.h>
+
+class types_Door_state_machine : public stater_state_machine<std::string, empty_context> {
+public:
+    types_Door_state_machine(
+        const std::vector<transition_t<std::string, empty_context>> &transitions,
+        empty_context *context,
+        const std::string &start_state,
+        const std::unordered_set<std::string> &states,
+        const std::unordered_map<std::string, std::vector<transition_middleware<empty_context>>> &transition_middlewares,
+        const std::vector<transition_name_middleware<empty_context>> &transition_all_middlewares,
+        const std::unordered_map<std::string, std::vector<event<empty_context>>> &transition_callbacks,
+        const std::vector<name_event<empty_context>> &transition_all_callbacks,
+        const std::unordered_map<std::string, std::vector<event<empty_context>>> &state_callbacks,
+        const std::vector<state_event<std::string, empty_context>> &state_all_callbacks,
+        const std::shared_ptr<::context_json_adapter<empty_context> > &context_json_adapter
+    ) : stater_state_machine(
+        transitions,
+        context,
+        start_state,
+        states,
+        transition_middlewares,
+        transition_all_middlewares,
+        transition_callbacks,
+        transition_all_callbacks,
+        state_callbacks,
+        state_all_callbacks,
+        context_json_adapter
+    ) { 
+    }
+
+    void preOpen() {
+        transition("preOpen");
+    }
+
+    void preClose() {
+        transition("preClose");
+    }
+
+    void open() {
+        transition("open");
+    }
+
+    void close() {
+        transition("close");
+    }
+
+    void ajarPlus() {
+        transition("ajarPlus");
+    }
+
+    void ajarMinus() {
+        transition("ajarMinus");
+    }
+};
+
+inline state_machine_factory<std::string, empty_context> typed_Door_factory = [](
+    const std::vector<transition_t<std::string, empty_context> > &transitions,
+    empty_context *context,
+    std::string start_state,
+    const std::unordered_set<std::string> &states,
+    const std::unordered_map<std::string, std::vector<::transition_middleware<empty_context> > > &
+    transition_middleware,
+    const std::vector<transition_name_middleware<empty_context> > &
+    transition_all_middlewares,
+    const std::unordered_map<std::string, std::vector<event<empty_context> > > &
+    transition_callbacks,
+    const std::vector<name_event<empty_context> > &transition_all_callbacks,
+    const std::unordered_map<::std::string, std::vector<event<empty_context> > > &state_callbacks,
+    const std::vector<state_event<::std::string, empty_context> > &state_all_callbacks,
+    const std::shared_ptr<context_json_adapter<empty_context> >& context_json_adapter_) ->
+    std::unique_ptr<types_Door_state_machine> {
+    return std::make_unique<types_Door_state_machine>(
+        transitions, context, start_state, states,
+        transition_middleware, transition_all_middlewares,
+        transition_callbacks, transition_all_callbacks,
+        state_callbacks, state_all_callbacks, context_json_adapter_);
+};
+
+
+inline stater_state_machine_builder<std::string, empty_context> builder_Door_state_machine = stater_state_machine_builder<std::string, empty_context>()
+    .set_start_state("OPEN")
+    .set_context(new empty_context())
+    .set_factory(typed_Door_factory)
+    .add_transition("preOpen", "CLOSE", "AJAR")
+    .add_transition("preClose", "OPEN", "AJAR")
+    .add_transition("open", "AJAR", "OPEN")
+    .add_transition("close", "AJAR", "CLOSE")
+    .add_transition("ajarPlus", "AJAR", "AJAR")
+    .add_transition("ajarMinus", "AJAR", "AJAR");
