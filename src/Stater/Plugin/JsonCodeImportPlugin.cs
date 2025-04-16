@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using System.IO;
-using Stater.CodeGeneration;
+using Stater.Domain.Json;
 
 namespace Stater.Plugin;
 
@@ -12,7 +11,7 @@ public class JsonCodeImportPlugin : ButtonFilePlugin
         {
             var content = File.ReadAllText(path);
             var result = PluginOutput.From("OK");
-            result.ChangedStateMachines.Add(JsonLoader.Load(content));
+            result.ChangedStateMachines.Add(StateMachineJsonAdapter.FromJsonSchema(content));
             return result;
         }
 
@@ -20,4 +19,5 @@ public class JsonCodeImportPlugin : ButtonFilePlugin
     }
     
     public override string Name => "Import json code";
+    public override bool Directory => false;
 }

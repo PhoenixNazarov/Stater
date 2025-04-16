@@ -58,7 +58,8 @@ public class MainWindowViewModel : ReactiveObject
         new()
         {
             new SLXPlugin(),
-            new JsonCodeImportPlugin()
+            new JsonCodeImportPlugin(),
+            new JsonCodeExportPlugin()
         };
 
     private StateMachine _stateMachine;

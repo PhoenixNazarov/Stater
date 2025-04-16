@@ -15,4 +15,5 @@ public class SLXPlugin: ButtonFilePlugin
     }
     
     public override string Name => "SLXParser";
+    public override bool Directory => false;
 }
