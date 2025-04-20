@@ -38,9 +38,9 @@ export class {{ fsm.name }}StateMachine extends StaterStateMachine {
                 {
                     name: "{{ item.transition.name }}",
                     start: {{ state item.start_state.name }},
-                    end: {{ state item.end_state.name }} {{- if item.transition.condition }},
+                    end: {{ state item.end_state.name }} {{- if item.transition.condition && settings.generate_context }},
                     condition: (ctx) => {{ convert_condition item.transition item.transition.condition }}
-                    {{- end }}{{- if item.transition.event }},
+                    {{- end }}{{- if item.transition.event && settings.generate_context }},
                     event: (ctx) => { {{ convert_event item.transition item.transition.event }} }
                     {{- end }}
                 }{{- if !for.last }}{{ "," }}{{- end }}
@@ -90,10 +90,10 @@ export const builder{{ fsm.name }}StateMachine = new StaterStateMachineBuilder()
     {{- end }}
     {{- for item in fsm.state_transitions }}
     .addTransition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
-    {{- if item.transition.condition }}
+    {{- if item.transition.condition && settings.generate_context }}
     .setTransitionCondition("{{ item.transition.name }}", (ctx) => {{ convert_condition item.transition item.transition.condition }})
     {{- end }}
-    {{- if item.transition.event }}
+    {{- if item.transition.event && settings.generate_context }}
     .setTransitionEvent("{{ item.transition.name }}", (ctx) => { {{ convert_event item.transition item.transition.event }} })
     {{- end }}
     {{- end }}

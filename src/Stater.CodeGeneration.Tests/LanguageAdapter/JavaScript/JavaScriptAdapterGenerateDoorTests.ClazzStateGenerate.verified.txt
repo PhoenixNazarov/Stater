@@ -14,40 +14,32 @@ export class DoorStateMachine extends StaterStateMachine {
                 {
                     name: "preOpen",
                     start: States.CLOSE,
-                    end: States.AJAR,
-                    event: (ctx) => { ctx.degreeOfOpening = 1 }
+                    end: States.AJAR
                 },
                 {
                     name: "preClose",
                     start: States.OPEN,
-                    end: States.AJAR,
-                    event: (ctx) => { ctx.degreeOfOpening = 99 }
+                    end: States.AJAR
                 },
                 {
                     name: "open",
                     start: States.AJAR,
-                    end: States.OPEN,
-                    condition: (ctx) => ctx.degreeOfOpening >= 0,
-                    event: (ctx) => { ctx.degreeOfOpening = 100 }
+                    end: States.OPEN
                 },
                 {
                     name: "close",
                     start: States.AJAR,
-                    end: States.CLOSE,
-                    condition: (ctx) => ctx.degreeOfOpening <= 0,
-                    event: (ctx) => { ctx.degreeOfOpening = 0 }
+                    end: States.CLOSE
                 },
                 {
                     name: "ajarPlus",
                     start: States.AJAR,
-                    end: States.AJAR,
-                    event: (ctx) => { ctx.degreeOfOpening = ctx.degreeOfOpening + 1 }
+                    end: States.AJAR
                 },
                 {
                     name: "ajarMinus",
                     start: States.AJAR,
-                    end: States.AJAR,
-                    event: (ctx) => { ctx.degreeOfOpening = ctx.degreeOfOpening - 1 }
+                    end: States.AJAR
                 }
             ],
             {},
