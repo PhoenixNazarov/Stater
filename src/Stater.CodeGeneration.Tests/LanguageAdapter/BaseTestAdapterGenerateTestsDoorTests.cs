@@ -80,7 +80,7 @@ public abstract class BaseTestAdapterGenerateTestsDoorTests
     }
 
     [Fact]
-    public Task ClazzTestsContextGenerateWithContext()
+    public Task ClazzTestsContextGenerateWithInterface()
     {
         var stateMachine = DoorStateMachineTestData.CreateDoorStateMachine();
         var scenarios = ScenarioFinder.FindScenarios(stateMachine);
@@ -110,7 +110,7 @@ public abstract class BaseTestAdapterGenerateTestsDoorTests
     }
 
     [Fact]
-    public Task ClazzTestsStateContextGenerateWithContext()
+    public Task ClazzTestsStateContextGenerateWithInterface()
     {
         var stateMachine = DoorStateMachineTestData.CreateDoorStateMachine();
         var scenarios = ScenarioFinder.FindScenarios(stateMachine);
@@ -201,7 +201,7 @@ public abstract class BaseTestAdapterGenerateTestsDoorTests
     }
 
     [Fact]
-    public Task BuilderTestsContextGenerateWithContext()
+    public Task BuilderTestsContextGenerateWithInterface()
     {
         var stateMachine = DoorStateMachineTestData.CreateDoorStateMachine();
         var scenarios = ScenarioFinder.FindScenarios(stateMachine);
@@ -233,7 +233,7 @@ public abstract class BaseTestAdapterGenerateTestsDoorTests
     }
 
     [Fact]
-    public Task BuilderTestsStateContextGenerateWithContext()
+    public Task BuilderTestsStateContextGenerateWithInterface()
     {
         var stateMachine = DoorStateMachineTestData.CreateDoorStateMachine();
         var scenarios = ScenarioFinder.FindScenarios(stateMachine);

@@ -7,6 +7,6 @@ public class ModuleInitializer
     [ModuleInitializer]
     public static void Init()
     {
-        // VerifierSettings.AutoVerify();
+        VerifierSettings.AutoVerify();
     }
 }

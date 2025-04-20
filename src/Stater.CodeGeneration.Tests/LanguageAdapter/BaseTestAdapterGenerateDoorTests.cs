@@ -75,7 +75,7 @@ public abstract class BaseTestAdapterGenerateDoorTests
     }
 
     [Fact]
-    public Task ClazzContextGenerateWithContext()
+    public Task ClazzContextGenerateWithInterface()
     {
         var stateMachine = DoorStateMachineTestData.CreateDoorStateMachine();
         var settings = new GenerationSettings(
@@ -103,7 +103,7 @@ public abstract class BaseTestAdapterGenerateDoorTests
     }
 
     [Fact]
-    public Task ClazzStateContextGenerateWithContext()
+    public Task ClazzStateContextGenerateWithInterface()
     {
         var stateMachine = DoorStateMachineTestData.CreateDoorStateMachine();
         var settings = new GenerationSettings(
@@ -188,7 +188,7 @@ public abstract class BaseTestAdapterGenerateDoorTests
     }
 
     [Fact]
-    public Task BuilderContextGenerateWithContext()
+    public Task BuilderContextGenerateWithInterface()
     {
         var stateMachine = DoorStateMachineTestData.CreateDoorStateMachine();
         var settings = new GenerationSettings(
@@ -218,7 +218,7 @@ public abstract class BaseTestAdapterGenerateDoorTests
     }
 
     [Fact]
-    public Task BuilderStateContextGenerateWithContext()
+    public Task BuilderStateContextGenerateWithInterface()
     {
         var stateMachine = DoorStateMachineTestData.CreateDoorStateMachine();
         var settings = new GenerationSettings(
