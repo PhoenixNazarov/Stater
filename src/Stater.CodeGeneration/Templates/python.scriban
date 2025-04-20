@@ -38,9 +38,9 @@ class {{ fsm.name }}StateMachine(StaterStateMachine[{{ state_generic }}, {{ cont
                 Transition(
                     name="{{ item.transition.name }}",
                     start={{ state item.start_state.name }},
-                    end={{ state item.end_state.name }} {{- if item.transition.condition }},
+                    end={{ state item.end_state.name }} {{- if item.transition.condition && settings.generate_context }},
                     condition=lambda ctx: {{ convert_condition item.transition item.transition.condition }}
-                   {{- end }}{{- if item.transition.event }},
+                   {{- end }}{{- if item.transition.event && settings.generate_context }},
                     event=lambda ctx: {{ convert_event item.transition item.transition.event }}
                    {{- end }}
                 ){{- if !for.last }}{{ "," }}{{- end }}
@@ -90,10 +90,10 @@ builder_{{ fsm.name }}_state_machine = (
     {{- end }}
     {{- for item in fsm.state_transitions }}
     .add_transition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
-        {{- if item.transition.condition }}
+        {{- if item.transition.condition && settings.generate_context }}
     .set_transition_condition("{{ item.transition.name }}", lambda ctx: {{ convert_condition item.transition item.transition.condition }})
         {{- end }}
-        {{- if item.transition.event }}
+        {{- if item.transition.event && settings.generate_context }}
     .set_transition_event("{{ item.transition.name }}", lambda ctx: {{ convert_event item.transition item.transition.event }})
         {{- end }}
     {{- end }}

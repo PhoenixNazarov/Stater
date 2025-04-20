@@ -17,40 +17,32 @@ class DoorStateMachine(StaterStateMachine[States, EmptyContext]):
                 Transition(
                     name="preOpen",
                     start=States.CLOSE,
-                    end=States.AJAR,
-                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 1)
+                    end=States.AJAR
                 ),
                 Transition(
                     name="preClose",
                     start=States.OPEN,
-                    end=States.AJAR,
-                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 99)
+                    end=States.AJAR
                 ),
                 Transition(
                     name="open",
                     start=States.AJAR,
-                    end=States.OPEN,
-                    condition=lambda ctx: ctx.degreeOfOpening >= 0,
-                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 100)
+                    end=States.OPEN
                 ),
                 Transition(
                     name="close",
                     start=States.AJAR,
-                    end=States.CLOSE,
-                    condition=lambda ctx: ctx.degreeOfOpening <= 0,
-                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 0)
+                    end=States.CLOSE
                 ),
                 Transition(
                     name="ajarPlus",
                     start=States.AJAR,
-                    end=States.AJAR,
-                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', ctx.degreeOfOpening + 1)
+                    end=States.AJAR
                 ),
                 Transition(
                     name="ajarMinus",
                     start=States.AJAR,
-                    end=States.AJAR,
-                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', ctx.degreeOfOpening - 1)
+                    end=States.AJAR
                 )
             ],
             context=EmptyContext(),
