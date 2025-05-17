@@ -6,6 +6,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Media;
 using Splat;
+using Stater.Domain.Models;
 using Stater.Models;
 using Stater.Models.Editors;
 using Stater.ViewModels.Board;

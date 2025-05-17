@@ -1,0 +1,422 @@
+name: Code Generation Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Run generate python3
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/python/ 0 python3
+
+      - name: Run generate javascript
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/js/ 0 javascript
+          
+      - name: Run generate typescript
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/ts/ 0 typescript
+          
+      - name: Run generate kotlin
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/kotlin/ 0 kotlin
+          
+      - name: Run generate java
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/java/ 0 java
+          
+      - name: Run generate csharp
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/csharp/ 0 csharp
+          
+      - name: Run generate c++
+        run: |
+          dotnet run --project src/Stater.CodeGeneration.App artifacts/cplusplus/ 0 cplusplus
+      
+      - name: Save python3 generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-generated-files
+          path: artifacts/python/*
+
+      - name: Save js generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: js-generated-files
+          path: artifacts/js/*
+
+      - name: Save ts generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: ts-generated-files
+          path: artifacts/ts/*
+      
+      - name: Save kotlin generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: kotlin-generated-files
+          path: artifacts/kotlin/*
+
+      - name: Save java generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-generated-files
+          path: artifacts/java/*
+
+      - name: Save csharp generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: csharp-generated-files
+          path: artifacts/csharp/*
+
+      - name: Save c++ generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: cplusplus-generated-files
+          path: artifacts/cplusplus/*
+      
+  test-python:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.9', '3.10', '3.11', '3.12', '3.13' ]
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Install dependencies
+        run: |
+          cd projects/python
+          poetry install --no-root
+
+      - name: Install pytest and pytest-cov
+        run: |
+          cd projects/python
+          poetry add --dev pytest pytest-cov
+
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: python-generated-files
+          path: projects/python/test/
+
+      - name: Run tests with pytest
+        run: |
+          cd projects/python
+          poetry run pytest --cov --junitxml=junit.xml -o junit_family=legacy
+
+  test-javascript:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ '16', '18', '20' ]
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+          
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: projects/js/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd projects/js
+          npm ci
+
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: js-generated-files
+          path: projects/js/src/
+
+      - name: Run tests with Jest
+        run: |
+          cd projects/js
+          npm test -- --coverage --json --outputFile=test-results.json
+
+  test-typescript:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ '16', '18', '20' ]
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: projects/js/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd projects/ts
+          npm ci
+
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: ts-generated-files
+          path: projects/ts/src/
+
+      - name: Run tests with Jest
+        run: |
+          cd projects/ts
+          npm test -- --coverage --json --outputFile=test-results.json
+
+  test-kotlin:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ '17', '21' ]
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: kotlin-generated-files
+          path: projects/kotlin/src/
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'gradle'
+
+      - name: Build project
+        run: |
+          cd projects/kotlin
+          ./gradlew build
+
+      - name: Run tests with coverage
+        run: |
+          cd projects/kotlin
+          ./gradlew test jacocoTestReport --console=plain
+
+      - name: Show test results in console
+        run: |
+          cat projects/kotlin/build/test-results/test/TEST-*.xml || true
+
+      - name: Show coverage summary in console
+        run: |
+          cd projects/kotlin
+          ./gradlew jacocoTestCoverageVerification --console=plain || true
+
+      - name: Create JAR
+        run: |
+          cd projects/kotlin
+          ./gradlew jar
+          
+  test-java:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 17, 21 ]
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: java-generated-files
+          path: projects/java/src/
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'maven'
+
+      - name: Run tests with coverage
+        run: |
+          cd projects/java
+          mvn clean verify -P java${{ matrix.java-version }}
+
+      - name: Create JAR
+        run: |
+          cd projects/java
+          mvn clean package -P java${{ matrix.java-version }}
+
+  test-csharp:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [8.0]
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+          
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: csharp-generated-files
+          path: projects/csharp/Stater.StateMachine.Lib/
+
+      - name: Restore dependencies
+        run: |
+          cd projects/csharp/Stater.StateMachine.Lib
+          dotnet restore
+
+      - name: Build the project
+        run: |
+          cd projects/csharp/Stater.StateMachine.Lib
+          dotnet build --configuration Release
+
+      - name: Run tests with coverage
+        run: |
+          cd projects/csharp/Stater.StateMachine.Lib
+          dotnet test --configuration Release --collect:"XPlat Code Coverage"
+
+  test-cplusplus:
+    needs: [ build-artifacts ]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler:
+          - { cc: gcc-11, cxx: g++-11 }
+          - { cc: gcc-12, cxx: g++-12 }
+          - { cc: gcc-13, cxx: g++-13 }
+          - { cc: clang-16, cxx: clang++-16 }
+          - { cc: clang-17, cxx: clang++-17 }
+      fail-fast: false
+
+    steps:
+      - name: Checkout specific folder from another repository
+        uses: actions/checkout@v4
+        with:
+          repository: PhoenixNazarov/stater-fsm-code
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov cmake
+          sudo apt-get install -y ${{ matrix.compiler.cc }} ${{ matrix.compiler.cxx }}
+          if [ "${{ matrix.compiler.cc }}" = "clang-16" ]; then
+            sudo apt-get install -y llvm-16
+          elif [ "${{ matrix.compiler.cc }}" = "clang-17" ]; then
+            sudo apt-get install -y llvm-17
+          fi
+          pip install gcovr
+          
+      - name: Download generated files
+        uses: actions/download-artifact@v4
+        with:
+          name: cplusplus-generated-files
+          path: projects/cPlusPlus/
+      
+      - name: Configure CMake
+        env:
+          CC: ${{ matrix.compiler.cc }}
+          CXX: ${{ matrix.compiler.cxx }}
+        run: |
+          cd projects/cPlusPlus
+          sh auto_config_cmake.sh fsm
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="--coverage"
+
+      - name: Build
+        env:
+          CC: ${{ matrix.compiler.cc }}
+          CXX: ${{ matrix.compiler.cxx }}
+        run: |
+          cd projects/cPlusPlus
+          if [[ "${{ matrix.compiler.cc }}" == clang-* ]]; then
+            export CFLAGS="-fprofile-instr-generate -fcoverage-mapping"
+            export CXXFLAGS="-fprofile-instr-generate -fcoverage-mapping"
+          else
+            export CFLAGS="--coverage"
+            export CXXFLAGS="--coverage"
+          fi
+
+          cmake -B build -S . \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_C_COMPILER=${{ matrix.compiler.cc }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} \
+            -DCMAKE_C_FLAGS="${CFLAGS}" \
+            -DCMAKE_CXX_FLAGS="${CXXFLAGS}"
+
+          cmake --build build
+
+      - name: Run tests
+        run: |
+          cd projects/cPlusPlus/build
+          if [[ "${{ matrix.compiler.cc }}" == clang-* ]]; then
+            export LLVM_PROFILE_FILE="coverage-%p.profraw"
+          else
+            export LLVM_PROFILE_FILE=""
+          fi
+          ctest --output-on-failure
+
+      - name: Generate and show detailed coverage
+        run: |
+          cd projects/cPlusPlus/build
+          if [ "${{ matrix.compiler.cc }}" = "clang-16" ]; then
+            llvm-profdata-16 merge -sparse coverage-*.profraw -o coverage.profdata
+            llvm-cov-16 report ./generated_test -instr-profile=coverage.profdata --ignore-filename-regex=".*(gtest|nlohmann|CMakeFiles).*"
+          elif [ "${{ matrix.compiler.cc }}" = "clang-17" ]; then
+            llvm-profdata-17 merge -sparse coverage-*.profraw -o coverage.profdata
+            llvm-cov-17 report ./generated_test -instr-profile=coverage.profdata --ignore-filename-regex=".*(gtest|nlohmann|CMakeFiles).*"
+          else
+            if [ "${{ matrix.compiler.cc }}" = "gcc-11" ]; then
+              GCOV_EXEC=gcov-11
+            elif [ "${{ matrix.compiler.cc }}" = "gcc-12" ]; then
+              GCOV_EXEC=gcov-12
+            elif [ "${{ matrix.compiler.cc }}" = "gcc-13" ]; then
+              GCOV_EXEC=gcov-13
+            fi
+            gcovr -r .. --exclude '.*gtest.*' --exclude '.*nlohmann.*' --gcov-executable $GCOV_EXEC --txt
+          fi
+    

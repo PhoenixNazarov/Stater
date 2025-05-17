@@ -1,0 +1,90 @@
+{
+  "states": [
+    "B1",
+    "dt\nBxG3 = 0;",
+    "dt\nen: BxG1 = 0;",
+    "dt1\nen: BxG0 = 0;",
+    "dt1\nen: BxG2 = 0;",
+    "G0_G1",
+    "G2_G3",
+    "OFF\nen: BxG0 = 0;...\nBxG1 = 1;",
+    "OFF\nen: BxG2 = 0;...\nBxG3 = 1;",
+    "ON\nen: BxG0 = 1;...\nBxG1 = 0;",
+    "ON\nen: BxG2 = 1;...\nBxG3 = 0;",
+    "tri_state\nen: BxG0 = 0;...\nBxG1 = 0;\n",
+    "tri_state\nen: BxG2 = 0;...\nBxG3 = 0;\n"
+  ],
+  "startState": "G0_G1",
+  "transitions": [
+    {
+      "name": "[BRx == 2 || ... \nBRx == 3]",
+      "start": "tri_state\nen: BxG0 = 0;...\nBxG1 = 0;\n",
+      "end": "OFF\nen: BxG0 = 0;...\nBxG1 = 1;"
+    },
+    {
+      "name": "[BRx == 0]",
+      "start": "B1",
+      "end": "tri_state\nen: BxG0 = 0;...\nBxG1 = 0;\n"
+    },
+    {
+      "name": "[BRx == 1 || ... \nBRx == 4]",
+      "start": "tri_state\nen: BxG0 = 0;...\nBxG1 = 0;\n",
+      "end": "ON\nen: BxG0 = 1;...\nBxG1 = 0;"
+    },
+    {
+      "name": "[BRx == 1 || ... \nBRx == 4]",
+      "start": "OFF\nen: BxG0 = 0;...\nBxG1 = 1;",
+      "end": "dt\nen: BxG1 = 0;"
+    },
+    {
+      "name": "[after(dt,tick)]",
+      "start": "dt1\nen: BxG0 = 0;",
+      "end": "OFF\nen: BxG0 = 0;...\nBxG1 = 1;"
+    },
+    {
+      "name": "[after(dt,tick)]",
+      "start": "dt\nen: BxG1 = 0;",
+      "end": "ON\nen: BxG0 = 1;...\nBxG1 = 0;"
+    },
+    {
+      "name": "[BRx == 2 || ... \nBRx == 3]",
+      "start": "ON\nen: BxG0 = 1;...\nBxG1 = 0;",
+      "end": "dt1\nen: BxG0 = 0;"
+    },
+    {
+      "name": "[BRx == 1 || ... \nBRx == 2]",
+      "start": "tri_state\nen: BxG2 = 0;...\nBxG3 = 0;\n",
+      "end": "OFF\nen: BxG2 = 0;...\nBxG3 = 1;"
+    },
+    {
+      "name": "[BRx == 0]",
+      "start": "B1",
+      "end": "tri_state\nen: BxG2 = 0;...\nBxG3 = 0;\n"
+    },
+    {
+      "name": "[BRx == 3 || ... \nBRx == 4]",
+      "start": "tri_state\nen: BxG2 = 0;...\nBxG3 = 0;\n",
+      "end": "ON\nen: BxG2 = 1;...\nBxG3 = 0;"
+    },
+    {
+      "name": "[BRx == 3 || ... \nBRx == 4]",
+      "start": "OFF\nen: BxG2 = 0;...\nBxG3 = 1;",
+      "end": "dt\nBxG3 = 0;"
+    },
+    {
+      "name": "[after(dt,tick)]",
+      "start": "dt1\nen: BxG2 = 0;",
+      "end": "OFF\nen: BxG2 = 0;...\nBxG3 = 1;"
+    },
+    {
+      "name": "[after(dt,tick)]",
+      "start": "dt\nBxG3 = 0;",
+      "end": "ON\nen: BxG2 = 1;...\nBxG3 = 0;"
+    },
+    {
+      "name": "[BRx == 1 || ... \nBRx == 2]",
+      "start": "ON\nen: BxG2 = 1;...\nBxG3 = 0;",
+      "end": "dt1\nen: BxG2 = 0;"
+    }
+  ]
+}

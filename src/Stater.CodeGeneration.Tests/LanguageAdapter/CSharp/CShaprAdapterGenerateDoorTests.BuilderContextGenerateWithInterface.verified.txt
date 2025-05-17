@@ -1,0 +1,114 @@
+﻿namespace fsm.door;
+
+using Stater.StateMachine.Lib;
+
+public class DoorFSMContext : IContext{
+    public int degreeOfOpening = 0;
+    public bool closeVariable = true;
+    public string doorName = "asd";
+    public float floatVariable = 0f;
+}
+
+public class Door {
+    public class TypesDoorStateMachine(
+        List<Transition<String, DoorFSMContext>> transitions,
+        DoorFSMContext context,
+        String startState,
+        HashSet<String> states,
+        Dictionary<String, List<TransitionMiddleware<DoorFSMContext>>> transitionMiddlewares,
+        List<TransitionNameMiddleware<DoorFSMContext>> transitionAllMiddlewares,
+        Dictionary<String, List<Event<DoorFSMContext>>> transitionCallbacks,
+        List<NameEvent<DoorFSMContext>> transitionAllCallbacks,
+        Dictionary<String, List<Event<DoorFSMContext>>> stateCallbacks,
+        List<StateEvent<String, DoorFSMContext>> stateAllCallbacks,
+        IContextJsonAdapter<DoorFSMContext> contextJsonAdapter
+    ) : StaterStateMachine<String, DoorFSMContext>(
+        transitions,
+        context,
+        startState,
+        states,
+        transitionMiddlewares,
+        transitionAllMiddlewares,
+        transitionCallbacks,
+        transitionAllCallbacks,
+        stateCallbacks,
+        stateAllCallbacks,
+        contextJsonAdapter
+    )
+    {
+        public void preOpen() 
+        {
+            Transition("preOpen");
+        }
+
+        public void preClose() 
+        {
+            Transition("preClose");
+        }
+
+        public void open() 
+        {
+            Transition("open");
+        }
+
+        public void close() 
+        {
+            Transition("close");
+        }
+
+        public void ajarPlus() 
+        {
+            Transition("ajarPlus");
+        }
+
+        public void ajarMinus() 
+        {
+            Transition("ajarMinus");
+        }
+    }
+    private static StateMachineFactory<String, DoorFSMContext> TypedDoorFactory = (
+        transitionsA,
+        contextA,
+        startStateA,
+        statesA,
+        transitionMiddlewaresA,
+        transitionAllMiddlewaresA,
+        transitionCallbacksA,
+        transitionAllCallbacksA,
+        stateCallbacksA,
+        stateAllCallbacksA,
+        contextJsonAdapterA
+    ) => new TypesDoorStateMachine(
+        transitionsA,
+        contextA,
+        startStateA,
+        statesA,
+        transitionMiddlewaresA,
+        transitionAllMiddlewaresA,
+        transitionCallbacksA,
+        transitionAllCallbacksA,
+        stateCallbacksA,
+        stateAllCallbacksA,
+        contextJsonAdapterA
+    );
+
+
+    public static StaterStateMachineBuilder<String, DoorFSMContext> BuilderDoorStateMachine = new StaterStateMachineBuilder<String, DoorFSMContext>()
+        .SetStartState("OPEN")
+        .SetContext(new DoorFSMContext())
+        .SetFactory(TypedDoorFactory)
+        .AddTransition("preOpen", "CLOSE", "AJAR")
+        .SetTransitionEvent("preOpen", ctx => ctx.degreeOfOpening = 1)
+        .AddTransition("preClose", "OPEN", "AJAR")
+        .SetTransitionEvent("preClose", ctx => ctx.degreeOfOpening = 99)
+        .AddTransition("open", "AJAR", "OPEN")
+        .SetTransitionCondition("open", ctx => ctx.degreeOfOpening >= 0)
+        .SetTransitionEvent("open", ctx => ctx.degreeOfOpening = 100)
+        .AddTransition("close", "AJAR", "CLOSE")
+        .SetTransitionCondition("close", ctx => ctx.degreeOfOpening <= 0)
+        .SetTransitionEvent("close", ctx => ctx.degreeOfOpening = 0)
+        .AddTransition("ajarPlus", "AJAR", "AJAR")
+        .SetTransitionEvent("ajarPlus", ctx => ctx.degreeOfOpening = ctx.degreeOfOpening + 1)
+        .AddTransition("ajarMinus", "AJAR", "AJAR")
+        .SetTransitionEvent("ajarMinus", ctx => ctx.degreeOfOpening = ctx.degreeOfOpening - 1);
+}

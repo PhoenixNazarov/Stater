@@ -1,0 +1,161 @@
+#pragma once
+
+#include <stater_state_machine.h>
+
+{{ if settings.generate_states ~}}
+enum class e_{{ fsm.name }}_states {
+    {{- for item in fsm.states }}
+    {{ item.name }}{{- if !for.last }}{{ "," }}{{- end }}
+    {{- end }}
+};
+
+inline void to_json(nlohmann::json &j, const e_{{ fsm.name }}_states &e) {
+    switch (e) {
+        {{- for item in fsm.states }}
+        case e_{{ fsm.name }}_states::{{ item.name }}: j = "{{ item.name }}";
+            break;
+        {{- end }}
+    }
+}
+
+inline void from_json(const nlohmann::json &j, e_{{ fsm.name }}_states &e) {
+    std::string state_str = j.get<std::string>();
+{{~ for item in fsm.states }}
+    {{ if for.first }}if{{ else }}else if{{- end }} (state_str == "{{ item.name }}") e = e_{{ fsm.name }}_states::{{ item.name }};
+    {{- end }}
+}
+
+{{ end }}
+{{- func state(name) -}}
+{{- if settings.generate_states -}}
+e_{{ fsm.name }}_states::{{ name }}
+{{- else -}}
+"{{ name }}"
+{{- end -}}
+{{- end -}}
+{{- if settings.generate_context ~}}
+class {{ fsm.name }}_context final : context {
+public:
+{{- for item in fsm.variables }}
+    {{ convert_variable_type item.start_value }} {{ item.name }} = {{ convert_variable_value item.start_value }};
+{{- end }}
+};
+
+{{ end -}}
+{{- if !settings.generate_states; state_generic = "std::string"; else; state_generic = "e_" + fsm.name + "_states"; end }}
+{{- if !settings.generate_context; context_generic = "empty_context"; else; context_generic = fsm.name + "_context"; end -}}
+{{- if settings.mode == "Clazz" ~}}
+class {{ fsm.name }}_state_machine : public stater_state_machine<{{ state_generic }}, {{ context_generic }}> {
+public:
+    {{ fsm.name }}_state_machine() : stater_state_machine (
+        {
+        {{- for item in fsm.state_transitions }}
+            transition_t<::{{ state_generic }}, {{ context_generic }}>(
+                "{{ item.transition.name }}",
+                {{ state item.start_state.name }},
+                {{ state item.end_state.name }} {{- if item.transition.condition && settings.generate_context }},
+                []({{ context_generic }} *ctx) { {{ convert_condition item.transition item.transition.condition }} }{{- else }}, 
+                []({{ context_generic }} *ctx) { return true; }
+                {{- end }}{{- if item.transition.event && settings.generate_context }},
+                []({{ context_generic }} *ctx) { {{ convert_event item.transition item.transition.event }} }{{- else }}, 
+                []({{ context_generic }} *ctx) { }
+                {{- end }}
+            ){{- if !for.last }}{{ "," }}{{- end }}
+        {{- end }}
+        },
+        new {{ context_generic }}(),
+        {{- if fsm.start_state != null }}
+        {{ state fsm.start_state.name }}
+        {{- else }}nullptr{{ end }}
+    ) {
+    }
+{{ if settings.generate_interface }}
+    {{- for item in fsm.transitions }}
+    void {{ item.name }}() {
+        transition("{{ item.name }}");
+    }{{- if !for.last }}{{ "\n" }}{{- end }}
+    {{- end }}
+{{- end }}
+};
+{{- else if settings.mode == "Builder" -}}
+{{~ if settings.generate_interface ~}}
+class types_{{ fsm.name }}_state_machine : public stater_state_machine<{{ state_generic }}, {{ context_generic }}> {
+public:
+    types_{{ fsm.name }}_state_machine(
+        const std::vector<transition_t<{{ state_generic }}, {{ context_generic }}>> &transitions,
+        {{ context_generic }} *context,
+        const {{ state_generic }} &start_state,
+        const std::unordered_set<{{ state_generic }}> &states,
+        const std::unordered_map<std::string, std::vector<transition_middleware<{{ context_generic }}>>> &transition_middlewares,
+        const std::vector<transition_name_middleware<{{ context_generic }}>> &transition_all_middlewares,
+        const std::unordered_map<std::string, std::vector<event<{{ context_generic }}>>> &transition_callbacks,
+        const std::vector<name_event<{{ context_generic }}>> &transition_all_callbacks,
+        const std::unordered_map<{{ state_generic }}, std::vector<event<{{ context_generic }}>>> &state_callbacks,
+        const std::vector<state_event<{{ state_generic }}, {{ context_generic }}>> &state_all_callbacks,
+        const std::shared_ptr<::context_json_adapter<{{ context_generic }}> > &context_json_adapter
+    ) : stater_state_machine(
+        transitions,
+        context,
+        start_state,
+        states,
+        transition_middlewares,
+        transition_all_middlewares,
+        transition_callbacks,
+        transition_all_callbacks,
+        state_callbacks,
+        state_all_callbacks,
+        context_json_adapter
+    ) { 
+    }
+{{ if settings.generate_interface }}
+    {{- for item in fsm.transitions }}
+    void {{ item.name }}() {
+        transition("{{ item.name }}");
+    }{{- if !for.last }}{{ "\n" }}{{- end }}
+    {{- end }}
+{{- end }}
+};
+
+inline state_machine_factory<{{ state_generic }}, {{ context_generic }}> typed_{{ fsm.name }}_factory = [](
+    const std::vector<transition_t<{{ state_generic }}, {{ context_generic }}> > &transitions,
+    {{ context_generic }} *context,
+    {{ state_generic }} start_state,
+    const std::unordered_set<{{ state_generic }}> &states,
+    const std::unordered_map<std::string, std::vector<::transition_middleware<{{ context_generic }}> > > &
+    transition_middleware,
+    const std::vector<transition_name_middleware<{{ context_generic }}> > &
+    transition_all_middlewares,
+    const std::unordered_map<std::string, std::vector<event<{{ context_generic }}> > > &
+    transition_callbacks,
+    const std::vector<name_event<{{ context_generic }}> > &transition_all_callbacks,
+    const std::unordered_map<::{{ state_generic }}, std::vector<event<{{ context_generic }}> > > &state_callbacks,
+    const std::vector<state_event<::{{ state_generic }}, {{ context_generic }}> > &state_all_callbacks,
+    const std::shared_ptr<context_json_adapter<{{ context_generic }}> >& context_json_adapter_) ->
+    std::unique_ptr<types_{{ fsm.name }}_state_machine> {
+    return std::make_unique<types_{{ fsm.name }}_state_machine>(
+        transitions, context, start_state, states,
+        transition_middleware, transition_all_middlewares,
+        transition_callbacks, transition_all_callbacks,
+        state_callbacks, state_all_callbacks, context_json_adapter_);
+};
+
+
+{{ end ~}}
+inline stater_state_machine_builder<{{ state_generic }}, {{ context_generic }}> builder_{{ fsm.name }}_state_machine = stater_state_machine_builder<{{ state_generic }}, {{ context_generic }}>()
+{{- if fsm.start_state != null }}
+    .set_start_state({{ state fsm.start_state.name }})
+{{- end }}
+    .set_context(new {{ context_generic }}())
+{{- if settings.generate_interface }}
+    .set_factory(typed_{{ fsm.name }}_factory)
+{{- end }}
+{{- for item in fsm.state_transitions }}
+    .add_transition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
+{{- if item.transition.condition && settings.generate_context }}
+    .set_transition_condition("{{ item.transition.name }}", []({{ context_generic }} *ctx) { {{ convert_condition item.transition item.transition.condition }} })
+{{- end }}
+{{- if item.transition.event && settings.generate_context }}
+    .set_transition_event("{{ item.transition.name }}", []({{ context_generic }} *ctx) { {{ convert_event item.transition item.transition.event }} })
+{{- end }}
+{{- end }};
+{{- end }}

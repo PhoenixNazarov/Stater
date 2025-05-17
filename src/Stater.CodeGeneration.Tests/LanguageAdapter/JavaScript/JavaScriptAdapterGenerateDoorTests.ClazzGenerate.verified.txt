@@ -1,0 +1,43 @@
+﻿import {StaterStateMachine} from "./index.js";
+
+
+export class DoorStateMachine extends StaterStateMachine {
+    constructor() {
+        super(
+            [
+                {
+                    name: "preOpen",
+                    start: "CLOSE",
+                    end: "AJAR"
+                },
+                {
+                    name: "preClose",
+                    start: "OPEN",
+                    end: "AJAR"
+                },
+                {
+                    name: "open",
+                    start: "AJAR",
+                    end: "OPEN"
+                },
+                {
+                    name: "close",
+                    start: "AJAR",
+                    end: "CLOSE"
+                },
+                {
+                    name: "ajarPlus",
+                    start: "AJAR",
+                    end: "AJAR"
+                },
+                {
+                    name: "ajarMinus",
+                    start: "AJAR",
+                    end: "AJAR"
+                }
+            ],
+            {},
+            "OPEN",
+        )
+    }
+}

@@ -1,0 +1,15 @@
+﻿from stater_state_machine import EmptyContext
+from stater_state_machine import StaterStateMachineBuilder
+
+
+builder_Door_state_machine = (
+    StaterStateMachineBuilder[str, EmptyContext]()
+    .set_start_state("OPEN")
+    .set_context(EmptyContext())
+    .add_transition("preOpen", "CLOSE", "AJAR")
+    .add_transition("preClose", "OPEN", "AJAR")
+    .add_transition("open", "AJAR", "OPEN")
+    .add_transition("close", "AJAR", "CLOSE")
+    .add_transition("ajarPlus", "AJAR", "AJAR")
+    .add_transition("ajarMinus", "AJAR", "AJAR")
+)

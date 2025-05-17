@@ -1,0 +1,41 @@
+﻿import {StaterStateMachine} from "./index.js";
+import {StaterStateMachineBuilder} from "./index.js";
+
+class TypesDoorStateMachine extends StaterStateMachine {
+    preOpen() {
+        this.transition("preOpen")
+    }
+
+    preClose() {
+        this.transition("preClose")
+    }
+
+    open() {
+        this.transition("open")
+    }
+
+    close() {
+        this.transition("close")
+    }
+
+    ajarPlus() {
+        this.transition("ajarPlus")
+    }
+
+    ajarMinus() {
+        this.transition("ajarMinus")
+    }
+}
+
+const typedDoorFactory = (...args) => new TypesDoorStateMachine(...args);
+
+export const builderDoorStateMachine = new StaterStateMachineBuilder()
+    .setStartState("OPEN")
+    .setContext({})
+    .setFactory(typedDoorFactory)
+    .addTransition("preOpen", "CLOSE", "AJAR")
+    .addTransition("preClose", "OPEN", "AJAR")
+    .addTransition("open", "AJAR", "OPEN")
+    .addTransition("close", "AJAR", "CLOSE")
+    .addTransition("ajarPlus", "AJAR", "AJAR")
+    .addTransition("ajarMinus", "AJAR", "AJAR")

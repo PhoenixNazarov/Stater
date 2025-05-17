@@ -1,5 +1,6 @@
 using System;
 using System.Reactive.Subjects;
+using Stater.Domain.Models;
 
 namespace Stater.Models.Editors.impl;
 
@@ -54,5 +55,10 @@ public class EditorManager : IEditorManager
     {
         _variableEditor.DoSelect(variable);
         _editorType.OnNext(EditorTypeEnum.Variable);
+    }
+
+    public void DoSelectCodeGeneration()
+    {
+        _editorType.OnNext(EditorTypeEnum.CodeGeneration);
     }
 }

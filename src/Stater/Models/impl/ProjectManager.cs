@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Xml;
 using DynamicData;
+using Stater.Domain.Models;
 
 namespace Stater.Models.impl;
 

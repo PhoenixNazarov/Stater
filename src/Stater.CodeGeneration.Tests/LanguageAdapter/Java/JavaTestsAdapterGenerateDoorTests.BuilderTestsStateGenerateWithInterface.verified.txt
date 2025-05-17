@@ -1,0 +1,127 @@
+﻿package fsm.door;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+class TestDoor {
+    @Test
+    void testInit() {
+        var fsm = (Door.TypesDoorStateMachine)Door.builderDoorStateMachine.build();
+    }
+    
+
+    @Test
+    void testScenario0() {
+        var sm = (Door.TypesDoorStateMachine)Door.builderDoorStateMachine.build();
+        sm.disableEvents();
+    
+
+        sm.preClose();
+        assertEquals(sm.getState(), Door.States.AJAR);
+
+        sm.close();
+        assertEquals(sm.getState(), Door.States.CLOSE);
+
+        sm.preOpen();
+        assertEquals(sm.getState(), Door.States.AJAR);
+
+        sm.ajarPlus();
+        assertEquals(sm.getState(), Door.States.AJAR);
+
+        sm.open();
+        assertEquals(sm.getState(), Door.States.OPEN);
+
+    }
+    @Test
+    void testScenario1() {
+        var sm = (Door.TypesDoorStateMachine)Door.builderDoorStateMachine.build();
+        sm.disableEvents();
+    
+
+        sm.preClose();
+        assertEquals(sm.getState(), Door.States.AJAR);
+
+        sm.ajarPlus();
+        assertEquals(sm.getState(), Door.States.AJAR);
+
+        sm.close();
+        assertEquals(sm.getState(), Door.States.CLOSE);
+
+        sm.preOpen();
+        assertEquals(sm.getState(), Door.States.AJAR);
+
+        sm.open();
+        assertEquals(sm.getState(), Door.States.OPEN);
+
+    }
+    @Test
+    void testScenario2() {
+        var sm = (Door.TypesDoorStateMachine)Door.builderDoorStateMachine.build();
+        sm.disableEvents();
+    
+
+        sm.preClose();
+        assertEquals(sm.getState(), Door.States.AJAR);
+
+        sm.close();
+        assertEquals(sm.getState(), Door.States.CLOSE);
+
+        sm.preOpen();
+        assertEquals(sm.getState(), Door.States.AJAR);
+
+        sm.open();
+        assertEquals(sm.getState(), Door.States.OPEN);
+
+    }
+    
+    @Test
+    void testJsonSchema() throws Exception {
+        var sm = (Door.TypesDoorStateMachine)Door.builderDoorStateMachine.build();
+        assertEquals(new ObjectMapper().readTree("""
+        {
+          "states": [
+            "AJAR",
+            "CLOSE",
+            "OPEN"
+          ],
+          "startState": "OPEN",
+          "transitions": [
+            {
+              "name": "preOpen",
+              "start": "CLOSE",
+              "end": "AJAR"
+            },
+            {
+              "name": "preClose",
+              "start": "OPEN",
+              "end": "AJAR"
+            },
+            {
+              "name": "open",
+              "start": "AJAR",
+              "end": "OPEN"
+            },
+            {
+              "name": "close",
+              "start": "AJAR",
+              "end": "CLOSE"
+            },
+            {
+              "name": "ajarPlus",
+              "start": "AJAR",
+              "end": "AJAR"
+            },
+            {
+              "name": "ajarMinus",
+              "start": "AJAR",
+              "end": "AJAR"
+            }
+          ]
+        }
+        """
+        ), new ObjectMapper().readTree(sm.toJsonSchema()));
+    }
+    
+    
+}

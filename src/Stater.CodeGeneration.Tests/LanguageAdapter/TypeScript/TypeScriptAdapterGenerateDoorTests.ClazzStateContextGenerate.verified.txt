@@ -1,0 +1,75 @@
+﻿import {Context} from "./StaterStateMachine";
+import {StaterStateMachine} from "./StaterStateMachine";
+
+
+export enum States {
+    OPEN = "OPEN",
+    AJAR = "AJAR",
+    CLOSE = "CLOSE"
+}
+
+interface DoorFSMContext extends Context {
+    degreeOfOpening: number
+    closeVariable: boolean
+    doorName: string
+    floatVariable: number
+}
+
+const buildDoorFSMContext: () => DoorFSMContext = () => {
+    return {
+        degreeOfOpening: 0,
+        closeVariable: true,
+        doorName: "asd",
+        floatVariable: 0
+    }
+}
+
+
+export class DoorStateMachine extends StaterStateMachine<States, DoorFSMContext> {
+    constructor() {
+        super(
+            [
+                {
+                    name: "preOpen",
+                    start: States.CLOSE,
+                    end: States.AJAR,
+                    event: (ctx) => { ctx.degreeOfOpening = 1 }
+                },
+                {
+                    name: "preClose",
+                    start: States.OPEN,
+                    end: States.AJAR,
+                    event: (ctx) => { ctx.degreeOfOpening = 99 }
+                },
+                {
+                    name: "open",
+                    start: States.AJAR,
+                    end: States.OPEN,
+                    condition: (ctx) => ctx.degreeOfOpening >= 0,
+                    event: (ctx) => { ctx.degreeOfOpening = 100 }
+                },
+                {
+                    name: "close",
+                    start: States.AJAR,
+                    end: States.CLOSE,
+                    condition: (ctx) => ctx.degreeOfOpening <= 0,
+                    event: (ctx) => { ctx.degreeOfOpening = 0 }
+                },
+                {
+                    name: "ajarPlus",
+                    start: States.AJAR,
+                    end: States.AJAR,
+                    event: (ctx) => { ctx.degreeOfOpening = ctx.degreeOfOpening + 1 }
+                },
+                {
+                    name: "ajarMinus",
+                    start: States.AJAR,
+                    end: States.AJAR,
+                    event: (ctx) => { ctx.degreeOfOpening = ctx.degreeOfOpening - 1 }
+                }
+            ],
+            buildDoorFSMContext(),
+            States.OPEN,
+        )
+    }
+}

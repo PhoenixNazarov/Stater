@@ -1,5 +1,5 @@
 using System;
-using Avalonia.Animation;
+using Stater.Domain.Models;
 
 namespace Stater.Models.Editors;
 

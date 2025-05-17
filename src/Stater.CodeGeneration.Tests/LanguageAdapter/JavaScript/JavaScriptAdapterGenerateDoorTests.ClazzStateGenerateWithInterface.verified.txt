@@ -1,0 +1,73 @@
+﻿import {StaterStateMachine} from "./index.js";
+
+
+export const States = Object.freeze({
+    OPEN: "OPEN",
+    AJAR: "AJAR",
+    CLOSE: "CLOSE"
+});
+
+export class DoorStateMachine extends StaterStateMachine {
+    constructor() {
+        super(
+            [
+                {
+                    name: "preOpen",
+                    start: States.CLOSE,
+                    end: States.AJAR
+                },
+                {
+                    name: "preClose",
+                    start: States.OPEN,
+                    end: States.AJAR
+                },
+                {
+                    name: "open",
+                    start: States.AJAR,
+                    end: States.OPEN
+                },
+                {
+                    name: "close",
+                    start: States.AJAR,
+                    end: States.CLOSE
+                },
+                {
+                    name: "ajarPlus",
+                    start: States.AJAR,
+                    end: States.AJAR
+                },
+                {
+                    name: "ajarMinus",
+                    start: States.AJAR,
+                    end: States.AJAR
+                }
+            ],
+            {},
+            States.OPEN,
+        )
+    }
+
+    preOpen() {
+        this.transition("preOpen")
+    }
+
+    preClose() {
+        this.transition("preClose")
+    }
+
+    open() {
+        this.transition("open")
+    }
+
+    close() {
+        this.transition("close")
+    }
+
+    ajarPlus() {
+        this.transition("ajarPlus")
+    }
+
+    ajarMinus() {
+        this.transition("ajarMinus")
+    }
+}

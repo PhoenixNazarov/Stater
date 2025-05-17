@@ -1,0 +1,58 @@
+﻿from pydantic import BaseModel
+from stater_state_machine import Context
+from stater_state_machine import StaterStateMachine
+from stater_state_machine import Transition
+
+
+class DoorFSMContext(BaseModel, Context):
+    degreeOfOpening: int = 0
+    closeVariable: bool = True
+    doorName: str = "asd"
+    floatVariable: float = 0
+
+class DoorStateMachine(StaterStateMachine[str, DoorFSMContext]):
+    def __init__(self):
+        super().__init__(
+            transitions=[
+                Transition(
+                    name="preOpen",
+                    start="CLOSE",
+                    end="AJAR",
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 1)
+                ),
+                Transition(
+                    name="preClose",
+                    start="OPEN",
+                    end="AJAR",
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 99)
+                ),
+                Transition(
+                    name="open",
+                    start="AJAR",
+                    end="OPEN",
+                    condition=lambda ctx: ctx.degreeOfOpening >= 0,
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 100)
+                ),
+                Transition(
+                    name="close",
+                    start="AJAR",
+                    end="CLOSE",
+                    condition=lambda ctx: ctx.degreeOfOpening <= 0,
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', 0)
+                ),
+                Transition(
+                    name="ajarPlus",
+                    start="AJAR",
+                    end="AJAR",
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', ctx.degreeOfOpening + 1)
+                ),
+                Transition(
+                    name="ajarMinus",
+                    start="AJAR",
+                    end="AJAR",
+                    event=lambda ctx: setattr(ctx, 'degreeOfOpening', ctx.degreeOfOpening - 1)
+                )
+            ],
+            context=DoorFSMContext(),
+            start_state="OPEN",
+        )

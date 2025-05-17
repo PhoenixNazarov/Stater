@@ -1,0 +1,29 @@
+﻿#pragma once
+
+#include <stater_state_machine.h>
+
+class Door_context final : context {
+public:
+    int degreeOfOpening = 0;
+    bool closeVariable = true;
+    std::string doorName = "asd";
+    float floatVariable = 0f;
+};
+
+inline stater_state_machine_builder<std::string, Door_context> builder_Door_state_machine = stater_state_machine_builder<std::string, Door_context>()
+    .set_start_state("OPEN")
+    .set_context(new Door_context())
+    .add_transition("preOpen", "CLOSE", "AJAR")
+    .set_transition_event("preOpen", [](Door_context *ctx) { ctx->degreeOfOpening = 1; })
+    .add_transition("preClose", "OPEN", "AJAR")
+    .set_transition_event("preClose", [](Door_context *ctx) { ctx->degreeOfOpening = 99; })
+    .add_transition("open", "AJAR", "OPEN")
+    .set_transition_condition("open", [](Door_context *ctx) { return ctx->degreeOfOpening >= 0; })
+    .set_transition_event("open", [](Door_context *ctx) { ctx->degreeOfOpening = 100; })
+    .add_transition("close", "AJAR", "CLOSE")
+    .set_transition_condition("close", [](Door_context *ctx) { return ctx->degreeOfOpening <= 0; })
+    .set_transition_event("close", [](Door_context *ctx) { ctx->degreeOfOpening = 0; })
+    .add_transition("ajarPlus", "AJAR", "AJAR")
+    .set_transition_event("ajarPlus", [](Door_context *ctx) { ctx->degreeOfOpening = ctx->degreeOfOpening + 1; })
+    .add_transition("ajarMinus", "AJAR", "AJAR")
+    .set_transition_event("ajarMinus", [](Door_context *ctx) { ctx->degreeOfOpening = ctx->degreeOfOpening - 1; });

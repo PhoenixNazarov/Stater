@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Stater.ViewModels.Editors"
              xmlns:editors="using:Stater.Views.Editors"
+             xmlns:plugins="using:Stater.Views.Plugins"
              xmlns:converters="clr-namespace:Stater.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Stater.Views.Editors.MainEditor"
@@ -28,6 +29,11 @@
         <Panel
             IsVisible="{Binding EditorType, Converter={StaticResource EditorTypeToBoolConverter}, ConverterParameter='Variable'}">
             <editors:VariableEditor />
+        </Panel>
+        
+        <Panel
+            IsVisible="{Binding EditorType, Converter={StaticResource EditorTypeToBoolConverter}, ConverterParameter='CodeGeneration'}">
+            <plugins:CodeGeneration />
         </Panel>
     </StackPanel>
 </UserControl>

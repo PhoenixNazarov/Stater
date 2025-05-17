@@ -1,0 +1,68 @@
+﻿from enum import Enum
+from stater_state_machine import EmptyContext
+from stater_state_machine import StaterStateMachine
+from stater_state_machine import Transition
+
+
+class States(Enum):
+    OPEN = "OPEN"
+    AJAR = "AJAR"
+    CLOSE = "CLOSE"
+    
+
+class DoorStateMachine(StaterStateMachine[States, EmptyContext]):
+    def __init__(self):
+        super().__init__(
+            transitions=[
+                Transition(
+                    name="preOpen",
+                    start=States.CLOSE,
+                    end=States.AJAR
+                ),
+                Transition(
+                    name="preClose",
+                    start=States.OPEN,
+                    end=States.AJAR
+                ),
+                Transition(
+                    name="open",
+                    start=States.AJAR,
+                    end=States.OPEN
+                ),
+                Transition(
+                    name="close",
+                    start=States.AJAR,
+                    end=States.CLOSE
+                ),
+                Transition(
+                    name="ajarPlus",
+                    start=States.AJAR,
+                    end=States.AJAR
+                ),
+                Transition(
+                    name="ajarMinus",
+                    start=States.AJAR,
+                    end=States.AJAR
+                )
+            ],
+            context=EmptyContext(),
+            start_state=States.OPEN,
+        )
+
+    def preOpen(self):
+        self.transition("preOpen")
+
+    def preClose(self):
+        self.transition("preClose")
+
+    def open(self):
+        self.transition("open")
+
+    def close(self):
+        self.transition("close")
+
+    def ajarPlus(self):
+        self.transition("ajarPlus")
+
+    def ajarMinus(self):
+        self.transition("ajarMinus")

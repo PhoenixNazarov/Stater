@@ -1,0 +1,17 @@
+﻿import {StaterStateMachineBuilder} from "./index.js";
+
+export const States = Object.freeze({
+    OPEN: "OPEN",
+    AJAR: "AJAR",
+    CLOSE: "CLOSE"
+});
+
+export const builderDoorStateMachine = new StaterStateMachineBuilder()
+    .setStartState(States.OPEN)
+    .setContext({})
+    .addTransition("preOpen", States.CLOSE, States.AJAR)
+    .addTransition("preClose", States.OPEN, States.AJAR)
+    .addTransition("open", States.AJAR, States.OPEN)
+    .addTransition("close", States.AJAR, States.CLOSE)
+    .addTransition("ajarPlus", States.AJAR, States.AJAR)
+    .addTransition("ajarMinus", States.AJAR, States.AJAR)

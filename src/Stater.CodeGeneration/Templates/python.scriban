@@ -1,0 +1,101 @@
+{{- if settings.generate_states }}from enum import Enum{{ "\n" }}{{- end }}
+{{- if settings.generate_context }}from pydantic import BaseModel{{ "\n" }}{{- end }}
+{{- if settings.generate_context }}from stater_state_machine import Context{{ "\n" }}{{- else }}from stater_state_machine import EmptyContext{{ "\n" }}{{- end }}
+{{- if settings.generate_interface || settings.mode == "Clazz" }}from stater_state_machine import StaterStateMachine{{ "\n" }}{{- end }}
+{{- if settings.mode == "Builder" }}from stater_state_machine import StaterStateMachineBuilder{{ "\n" }}{{- end }}
+{{- if settings.mode == "Clazz" }}from stater_state_machine import Transition{{ "\n" }}{{- end }}
+
+{{ if settings.generate_states -}}
+class States(Enum):
+    {{- for item in fsm.states }}
+    {{ item.name }} = "{{ item.name }}"
+    {{- end }}
+    
+
+{{ end }}
+{{- func state(name) -}}
+{{- if settings.generate_states -}}
+States.{{ name }}
+{{- else -}}
+"{{ name }}"
+{{- end -}}
+{{- end -}}
+{{- if settings.generate_context -}}
+class {{ fsm.name }}FSMContext(BaseModel, Context):
+{{- for item in fsm.variables }}
+    {{ item.name }}: {{ convert_variable_type item.start_value }} = {{ convert_variable_value item.start_value }}
+{{- end}}
+
+{{ end -}}
+{{- if !settings.generate_states; state_generic = "str"; else; state_generic = "States"; end }}
+{{- if !settings.generate_context; context_generic = "EmptyContext"; else; context_generic = fsm.name+"FSMContext"; end -}}
+{{- if settings.mode == "Clazz" -}}
+class {{ fsm.name }}StateMachine(StaterStateMachine[{{ state_generic }}, {{ context_generic }}]):
+    def __init__(self):
+        super().__init__(
+            transitions=[
+            {{- for item in fsm.state_transitions }}
+                Transition(
+                    name="{{ item.transition.name }}",
+                    start={{ state item.start_state.name }},
+                    end={{ state item.end_state.name }} {{- if item.transition.condition && settings.generate_context }},
+                    condition=lambda ctx: {{ convert_condition item.transition item.transition.condition }}
+                   {{- end }}{{- if item.transition.event && settings.generate_context }},
+                    event=lambda ctx: {{ convert_event item.transition item.transition.event }}
+                   {{- end }}
+                ){{- if !for.last }}{{ "," }}{{- end }}
+            {{- end }}
+            ],
+            context={{ context_generic }}(),
+            {{- if fsm.start_state != null }}
+            start_state={{ state fsm.start_state.name }},
+            {{- end }}
+        )
+{{- if settings.generate_interface }}
+{{ end -}}
+{{- if settings.generate_interface }}
+{{- for item in fsm.transitions }}
+    def {{ item.name }}(self):
+        self.transition("{{ item.name }}")
+{{- if !for.last }}
+{{ end -}}
+{{- end -}}
+{{- end }}
+
+{{- else if settings.mode == "Builder" -}}
+{{- if settings.generate_interface }}
+class Types{{ fsm.name }}StateMachine(StaterStateMachine[{{ state_generic }}, {{ context_generic }}]):
+    {{- for item in fsm.transitions }}
+    def {{ item.name }}(self):
+        self.transition("{{ item.name }}")
+    {{- if !for.last }}
+    {{ end -}}
+
+    {{- end }}
+
+
+def typed_{{ fsm.name }}_factory(*args, **kwargs):
+    return Types{{ fsm.name }}StateMachine(*args, **kwargs)
+
+
+{{ end -}}
+builder_{{ fsm.name }}_state_machine = (
+    StaterStateMachineBuilder[{{ state_generic }}, {{ context_generic }}]()
+    {{- if fsm.start_state != null }}
+    .set_start_state({{ state fsm.start_state.name }})
+    {{- end }}
+    .set_context({{ context_generic }}())
+    {{- if settings.generate_interface }}
+    .set_factory(typed_{{ fsm.name }}_factory)
+    {{- end }}
+    {{- for item in fsm.state_transitions }}
+    .add_transition("{{ item.transition.name }}", {{ state item.start_state.name }}, {{ state item.end_state.name }})
+        {{- if item.transition.condition && settings.generate_context }}
+    .set_transition_condition("{{ item.transition.name }}", lambda ctx: {{ convert_condition item.transition item.transition.condition }})
+        {{- end }}
+        {{- if item.transition.event && settings.generate_context }}
+    .set_transition_event("{{ item.transition.name }}", lambda ctx: {{ convert_event item.transition item.transition.event }})
+        {{- end }}
+    {{- end }}
+)
+{{- end }}

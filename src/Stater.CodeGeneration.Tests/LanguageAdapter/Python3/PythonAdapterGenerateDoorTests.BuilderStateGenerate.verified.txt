@@ -1,0 +1,22 @@
+﻿from enum import Enum
+from stater_state_machine import EmptyContext
+from stater_state_machine import StaterStateMachineBuilder
+
+
+class States(Enum):
+    OPEN = "OPEN"
+    AJAR = "AJAR"
+    CLOSE = "CLOSE"
+    
+
+builder_Door_state_machine = (
+    StaterStateMachineBuilder[States, EmptyContext]()
+    .set_start_state(States.OPEN)
+    .set_context(EmptyContext())
+    .add_transition("preOpen", States.CLOSE, States.AJAR)
+    .add_transition("preClose", States.OPEN, States.AJAR)
+    .add_transition("open", States.AJAR, States.OPEN)
+    .add_transition("close", States.AJAR, States.CLOSE)
+    .add_transition("ajarPlus", States.AJAR, States.AJAR)
+    .add_transition("ajarMinus", States.AJAR, States.AJAR)
+)

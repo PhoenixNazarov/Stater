@@ -50,20 +50,44 @@ public partial class MainWindow : Window
         var pluginMenu = (MenuItem)sender;
         var plugin = (ButtonFilePlugin)pluginMenu.DataContext;
         var topLevel = GetTopLevel(this);
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+
+
+        if (plugin.Directory)
         {
-            Title = "Open File",
-            AllowMultiple = false
-        });
+            var files = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+            {
+                Title = "Open Folder",
+                AllowMultiple = false
+            });
 
-        if (files.Count < 1) return;
+            if (files.Count < 1) return;
 
-        var context = (MainWindowViewModel)DataContext;
-        context?.PluginButtinCommand.Execute(
-            new PathPluginDto(
-                Plugin: plugin,
-                Path: files[0].Path.ToString().Replace("file:/", "")
-            )
-        ).Subscribe();
+            var context = (MainWindowViewModel)DataContext;
+            context?.PluginButtinCommand.Execute(
+                new PathPluginDto(
+                    Plugin: plugin,
+                    Path: files[0].Path.ToString().Replace("file:/", "")
+                )
+            ).Subscribe();
+        }
+        else
+        {
+            
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Open File",
+                AllowMultiple = false
+            });
+
+            if (files.Count < 1) return;
+
+            var context = (MainWindowViewModel)DataContext;
+            context?.PluginButtinCommand.Execute(
+                new PathPluginDto(
+                    Plugin: plugin,
+                    Path: files[0].Path.ToString().Replace("file:/", "")
+                )
+            ).Subscribe();
+        }
     }
 }
