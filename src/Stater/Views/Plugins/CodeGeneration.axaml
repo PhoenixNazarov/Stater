@@ -8,7 +8,7 @@
              x:DataType="vm:CodeGenerationViewModel">
     <StackPanel Margin="10">
         <TextBlock Text="Select Language:" />
-        <ComboBox ItemsSource="{Binding LanguageIndex}" Margin="0,0,0, 20">
+        <ComboBox SelectedIndex="{Binding LanguageIndex}" Margin="0,0,0, 20">
             <ComboBoxItem>Java</ComboBoxItem>
             <ComboBoxItem>Kotlin</ComboBoxItem>
             <ComboBoxItem>JavaScript</ComboBoxItem>
@@ -20,7 +20,7 @@
 
         <TextBlock Text="Options" />
         <TextBlock Text="Select generate mode:" />
-        <ComboBox ItemsSource="{Binding LanguageIndex }">
+        <ComboBox SelectedIndex="{Binding ModeIndex }">
             <ComboBoxItem>Class</ComboBoxItem>
             <ComboBoxItem>Builder</ComboBoxItem>
         </ComboBox>
